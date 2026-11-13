@@ -135,17 +135,23 @@ relic-x/
 
 | Folder | Owner | Notes |
 |---|---|---|
-| `backend/src/relicx/engine/strings/` | B | KMP, Rabin-Karp, LCS, edit distance, hashing |
-| `backend/src/relicx/engine/solvers/`, `graph.py` | A | Greedy, best-first, Dijkstra, backtracking, BFS/DFS |
-| `backend/src/relicx/{api,services,repositories,db}` | A | API, persistence, DevOps |
-| `frontend/` | B | All UI |
-| `validation/`, `docs/` | A + B | Each documents their own algorithms |
+| `frontend/` | **A** | All UI (scaffold now; pages built in issues T23 – T28) |
+| `backend/src/relicx/engine/{graph,layout,metrics}.py`, `solvers/` | **A** | Graph & Search slice: BFS/DFS, greedy, best-first, Dijkstra, backtracking |
+| `backend/src/relicx/{api,services,repositories,db,schemas,core}` | **B** | API, persistence |
+| `backend/src/relicx/engine/strings/`, `features.py`, `matcher.py` | **B** | Strings & Matching slice: KMP, Rabin-Karp, LCS, edit distance, hashing |
+| `.github/`, `.devcontainer/`, Docker files | **B** | Platform / DevOps / CI |
+| `validation/`, `docs/` | A + B | Each documents and measures their own algorithms |
 
 Team key and full responsibilities: [`planning/TEAM_ROLES.md`](planning/TEAM_ROLES.md).
 
 ---
 
 ## 🚀 Quick start
+
+### Option 0: GitHub Codespaces
+
+**Code → Codespaces → Create codespace on `main`.** The devcontainer installs Python 3.11,
+Node 20 and all dependencies. Then run the backend and frontend commands from Option 2.
 
 ### Option 1: Docker (whole stack, one command)
 
@@ -182,7 +188,7 @@ npm run dev                                            # http://localhost:5173
 ### Run the tests
 
 ```bash
-cd backend && pytest            # engine + API + migration tests
+cd backend && pytest            # 69 engine + API + migration tests
 ruff check . && black --check .
 cd ../frontend && npm test && npm run build
 ```
@@ -191,14 +197,18 @@ cd ../frontend && npm test && npm run build
 
 ## 🖥️ What you can do in the app
 
-| Screen | What it shows |
-|---|---|
-| **Projects** | Artifact cards: fragment count, best accuracy, last run |
-| **Fragment gallery** | Scrambled pieces; click one to see its 4 edge strings as colour beads |
-| **Similarity graph** | Fragments as nodes, joins as weighted edges; threshold / top-k pruning live; BFS vs DFS components |
-| **Why matched?** | For any edge: LCS alignment, edit operations, shared motif, hash overlap, weighted score breakdown |
-| **Reconstruction** | Animated assembly, confidence per piece, step-by-step trace playback, ground-truth overlay |
-| **Lab / Benchmark** | All solvers side by side: time, operation counts, score, accuracy; time-vs-n scaling chart; CSV export |
+> **Status:** the engine and API are complete and tested (v0.1). The frontend is a scaffold;
+> its screens are being built by A in issues T23 – T28. Until then, every feature can be used
+> through the interactive API docs at `/docs`.
+
+| Screen | What it shows | Issue |
+|---|---|---|
+| **Projects** | Artifact cards, create-artifact wizard (sample / upload / real fragments) | T23 |
+| **Fragment gallery** | Scrambled pieces; click one to see its 4 edge strings as colour beads | T24 |
+| **Similarity graph** | Fragments as nodes, joins as weighted edges; threshold / top-k pruning live; BFS vs DFS | T25 |
+| **Why matched?** | LCS alignment, edit operations, shared motif, hash overlap, weighted score breakdown | T26 |
+| **Reconstruction** | Animated assembly, step-by-step trace playback, ground-truth overlay | T27 |
+| **Lab / Benchmark** | All solvers side by side: time, operation counts, accuracy; scaling chart; CSV export | T28 |
 
 ---
 
@@ -225,16 +235,25 @@ Errors always have one shape: `{"error": {"code", "message", "details"}}`.
 
 ---
 
-## 📊 Measured results (synthetic, 4×4 to 6×6, noise + edge erosion)
+## 📊 Measured results
 
-Reproduce with `python validation/run_benchmarks.py`. Typical findings:
+Mean neighbour accuracy over the three samples, damaged fragments (noise σ = 4, 30 % edge
+erosion), no rotation. Reproduce with `python validation/run_benchmarks.py`. Full tables,
+including rotation, are in [`validation/results.md`](validation/results.md).
 
-- **Greedy** is the most accurate on most inputs, because it scores each candidate against *all* placed neighbours.
-- **Backtracking** (seeded with greedy as its starting best solution) never scores worse than greedy and fixes some of greedy's early mistakes, at roughly 100× the time.
+| n | Greedy | Best-first | Dijkstra | Backtracking |
+|---|---|---|---|---|
+| 9 | 83 % · 0.4 ms | 81 % · 0.1 ms | 83 % · 0.1 ms | **100 %** · 5.7 ms |
+| 16 | **100 %** · 1.0 ms | **100 %** · 0.2 ms | 75 % · 0.2 ms | **100 %** · 27 ms |
+| 25 | **89 %** · 3.0 ms | 72 % · 0.4 ms | 55 % · 0.6 ms | **89 %** · 206 ms\* |
+| 36 | **91 %** · 7.5 ms | 66 % · 0.9 ms | 45 % · 1.6 ms | **91 %** · 221 ms\* |
+
+\* backtracking hit its node limit and returned its best-so-far.
+
+- **Backtracking** (starting from the greedy solution) fixes greedy's early mistakes on small grids, but its cost explodes with n.
+- **Greedy** scores each candidate against *all* placed neighbours, so it is the best of the fast solvers.
 - **Best-first (Prim)** is the fastest and is accurate when joins are distinctive.
 - **Dijkstra** is the weakest. Summing costs along paths is the wrong objective for assembly, which makes it a useful comparison point in the report.
-
-Exact tables are generated into [`validation/results.md`](validation/results.md).
 
 ---
 
@@ -243,21 +262,26 @@ Exact tables are generated into [`validation/results.md`](validation/results.md)
 | Document | Contents |
 |---|---|
 | [`planning/ARCHITECTURE.md`](planning/ARCHITECTURE.md) | Layers, ER diagram, data flow, scope, design decisions |
-| [`planning/TEAM_ROLES.md`](planning/TEAM_ROLES.md) | Who owns what |
+| [`planning/TEAM_ROLES.md`](planning/TEAM_ROLES.md) | Who owns what; role files in [`planning/roles/`](planning/roles) |
 | [`planning/CONTRACT.md`](planning/CONTRACT.md) | API contract between frontend and backend |
 | [`planning/WORKFLOW.md`](planning/WORKFLOW.md) | Branching, PRs, reviews, CI |
 | [`docs/ALGORITHMS.md`](docs/ALGORITHMS.md) | Recurrences, proofs sketches, complexity, measured counts |
 | [`docs/VIVA_NOTES.md`](docs/VIVA_NOTES.md) | Likely viva questions with short answers |
+| [`docs/API.md`](docs/API.md) · [`docs/DATABASE.md`](docs/DATABASE.md) | API reference, ER diagram and constraints |
+| [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) · [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) | Screens walkthrough, demo plan |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`SECURITY.md`](SECURITY.md) · [`CHANGELOG.md`](CHANGELOG.md) | Project hygiene |
 
 ---
 
 ## 👥 Team
 
-| | Member | Roll No. |
-|---|---|---|
-| **A** | Arvind Kaushik | 25293916019 |
-| **B** | Bhumi Kansal | 25293916026 |
+| | Member | GitHub | Discipline | DSA slice |
+|---|---|---|---|---|
+| **A** | Arvind Kaushik (25293916019) | [@arvnd108](https://github.com/arvnd108) | Frontend | Graph & Search |
+| **B** | Bhumi Kansal (25293916026) | [@earth-bhumi22](https://github.com/earth-bhumi22) | Backend + DevOps | Strings & Matching |
+
+Work is split equally (15 issues each, plus 3 shared). Every PR is reviewed by the other member.
+Full split: [`planning/TEAM_ROLES.md`](planning/TEAM_ROLES.md) · task order: [`planning/WORKFLOW.md`](planning/WORKFLOW.md).
 
 Submitted to **Dr. Juhi Jain**, Analysis and Design of Algorithms.
 
