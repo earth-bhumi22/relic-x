@@ -1,0 +1,13 @@
+name: Feature idea
+description: Suggest something new
+labels: ["type:feature"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Idea and motivation
+    validations: { required: true }
+  - type: textarea
+    id: dsa
+    attributes:
+      label: Which algorithm or ADA topic does it touch?

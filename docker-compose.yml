@@ -1,0 +1,73 @@
+# Owner: B — the full RELIC-X stack, one command:
+#
+#   cp .env.example .env
+#   docker compose up -d --build
+#
+# Web:  http://localhost:8080      (nginx serves the React build and proxies /api)
+# API:  http://localhost:8000/docs
+#
+# Service order: postgres (healthy) -> migrate (alembic upgrade head, exits 0) -> api -> web
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-relicx}
+      POSTGRES_USER: ${POSTGRES_USER:-relicx}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U ${POSTGRES_USER:-relicx} -d ${POSTGRES_DB:-relicx}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # One-shot: applies migrations with the same image as the API, then exits.
+  migrate:
+    build: ./backend
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      RELICX_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-relicx}:${POSTGRES_PASSWORD:-change_me}@postgres:5432/${POSTGRES_DB:-relicx}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build: ./backend
+    environment:
+      RELICX_ENV: ${RELICX_ENV:-production}
+      RELICX_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-relicx}:${POSTGRES_PASSWORD:-change_me}@postgres:5432/${POSTGRES_DB:-relicx}
+      RELICX_AUTO_CREATE_SCHEMA: "false"
+      RELICX_STORAGE_DIR: /data/storage
+      RELICX_CORS_ORIGINS: ${RELICX_CORS_ORIGINS:-http://localhost:8080}
+      RELICX_MAX_UPLOAD_MB: ${RELICX_MAX_UPLOAD_MB:-15}
+      RELICX_MAX_FRAGMENTS: ${RELICX_MAX_FRAGMENTS:-64}
+      RELICX_LOG_LEVEL: ${RELICX_LOG_LEVEL:-INFO}
+    volumes:
+      - storage:/data/storage
+    ports:
+      - "8000:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  web:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  storage:

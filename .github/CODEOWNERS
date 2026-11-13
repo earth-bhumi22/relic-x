@@ -1,0 +1,30 @@
+# Who is asked to review what. Every PR also needs the OTHER member's approval
+# (see planning/TEAM_ROLES.md §4). Later rules win.
+
+*                                         @earth-bhumi22 @arvnd108
+
+# B — Bhumi: backend, platform, Strings & Matching slice
+/backend/                                 @earth-bhumi22
+/.github/                                 @earth-bhumi22
+/.devcontainer/                           @earth-bhumi22
+/docker-compose.yml                       @earth-bhumi22
+/datasets/                                @earth-bhumi22
+/docs/API.md                              @earth-bhumi22
+/docs/DATABASE.md                         @earth-bhumi22
+/SECURITY.md                              @earth-bhumi22
+/planning/CONTRACT.md                     @earth-bhumi22 @arvnd108
+
+# A — Arvind: frontend, Graph & Search slice
+/frontend/                                @arvnd108
+/backend/src/relicx/engine/graph.py       @arvnd108
+/backend/src/relicx/engine/layout.py      @arvnd108
+/backend/src/relicx/engine/metrics.py     @arvnd108
+/backend/src/relicx/engine/solvers/       @arvnd108
+/backend/tests/engine/test_graph_solvers_metrics.py  @arvnd108
+/validation/run_benchmarks.py             @arvnd108
+/docs/USER_GUIDE.md                       @arvnd108
+/docs/DEMO_SCRIPT.md                      @arvnd108
+
+# Shared interface between the two slices: both must review
+/backend/src/relicx/engine/pipeline.py    @earth-bhumi22 @arvnd108
+/backend/src/relicx/engine/counters.py    @earth-bhumi22 @arvnd108
