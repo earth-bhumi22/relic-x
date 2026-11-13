@@ -1,14 +1,25 @@
-# Owner: B
+# Owner: B. One grouped PR per ecosystem per week, minor/patch only.
+# Major upgrades (e.g. Vite, Vitest, Actions majors) are done deliberately in their own task.
 version: 2
 updates:
   - package-ecosystem: pip
     directory: /backend
     schedule: { interval: weekly }
-    open-pull-requests-limit: 5
+    groups:
+      python: { patterns: ["*"], update-types: [minor, patch] }
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: npm
     directory: /frontend
     schedule: { interval: weekly }
-    open-pull-requests-limit: 5
+    groups:
+      npm: { patterns: ["*"], update-types: [minor, patch] }
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: monthly }
+    groups:
+      actions: { patterns: ["*"] }
