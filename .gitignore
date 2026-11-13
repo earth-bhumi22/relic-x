@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# RELIC-X runtime data (never commit)
+*.db
+storage/
+backend/storage/
+
+# Node
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+# Env and editors
+.env
+.env.local
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
