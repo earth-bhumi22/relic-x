@@ -206,7 +206,7 @@ A's, `.github/**`, `.devcontainer/**`, `docker-compose.yml`, `validation/matcher
 | `.devcontainer/devcontainer.json` | B | GitHub Codespaces environment |
 | `.github/workflows/ci.yml` | B (backend jobs), A (frontend job) | CI |
 | `.github/workflows/codeql.yml`, `dependabot.yml` | B | Security scanning, dependency updates |
-| `.github/CODEOWNERS` | B | Automatic review requests by path |
+| `.github/CODEOWNERS` | B | Automatic review requests: each area lists the OTHER member as reviewer |
 | `CONTRIBUTING.md`, `CHANGELOG.md`, `LICENSE` | A + B | Project hygiene |
 | `SECURITY.md` | B | Upload limits, secrets, reporting |
 

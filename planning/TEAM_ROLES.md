@@ -119,7 +119,8 @@ Shared, owned jointly: `engine/counters.py`, `engine/pipeline.py`, `engine/__ini
   The author merges after approval. Bhumi (repository owner) manages settings and branch protection.
 - Link the PR to its issue (`Closes #12`) so the issue closes automatically.
 - Changes to the API shape go through [CONTRACT.md](CONTRACT.md) first. Tell the other member
-  before changing their files ([CODEOWNERS](../.github/CODEOWNERS) requests their review automatically).
+  before changing their files. [CODEOWNERS](../.github/CODEOWNERS) automatically requests the other member as reviewer:
+  Bhumi reviews everything in Arvind's areas, Arvind reviews everything in Bhumi's.
 - CI must be green before merge. Never commit secrets, `.env`, `relicx.db` or `storage/`.
 
 ## 5. Order of work

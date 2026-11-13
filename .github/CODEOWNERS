@@ -1,30 +1,51 @@
-# Who is asked to review what. Every PR also needs the OTHER member's approval
-# (see planning/TEAM_ROLES.md §4). Later rules win.
+# CODEOWNERS here lists the REVIEWER of each area, i.e. the OTHER member
+# (planning/TEAM_ROLES.md §4: every PR is reviewed by the other member).
+# GitHub never lets authors approve their own PRs, so the owner of an area
+# must not be its code owner. Later rules win.
 
+# Default: anything not listed below needs both of you to look.
 *                                         @earth-bhumi22 @arvnd108
 
-# B — Bhumi: backend, platform, Strings & Matching slice
-/backend/                                 @earth-bhumi22
-/.github/                                 @earth-bhumi22
-/.devcontainer/                           @earth-bhumi22
-/docker-compose.yml                       @earth-bhumi22
-/datasets/                                @earth-bhumi22
-/docs/API.md                              @earth-bhumi22
-/docs/DATABASE.md                         @earth-bhumi22
-/SECURITY.md                              @earth-bhumi22
-/planning/CONTRACT.md                     @earth-bhumi22 @arvnd108
+# A — Arvind's areas → reviewed by B — Bhumi
+/frontend/                                @earth-bhumi22
+/backend/src/relicx/engine/graph.py       @earth-bhumi22
+/backend/src/relicx/engine/layout.py      @earth-bhumi22
+/backend/src/relicx/engine/metrics.py     @earth-bhumi22
+/backend/src/relicx/engine/solvers/       @earth-bhumi22
+/backend/tests/engine/test_graph_solvers_metrics.py  @earth-bhumi22
+/validation/run_benchmarks.py             @earth-bhumi22
+/docs/USER_GUIDE.md                       @earth-bhumi22
+/docs/DEMO_SCRIPT.md                      @earth-bhumi22
 
-# A — Arvind: frontend, Graph & Search slice
-/frontend/                                @arvnd108
-/backend/src/relicx/engine/graph.py       @arvnd108
-/backend/src/relicx/engine/layout.py      @arvnd108
-/backend/src/relicx/engine/metrics.py     @arvnd108
-/backend/src/relicx/engine/solvers/       @arvnd108
-/backend/tests/engine/test_graph_solvers_metrics.py  @arvnd108
-/validation/run_benchmarks.py             @arvnd108
-/docs/USER_GUIDE.md                       @arvnd108
-/docs/DEMO_SCRIPT.md                      @arvnd108
+# B — Bhumi's areas → reviewed by A — Arvind
+/backend/src/relicx/api/                  @arvnd108
+/backend/src/relicx/services/             @arvnd108
+/backend/src/relicx/repositories/         @arvnd108
+/backend/src/relicx/db/                   @arvnd108
+/backend/src/relicx/schemas/              @arvnd108
+/backend/src/relicx/core/                 @arvnd108
+/backend/src/relicx/main.py               @arvnd108
+/backend/src/relicx/samples.py            @arvnd108
+/backend/src/relicx/engine/strings/       @arvnd108
+/backend/src/relicx/engine/features.py    @arvnd108
+/backend/src/relicx/engine/fragmenter.py  @arvnd108
+/backend/src/relicx/engine/matcher.py     @arvnd108
+/backend/tests/api/                       @arvnd108
+/backend/tests/test_migrations.py         @arvnd108
+/backend/tests/engine/test_strings.py     @arvnd108
+/backend/tests/engine/test_features_and_matching.py  @arvnd108
+/backend/migrations/                      @arvnd108
+/.github/                                 @arvnd108
+/.devcontainer/                           @arvnd108
+/docker-compose.yml                       @arvnd108
+/datasets/                                @arvnd108
+/docs/API.md                              @arvnd108
+/docs/DATABASE.md                         @arvnd108
+/SECURITY.md                              @arvnd108
 
-# Shared interface between the two slices: both must review
+# Shared interfaces and joint documents: both review
 /backend/src/relicx/engine/pipeline.py    @earth-bhumi22 @arvnd108
 /backend/src/relicx/engine/counters.py    @earth-bhumi22 @arvnd108
+/planning/                                @earth-bhumi22 @arvnd108
+/docs/ALGORITHMS.md                       @earth-bhumi22 @arvnd108
+/docs/VIVA_NOTES.md                       @earth-bhumi22 @arvnd108
