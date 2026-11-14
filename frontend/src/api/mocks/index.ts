@@ -5,6 +5,7 @@
 //
 // Error triggers built into the data:
 //   - any unknown artifact / fragment / run id          -> 404 not_found
+//   - GET /fragments/{id} returns numeric strips (jittered inside each symbol's colour bucket)
 //   - artifact "Pottery band (unmatched)"                -> 409 precondition_failed until POST .../match
 //   - sample name not in /samples, empty name, bad sides -> 422 invalid_input / validation_error
 //   - artifact NAME "fail-422" / "fail-413" / "fail-500" on any create call -> 422 validation_error (field `name`) /
@@ -37,6 +38,7 @@ import {
   buildMatchStats,
   buildMatches,
   buildRun,
+  fragmentDetail,
   hex32,
   rng,
   scalingModel,
@@ -316,7 +318,17 @@ function specOf(m: MockArtifact): ArtifactSpec {
   };
 }
 
+// Same bounds as MatchParams in the backend (strip_len 8-96, levels 2-4, top_k 1-64).
+const MATCH_BOUNDS = { strip_len: [8, 96], levels: [2, 4], top_k: [1, 64] } as const;
+
 function matchArtifact(m: MockArtifact, body: Record<string, unknown>): MatchSummary {
+  for (const [key, [lo, hi]] of Object.entries(MATCH_BOUNDS)) {
+    const v = body[key];
+    if (v === undefined) continue;
+    if (typeof v !== "number" || !Number.isInteger(v))
+      throw validation(`body.${key}`, "Input should be a valid integer");
+    if (v < lo || v > hi) throw validation(`body.${key}`, `Input should be between ${lo} and ${hi}`);
+  }
   const config = { ...MATCH_CONFIG, ...(body as Partial<MatchSummary["config"]>) };
   m.matches = buildMatches(specOf(m), m.fragments);
   m.matchStats = buildMatchStats(m.fragments.length, m.matches);
@@ -618,6 +630,13 @@ export async function mockRequest<T>(path: string, init: RequestInit = {}): Prom
   }
   if ((m = p.match(/^\/artifacts\/([^/]+)\/fragments$/)) && method === "GET")
     return out(getArtifactOr404(m[1]).fragments satisfies FragmentOut[]);
+  if ((m = p.match(/^\/fragments\/([^/]+)$/)) && method === "GET") {
+    for (const art of store.values()) {
+      const frag = art.fragments.find((f) => f.id === m![1]);
+      if (frag) return out(fragmentDetail(frag));
+    }
+    throw notFound("fragment", m[1]);
+  }
   if ((m = p.match(/^\/artifacts\/([^/]+)\/match$/)) && method === "POST")
     return out(matchArtifact(getArtifactOr404(m[1]), body));
   if ((m = p.match(/^\/artifacts\/([^/]+)\/matches$/)) && method === "GET") {

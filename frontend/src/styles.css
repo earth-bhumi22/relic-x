@@ -701,3 +701,247 @@ a:focus-visible {
   color: var(--success);
   border-radius: 8px;
 }
+
+/* ---- gallery, fragment detail, edge beads (T24) ---- */
+.back-link {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+.btn-link {
+  background: none;
+  border: 0;
+  padding: 0.25rem 0;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+.btn-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.choice-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.25rem 0;
+  font-size: 0.92rem;
+}
+.gallery-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.match-panel {
+  margin: 0.75rem 0 1rem;
+}
+.match-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+}
+.match-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.match-advanced {
+  border: 0;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+.match-actions {
+  margin-top: 0.5rem;
+}
+.state-match-required {
+  border-style: solid;
+}
+.fragment-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: 0.75rem;
+}
+.fragment-tile {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.5rem;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  cursor: pointer;
+}
+.fragment-tile:hover {
+  border-color: var(--accent);
+}
+.fragment-tile:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.fragment-tile img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.tile-label {
+  font-weight: 600;
+}
+.tile-size,
+.tile-truth {
+  font-size: 0.75rem;
+  text-align: center;
+}
+.fragment-detail {
+  display: grid;
+  gap: 1rem;
+}
+.fragment-frame {
+  display: grid;
+  grid-template-columns: auto minmax(0, 14rem) auto;
+  grid-template-areas:
+    ". n ."
+    "w img e"
+    ". s .";
+  gap: 0.35rem;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+}
+.frame-n {
+  grid-area: n;
+}
+.frame-s {
+  grid-area: s;
+}
+.frame-w {
+  grid-area: w;
+}
+.frame-e {
+  grid-area: e;
+}
+.fragment-large {
+  grid-area: img;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.fragment-edges h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+.strip-rows {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+.strip-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.side-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 2px solid var(--border);
+  flex: none;
+}
+.side-n {
+  border-color: var(--bead-n);
+}
+.side-e {
+  border-color: var(--bead-e);
+}
+.side-s {
+  border-color: var(--bead-s);
+}
+.side-w {
+  border-color: var(--bead-w);
+}
+.fragment-meta code {
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.beads {
+  --bead: 1.15rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  min-width: 0;
+  padding: 3px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+}
+.beads-sm {
+  --bead: 0.7rem;
+}
+.beads-lg {
+  --bead: 1.5rem;
+}
+.beads-side-n {
+  border-color: var(--bead-n);
+}
+.beads-side-e {
+  border-color: var(--bead-e);
+}
+.beads-side-s {
+  border-color: var(--bead-s);
+}
+.beads-side-w {
+  border-color: var(--bead-w);
+}
+.bead {
+  width: var(--bead);
+  height: var(--bead);
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--bead) * 0.6);
+  font-family: ui-monospace, monospace;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 0 2px #000;
+}
+.bead-swatch {
+  border-radius: 3px;
+}
+.bead-unknown {
+  background: var(--surface-2);
+  color: var(--danger);
+  text-shadow: none;
+  border: 1px dashed var(--danger);
+  font-weight: 700;
+}
+.bead-hl {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.bead-hl-mismatch {
+  outline-color: var(--danger);
+}
+.beads-empty {
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 0 0.25rem;
+}

@@ -284,7 +284,7 @@ Layering: **routes** (HTTP + validation) → **services** (logic) → **reposito
 | *planned* `src/api/mocks/*` | A | Mock payloads from CONTRACT §6 (T03) |
 | *planned* `src/routes.tsx`, `src/components/layout/*` | A | Routing, navbar, layout (T03) |
 | `src/pages/ProjectsPage.tsx`, `components/ArtifactWizard.tsx`, `ArtifactCard.tsx`, `DeleteArtifactDialog.tsx`, `Modal.tsx`, `lib/artifactForm.ts` | A | Projects page + create wizard (T23, done) |
-| *planned* `src/pages/GalleryPage.tsx`, `components/EdgeBeads.tsx` | A | T24 |
+| `src/pages/GalleryPage.tsx`, `components/EdgeBeads.tsx`, `FragmentDialog.tsx`, `MatchPanel.tsx`, `hooks/useMatchStatus.ts`, `lib/beads.ts`, `lib/shuffle.ts` | A | Fragment gallery + edge beads + matching panel (T24, done) |
 | *planned* `src/pages/GraphPage.tsx` | A | T25 |
 | *planned* `src/components/WhyMatchedDrawer.tsx` | A | T26 |
 | *planned* `src/pages/ReconstructionPage.tsx`, `components/TracePlayer.tsx` | A | T27 |

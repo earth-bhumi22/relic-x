@@ -8,6 +8,7 @@ import type { SideLetter } from "./sides";
 export type Schemas = components["schemas"];
 export type ArtifactOut = Schemas["ArtifactOut"];
 export type FragmentOut = Schemas["FragmentOut"];
+export type FragmentDetail = Schemas["FragmentDetail"];
 export type FragmentParams = Schemas["FragmentParams"];
 export type SideMatchOut = Schemas["SideMatchOut"];
 export type RunOut = Schemas["RunOut"];
