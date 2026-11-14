@@ -81,6 +81,7 @@ tests → complexity derivation → measured experiment → viva notes.
 | T26 | "Why matched?" drawer | A | T25 |
 | T27 | Reconstruction canvas + trace playback + ground-truth overlay | A | T24; progress bar after T20 |
 | T28 | Lab / benchmark dashboard + scaling chart + CSV export | A | T27; download after T21 |
+| T29 | Fix flaky `ArtifactWizard` network-failure test (bug found while merging T01; fills the T29 gap) | A | — |
 
 ### Phase 4 — Testing and validation (milestone G4)
 
@@ -140,6 +141,7 @@ flowchart TD
         T22[T22 Hardening, B]
         T23[T23 Projects, A] --> T24[T24 Gallery, A] --> T25[T25 Graph view, A] --> T26[T26 Why matched, A]
         T24 --> T27[T27 Canvas + trace, A] --> T28[T28 Lab dashboard, A]
+        T29[T29 Flaky wizard test, A]
     end
 
     T00 -.-> T03
@@ -165,7 +167,7 @@ flowchart TD
     classDef a fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a
     classDef b fill:#fce7f3,stroke:#be185d,color:#831843
     classDef both fill:#ede9fe,stroke:#6d28d9,color:#4c1d95
-    class T03,T04,T14,T15,T16,T17,T23,T24,T25,T26,T27,T28,T32,T43,T44 a
+    class T03,T04,T14,T15,T16,T17,T23,T24,T25,T26,T27,T28,T29,T32,T43,T44 a
     class T01,T02,T05,T10,T11,T12,T13,T20,T21,T22,T30,T31,T40,T41,T42 b
     class T00,T50,T51 both
 ```
@@ -207,7 +209,14 @@ fixtures, mock data) whenever A is blocked.
 4. CI green → mark ready → the other member reviews → author merges.
 5. If you change the API, update CONTRACT.md in the same PR.
 
-## 8. Progress tracker
+## 8. Numbering new tasks
+
+New tasks take the **next free ID inside their phase** instead of a number at the end, so every existing ID,
+issue title and branch name stays valid. Free IDs: T06–T09 (foundations), T18–T19 (algorithms),
+T33–T39 (testing), T45–T49 (docs). T29 was used for the flaky wizard test (#59). Alternate owners so the
+split stays even.
+
+## 9. Progress tracker
 
 Progress lives on GitHub: **Issues** (filter `assignee:@me`) and **Milestones** G0 – G4.
 Labels: `owner:A-arvind`, `owner:B-bhumi`, `area:*`, `phase:*`, `dsa`.
