@@ -1,7 +1,10 @@
 # RELIC-X — Project Contract (T00)
 
-**Version:** 0.2 (A signed off 2026-11-14; awaiting B)
+**Version:** 1.0 (signed off by A and B, 2026-11-14) — gate **G0** passed
 
+> **1.0 changes:** B signed off every decision D1–D14 and confirmed the §5.1 job-status shape as
+> written (implemented in T20).
+>
 > **0.2 changes:** verified every §5 endpoint against the running API; documented the side-index
 > inconsistency (§5 note), the extra response fields (§6 note), the `operations` shape difference in the
 > scaling endpoint, and proposed the T20 job-status shape (§5.1). No code changed.
@@ -22,20 +25,20 @@ Related: [ARCHITECTURE](ARCHITECTURE.md) · [TEAM_ROLES](TEAM_ROLES.md) · [WORK
 
 | # | Decision | Recommended default | Agreed (A · B) |
 |---|---|---|---|
-| D1 | Python version | 3.11+ | [x] A · [ ] B |
-| D2 | Backend framework | FastAPI + Pydantic v2 | [x] A · [ ] B |
-| D3 | ORM / migrations | SQLAlchemy 2 + Alembic | [x] A · [ ] B |
-| D4 | Database | SQLite for dev, PostgreSQL 16 in compose and CI | [x] A · [ ] B |
-| D5 | Frontend | React 18 + TypeScript + Vite | [x] A · [ ] B |
-| D6 | Graph drawing | Cytoscape.js | [x] A · [ ] B |
-| D7 | Charts | Recharts | [x] A · [ ] B |
-| D8 | Frontend tests | Vitest + React Testing Library | [x] A · [ ] B |
-| D9 | Lint / format | ruff + black (backend), ESLint + Prettier (frontend) | [x] A · [ ] B |
-| D10 | JSON field naming | `snake_case`, same as the database | [x] A · [ ] B |
-| D11 | IDs | 32-char hex UUID strings; fragment *labels* `F01`, `F02` … are used inside the engine and trace | [x] A · [ ] B |
-| D12 | Side numbering | `0=N, 1=E, 2=S, 3=W`, clockwise | [x] A · [ ] B |
-| D13 | Rotation | `rot` = number of 90° **clockwise** turns applied to a fragment image | [x] A · [ ] B |
-| D14 | Auth | None in v0.1; optional `X-API-Key` on write endpoints added in T22 | [x] A · [ ] B |
+| D1 | Python version | 3.11+ | [x] A · [x] B |
+| D2 | Backend framework | FastAPI + Pydantic v2 | [x] A · [x] B |
+| D3 | ORM / migrations | SQLAlchemy 2 + Alembic | [x] A · [x] B |
+| D4 | Database | SQLite for dev, PostgreSQL 16 in compose and CI | [x] A · [x] B |
+| D5 | Frontend | React 18 + TypeScript + Vite | [x] A · [x] B |
+| D6 | Graph drawing | Cytoscape.js | [x] A · [x] B |
+| D7 | Charts | Recharts | [x] A · [x] B |
+| D8 | Frontend tests | Vitest + React Testing Library | [x] A · [x] B |
+| D9 | Lint / format | ruff + black (backend), ESLint + Prettier (frontend) | [x] A · [x] B |
+| D10 | JSON field naming | `snake_case`, same as the database | [x] A · [x] B |
+| D11 | IDs | 32-char hex UUID strings; fragment *labels* `F01`, `F02` … are used inside the engine and trace | [x] A · [x] B |
+| D12 | Side numbering | `0=N, 1=E, 2=S, 3=W`, clockwise | [x] A · [x] B |
+| D13 | Rotation | `rot` = number of 90° **clockwise** turns applied to a fragment image | [x] A · [x] B |
+| D14 | Auth | None in v0.1; optional `X-API-Key` on write endpoints added in T22 | [x] A · [x] B |
 
 ## 2. Conventions
 
@@ -112,7 +115,7 @@ return letters (`side_source: "N"`, `side_a: "N"`) and `/graph` edges also carry
 The frontend must map between `0=N, 1=E, 2=S, 3=W` and the letters itself. Unifying this is a v0.3
 candidate, not required for G0.
 
-### 5.1 Job status shape (T20, proposed; needed by A's T27)
+### 5.1 Job status shape (T20, agreed; needed by A's T27)
 
 ```json
 POST /artifacts/{id}/jobs   -> 202 {"job_id": "…", "status": "queued", "progress": 0.0}
@@ -122,7 +125,7 @@ GET  /jobs/{id}             -> 200 {"job_id": "…", "status": "queued|running|d
 
 `progress` is a float in `[0, 1]`. `run_id` is set only when `status = done`, after which the client
 fetches `GET /runs/{run_id}`. `error` is a string only when `status = failed`. A polls every 1 s and
-stops on `done` or `failed`. **B to confirm or amend in the T20 PR.**
+stops on `done` or `failed`. **Confirmed by B (v1.0).**
 
 ## 6. Example payloads
 
@@ -223,4 +226,4 @@ trace coordinates are the solver's internal ones (seed at `(0, 0)`, may be negat
 | Member | Signed | Date |
 |---|---|---|
 | A — Arvind | [x] | 2026-11-14 |
-| B — Bhumi | [ ] | |
+| B — Bhumi | [x] | 2026-11-14 |
