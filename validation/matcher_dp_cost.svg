@@ -8,45 +8,45 @@
 <line x1="175.2" y1="36" x2="175.2" y2="328" stroke="#e5e7eb"/>
 <line x1="64" y1="269.6" x2="620" y2="269.6" stroke="#e5e7eb"/>
 <text x="175.2" y="344" text-anchor="middle" fill="#374151">32</text>
-<text x="58" y="273.6" text-anchor="end" fill="#374151">0.241</text>
+<text x="58" y="273.6" text-anchor="end" fill="#374151">0.237</text>
 <line x1="286.4" y1="36" x2="286.4" y2="328" stroke="#e5e7eb"/>
 <line x1="64" y1="211.2" x2="620" y2="211.2" stroke="#e5e7eb"/>
 <text x="286.4" y="344" text-anchor="middle" fill="#374151">56</text>
-<text x="58" y="215.2" text-anchor="end" fill="#374151">0.481</text>
+<text x="58" y="215.2" text-anchor="end" fill="#374151">0.474</text>
 <line x1="397.6" y1="36" x2="397.6" y2="328" stroke="#e5e7eb"/>
 <line x1="64" y1="152.8" x2="620" y2="152.8" stroke="#e5e7eb"/>
 <text x="397.6" y="344" text-anchor="middle" fill="#374151">80</text>
-<text x="58" y="156.8" text-anchor="end" fill="#374151">0.722</text>
+<text x="58" y="156.8" text-anchor="end" fill="#374151">0.712</text>
 <line x1="508.8" y1="36" x2="508.8" y2="328" stroke="#e5e7eb"/>
 <line x1="64" y1="94.4" x2="620" y2="94.4" stroke="#e5e7eb"/>
 <text x="508.8" y="344" text-anchor="middle" fill="#374151">104</text>
-<text x="58" y="98.4" text-anchor="end" fill="#374151">0.962</text>
+<text x="58" y="98.4" text-anchor="end" fill="#374151">0.949</text>
 <line x1="620.0" y1="36" x2="620.0" y2="328" stroke="#e5e7eb"/>
 <line x1="64" y1="36.0" x2="620" y2="36.0" stroke="#e5e7eb"/>
 <text x="620.0" y="344" text-anchor="middle" fill="#374151">128</text>
-<text x="58" y="40.0" text-anchor="end" fill="#374151">1.2</text>
+<text x="58" y="40.0" text-anchor="end" fill="#374151">1.19</text>
 <rect x="64" y="36" width="556" height="292" fill="none" stroke="#9ca3af"/>
 <text x="342.0" y="370" text-anchor="middle">strip length L</text>
 <text x="14" y="182.0" text-anchor="middle" transform="rotate(-90 14 182.0)">time (ms)</text>
-<polyline points="64.0,326.7 101.1,323.7 138.1,319.0 175.2,313.1 249.3,296.4 323.5,271.0 471.7,204.7 620.0,100.0" fill="none" stroke="#2563eb" stroke-width="2"/>
-<circle cx="64.0" cy="326.7" r="3.5" fill="#2563eb"/>
-<circle cx="101.1" cy="323.7" r="3.5" fill="#2563eb"/>
-<circle cx="138.1" cy="319.0" r="3.5" fill="#2563eb"/>
-<circle cx="175.2" cy="313.1" r="3.5" fill="#2563eb"/>
-<circle cx="249.3" cy="296.4" r="3.5" fill="#2563eb"/>
-<circle cx="323.5" cy="271.0" r="3.5" fill="#2563eb"/>
-<circle cx="471.7" cy="204.7" r="3.5" fill="#2563eb"/>
-<circle cx="620.0" cy="100.0" r="3.5" fill="#2563eb"/>
+<polyline points="64.0,326.4 101.1,322.8 138.1,317.3 175.2,309.5 249.3,287.1 323.5,258.1 471.7,170.4 620.0,98.2" fill="none" stroke="#2563eb" stroke-width="2"/>
+<circle cx="64.0" cy="326.4" r="3.5" fill="#2563eb"/>
+<circle cx="101.1" cy="322.8" r="3.5" fill="#2563eb"/>
+<circle cx="138.1" cy="317.3" r="3.5" fill="#2563eb"/>
+<circle cx="175.2" cy="309.5" r="3.5" fill="#2563eb"/>
+<circle cx="249.3" cy="287.1" r="3.5" fill="#2563eb"/>
+<circle cx="323.5" cy="258.1" r="3.5" fill="#2563eb"/>
+<circle cx="471.7" cy="170.4" r="3.5" fill="#2563eb"/>
+<circle cx="620.0" cy="98.2" r="3.5" fill="#2563eb"/>
 <rect x="74" y="43" width="12" height="12" fill="#2563eb"/>
 <text x="92" y="53">LCS</text>
-<polyline points="64.0,326.4 101.1,322.9 138.1,317.2 175.2,309.5 249.3,287.6 323.5,257.0 471.7,171.7 620.0,49.9" fill="none" stroke="#dc2626" stroke-width="2"/>
-<circle cx="64.0" cy="326.4" r="3.5" fill="#dc2626"/>
-<circle cx="101.1" cy="322.9" r="3.5" fill="#dc2626"/>
-<circle cx="138.1" cy="317.2" r="3.5" fill="#dc2626"/>
-<circle cx="175.2" cy="309.5" r="3.5" fill="#dc2626"/>
-<circle cx="249.3" cy="287.6" r="3.5" fill="#dc2626"/>
-<circle cx="323.5" cy="257.0" r="3.5" fill="#dc2626"/>
-<circle cx="471.7" cy="171.7" r="3.5" fill="#dc2626"/>
+<polyline points="64.0,325.8 101.1,320.6 138.1,311.7 175.2,298.7 249.3,262.6 323.5,214.5 471.7,71.7 620.0,49.9" fill="none" stroke="#dc2626" stroke-width="2"/>
+<circle cx="64.0" cy="325.8" r="3.5" fill="#dc2626"/>
+<circle cx="101.1" cy="320.6" r="3.5" fill="#dc2626"/>
+<circle cx="138.1" cy="311.7" r="3.5" fill="#dc2626"/>
+<circle cx="175.2" cy="298.7" r="3.5" fill="#dc2626"/>
+<circle cx="249.3" cy="262.6" r="3.5" fill="#dc2626"/>
+<circle cx="323.5" cy="214.5" r="3.5" fill="#dc2626"/>
+<circle cx="471.7" cy="71.7" r="3.5" fill="#dc2626"/>
 <circle cx="620.0" cy="49.9" r="3.5" fill="#dc2626"/>
 <rect x="74" y="59" width="12" height="12" fill="#dc2626"/>
 <text x="92" y="69">edit distance</text>

@@ -26,7 +26,30 @@ arrangements; with rotation it is n! · 4ⁿ.
 # Part I — Strings & Matching (owner: B)
 
 ## 1. Edge features (`engine/features.py`)
-<!-- T13: clockwise reading convention and why it makes "compare with reversed" rotation-proof; resampling; quantisation into 64 symbols. -->
+**Goal.** Turn a picture problem into a string problem: each of a fragment's four sides becomes a short **symbol string**
+that string algorithms can compare, plus a numeric RGB strip for colour continuity.
+
+**Pipeline per side** (sides N = 0, E = 1, S = 2, W = 3):
+1. *Strip:* average the outer `depth` = 2 pixel rows/columns along that side (smooths single-pixel noise).
+2. *Resample:* block-average the strip to `strip_len` = L = 24 samples, so every fragment size gives the same length.
+3. *Quantise:* each RGB sample → one of `levels`³ = 4³ = 64 colour bins → one symbol of a 64-character alphabet
+   (`A…Z a…z 0…9 + /`). Bin index = (r_bin·4 + g_bin)·4 + b_bin, with each channel binned in steps of 64 grey levels.
+
+O(tile pixels) per fragment for step 1, O(L) for steps 2 and 3.
+
+**The clockwise convention.** Every side is read *clockwise* around its fragment: N left→right, E top→bottom,
+S right→left, W bottom→top. When side a of fragment i touches side b of fragment j, the shared border is walked in
+**opposite** directions by the two readings, so the rule is always: *compare side a of i with side b of j reversed*.
+The rule does not depend on rotation: turning a fragment k quarter turns clockwise moves its original side s to
+position (s + k) mod 4 **with an identical string** (a cyclic shift of the four strings, never a reversal). So the same
+comparison works for all 16 side combinations of a rotated puzzle. Tests: `test_rotation_permutes_sides`,
+`test_one_rule_works_for_every_rotation` (k = 1, 2, 3), and `test_reversed_edges_line_up…`. On adjacent tiles the
+reversed reading scores 0.68 colour similarity, the unreversed reading and an unrelated tile both 0.0.
+
+**Why quantise at all?** String algorithms need discrete symbols. 64 coarse bins make a symbol robust to small noise:
+one grey level of noise changes fewer than 10 % of symbols (tested). Coarse bins also make *runs* of equal symbols,
+which the motif search looks for. The cost: near a bin boundary two almost-equal colours get different symbols, which
+the gap- and substitution-tolerant LCS and edit distance absorb.
 
 ## 2. KMP (`engine/strings/kmp.py`)
 **Problem.** Find every occurrence of a pattern P (length m) in a text T (length n). In RELIC-X both are edge strings
@@ -158,8 +181,8 @@ B, and its cost equals the distance. A plain recursion (no memo) agrees on small
 
 **Score.** `edit_similarity = 1 − D / max(m, n)` ∈ [0, 1].
 
-**Measured** (`validation/matcher_results.md`, T11). The DP counter shows exactly L² cells; time grows as L^1.89 /
-L^1.90 (constant overheads flatten the smallest sizes). On all three samples (4×4, noise σ = 4) the scores separate the
+**Measured** (`validation/matcher_results.md`, T11). The DP counter shows exactly L² cells; time grows as ≈ L^1.9
+(constant overheads flatten the smallest sizes). On all three samples (4×4, noise σ = 4) the scores separate the
 72 truly adjacent edge pairs from the 1 368 wrong opposite-side pairs with ROC AUC 0.998 (LCS) and 0.999 (edit) on
 clean edges, still 0.977 and 0.991 at 60 % erosion. The contiguous motif drops to 0.879: one chipped segment
 breaks a run, while the DP scores only lose a few symbols. That is the case for combining them (§8).
@@ -168,8 +191,6 @@ breaks a run, while the DP scores only lose a few symbols. That is the case for 
 
 ![separation vs erosion](../validation/matcher_dp_separation.svg)
 
-## 6. Edit distance (`engine/strings/edit_distance.py`)
-<!-- T11: recurrence, operation script, interpretation as "damage cost". -->
 
 ## 7. Hashing pre-filter and memo cache (`engine/strings/hashing.py`, `matcher.py`)
 **Why a filter.** With n fragments there are P = C(n, 2)·4 candidate side pairs without rotation (C(n, 2)·16 with
@@ -203,8 +224,8 @@ numeric strips differ slightly.
 
 | | pairs scored | DP work | speed-up | true-pair recall | match accuracy |
 |---|---|---|---|---|---|
-| 5×5, `top_k = 6` | 32 % | 32 % | 2.9× | 100 % | 90 % (no filter 90 %) |
-| 4×4 rotated, `top_k = 6` | 14 % | 14 % | 6.4× | 100 % | 92 % (no filter 92 %) |
+| 5×5, `top_k = 6` | 32 % | 32 % | ≈ 3× | 100 % | 90 % (no filter 90 %) |
+| 4×4 rotated, `top_k = 6` | 14 % | 14 % | ≈ 6× | 100 % | 92 % (no filter 92 %) |
 
 Even `top_k = 1` keeps 95–96 % of the true pairs. Match accuracy does not drop, because a true neighbour that survives
 is ranked against fewer distractors. `top_k = 6` is the default because it is the smallest value with 100 % recall in
@@ -216,7 +237,34 @@ and none on the busy mosaic and manuscript.
 ![DP work vs top_k](../validation/matcher_prefilter_cost.svg)
 
 ## 8. Composite matcher (`engine/matcher.py`)
-<!-- T13: weights, weight-sweep experiment, accuracy vs noise/erosion (from T31). -->
+**Score.** For a candidate join (side a of i, reversed side b of j):
+
+    composite = (w_color·color + w_lcs·LCS + w_edit·edit + w_motif·motif + w_hash·Jaccard) / Σw
+
+with all five components in [0, 1], so composite ∈ [0, 1]. Defaults: color 0.4, LCS 0.2, edit 0.15, motif 0.15,
+hash 0.1. *color* = max(0, 1 − mean|ΔRGB| / 40) on the numeric strips; the other four come from §§2–7. Weights are
+normalised (scaling them all changes nothing, tested), and a weight of 0 removes a component (tested). They are
+adjustable per request through `MatchParams.weights`.
+
+**Are the default weights justified?** (`validation/matcher_results.md`, T13). Weights were tuned by grid search
+(every weight in {0…4}, 3 124 combinations) on 9 artifacts (seed 7), then **checked on 18 unseen artifacts** (seeds
+21 and 42, 528 ranking decisions):
+
+- The best tuned weights gain only 2 of 528 decisions (+0.5 %); the top-10 average 92.1 % vs 91.8 % for the default.
+  A plateau, so **the defaults are kept**; moving them would fit noise.
+- **Ablation.** Colour alone 88.3 %; removing colour costs 7.6 points, the largest effect. Each string score alone is
+  weaker (edit 88.1, LCS 84.7, hash 69.9, motif 54.9 %), but together they add +3.5 points on top of colour, because
+  they fail on different pairs than colour does.
+- **The motif does not improve ranking on these artifacts**: the best weights set it to 0, and removing it changes
+  accuracy by under 1 point. It keeps a small weight because it is the most explainable evidence in "Why matched?"
+  ("these 10 symbols continue across the break"). Set `weights.motif = 0` to drop it.
+
+**Robustness** (default weights). Match accuracy stays ≥ 98 % on clean edges up to noise σ = 20. Erosion costs more
+than noise: 60 % erosion costs 16–23 points (77–83 %), because a chipped segment replaces a whole run of symbols while
+noise only flips a few bins. **Feature resolution:** levels 3/4 × L 16/24/32 are all within about 2 points; cost
+grows with L². `levels = 4, L = 24` stays the default (middle cost, readable strings).
+
+![robustness](../validation/matcher_robustness.svg)
 
 ---
 
