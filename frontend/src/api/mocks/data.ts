@@ -1,9 +1,11 @@
 // Owner: A (Arvind)
 // Deterministic mock data. Shapes follow planning/CONTRACT.md §6 (plus the extra fields the live API
 // returns). Everything is seeded, so the same ids/labels/scores appear on every load.
+import { DEFAULT_LEVELS, symbolColor } from "../../lib/beads";
 import type {
   Algorithm,
   ArtifactOut,
+  FragmentDetail,
   FragmentOut,
   MatchSummary,
   PlacementOut,
@@ -182,6 +184,22 @@ export function buildFragments(spec: ArtifactSpec): MockFragment[] {
     };
   });
 }
+
+/** FragmentDetail: the FragmentOut plus a numeric strip per side that quantises back to that side's edge string. */
+export function fragmentDetail(f: FragmentOut): FragmentDetail {
+  const r = rng(hashCode(f.id));
+  const strips: Record<string, number[][]> = {};
+  for (const [side, edge] of Object.entries(f.edges)) {
+    strips[side] = edge.split("").map((ch) => {
+      const c = symbolColor(ch, DEFAULT_LEVELS);
+      const half = 256 / DEFAULT_LEVELS / 2;
+      const jitter = () => round((r() - 0.5) * (half * 1.6), 2); // stays inside the symbol's colour bucket
+      return c ? [c.r + jitter(), c.g + jitter(), c.b + jitter()] : [0, 0, 0];
+    });
+  }
+  return { ...f, strips };
+}
+const hashCode = (s: string) => [...s].reduce((h, ch) => (Math.imul(h, 31) + ch.charCodeAt(0)) >>> 0, 7);
 
 // ---- matches ------------------------------------------------------------------------------
 const posKey = (row: number, col: number) => `${row},${col}`;

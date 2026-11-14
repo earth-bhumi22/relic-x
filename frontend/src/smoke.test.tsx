@@ -24,7 +24,7 @@ describe("smoke: whole app in mock mode", () => {
     // into an artifact (Gallery shows its 16 fragments)
     fireEvent.click(screen.getByRole("link", { name: "Open Mughal tile panel" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Fragment gallery" })).toBeInTheDocument();
-    expect(await screen.findByAltText("F01")).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /^F01/ })).toBeInTheDocument();
     const sub = screen.getByRole("navigation", { name: "Artifact" });
 
     fireEvent.click(within(sub).getByRole("link", { name: "Graph" }));

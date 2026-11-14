@@ -66,7 +66,7 @@ describe("routing", () => {
   });
 
   it("shows the real error state (404) for an unknown artifact", async () => {
-    renderAt("/artifacts/00000000000000000000000000000000/gallery");
+    renderAt("/artifacts/00000000000000000000000000000000/graph");
     expect(await screen.findByRole("alert")).toHaveTextContent("not_found");
   });
 

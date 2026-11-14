@@ -12,6 +12,7 @@ import type {
   ArtifactOut,
   FragmentParams,
   Explanation,
+  FragmentDetail,
   FragmentOut,
   GraphOut,
   Health,
@@ -104,7 +105,11 @@ export function createFragmentsArtifact(p: { name: string; rows: number; cols: n
 
 // ---- fragments & matching ---------------------------------------------------------------
 export const listFragments = (artifactId: string) => api<FragmentOut[]>(`/artifacts/${artifactId}/fragments`);
-export const matchArtifact = (artifactId: string, params: Partial<MatchParams> = {}) =>
+/** Adds the numeric `strips` ({"N": [[r,g,b], …], …}) to a FragmentOut. */
+export const getFragment = (id: string) => api<FragmentDetail>(`/fragments/${id}`);
+/** `allow_rotation` is part of CONTRACT §6.3's config but missing from the generated MatchParams (see the T24 PR). */
+export type MatchRequest = Partial<MatchParams> & { allow_rotation?: boolean };
+export const matchArtifact = (artifactId: string, params: MatchRequest = {}) =>
   api<MatchSummary>(`/artifacts/${artifactId}/match`, post(params));
 /** Side indices in the result are integers 0–3 (see sideIndexToLetter). */
 export const listMatches = (artifactId: string, params: { min_score?: number; limit?: number } = {}) =>
