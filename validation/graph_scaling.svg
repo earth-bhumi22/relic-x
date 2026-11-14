@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="380" viewBox="0 0 640 380" font-family="sans-serif" font-size="12">
+<rect width="640" height="380" fill="#ffffff"/>
+<text x="320.0" y="20" text-anchor="middle" font-size="14" font-weight="bold">BFS / DFS time vs. V + E</text>
+<line x1="64.0" y1="36" x2="64.0" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="328.0" x2="620" y2="328.0" stroke="#e5e7eb"/>
+<text x="64.0" y="344" text-anchor="middle" fill="#374151">4,000</text>
+<text x="58" y="332.0" text-anchor="end" fill="#374151">0</text>
+<line x1="175.2" y1="36" x2="175.2" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="269.6" x2="620" y2="269.6" stroke="#e5e7eb"/>
+<text x="175.2" y="344" text-anchor="middle" fill="#374151">54,400</text>
+<text x="58" y="273.6" text-anchor="end" fill="#374151">80.6</text>
+<line x1="286.4" y1="36" x2="286.4" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="211.2" x2="620" y2="211.2" stroke="#e5e7eb"/>
+<text x="286.4" y="344" text-anchor="middle" fill="#374151">104,800</text>
+<text x="58" y="215.2" text-anchor="end" fill="#374151">161</text>
+<line x1="397.6" y1="36" x2="397.6" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="152.8" x2="620" y2="152.8" stroke="#e5e7eb"/>
+<text x="397.6" y="344" text-anchor="middle" fill="#374151">155,200</text>
+<text x="58" y="156.8" text-anchor="end" fill="#374151">242</text>
+<line x1="508.8" y1="36" x2="508.8" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="94.4" x2="620" y2="94.4" stroke="#e5e7eb"/>
+<text x="508.8" y="344" text-anchor="middle" fill="#374151">205,600</text>
+<text x="58" y="98.4" text-anchor="end" fill="#374151">323</text>
+<line x1="620.0" y1="36" x2="620.0" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="36.0" x2="620" y2="36.0" stroke="#e5e7eb"/>
+<text x="620.0" y="344" text-anchor="middle" fill="#374151">256,000</text>
+<text x="58" y="40.0" text-anchor="end" fill="#374151">403</text>
+<rect x="64" y="36" width="556" height="292" fill="none" stroke="#9ca3af"/>
+<text x="342.0" y="370" text-anchor="middle">V + E</text>
+<text x="14" y="182.0" text-anchor="middle" transform="rotate(-90 14 182.0)">time (ms)</text>
+<polyline points="64.0,327.4 72.8,326.7 90.5,325.2 90.5,325.1 108.1,323.7 125.8,322.4 143.4,320.9 196.4,315.4 214.0,313.6 337.6,297.0 355.2,293.6 620.0,262.7" fill="none" stroke="#2563eb" stroke-width="2"/>
+<circle cx="64.0" cy="327.4" r="3.5" fill="#2563eb"/>
+<circle cx="72.8" cy="326.7" r="3.5" fill="#2563eb"/>
+<circle cx="90.5" cy="325.2" r="3.5" fill="#2563eb"/>
+<circle cx="90.5" cy="325.1" r="3.5" fill="#2563eb"/>
+<circle cx="108.1" cy="323.7" r="3.5" fill="#2563eb"/>
+<circle cx="125.8" cy="322.4" r="3.5" fill="#2563eb"/>
+<circle cx="143.4" cy="320.9" r="3.5" fill="#2563eb"/>
+<circle cx="196.4" cy="315.4" r="3.5" fill="#2563eb"/>
+<circle cx="214.0" cy="313.6" r="3.5" fill="#2563eb"/>
+<circle cx="337.6" cy="297.0" r="3.5" fill="#2563eb"/>
+<circle cx="355.2" cy="293.6" r="3.5" fill="#2563eb"/>
+<circle cx="620.0" cy="262.7" r="3.5" fill="#2563eb"/>
+<rect x="74" y="43" width="12" height="12" fill="#2563eb"/>
+<text x="92" y="53">BFS</text>
+<polyline points="64.0,327.3 72.8,326.5 90.5,325.0 90.5,324.9 108.1,323.5 125.8,321.6 143.4,320.2 196.4,314.1 214.0,312.0 337.6,294.3 355.2,290.3 620.0,258.6" fill="none" stroke="#dc2626" stroke-width="2"/>
+<circle cx="64.0" cy="327.3" r="3.5" fill="#dc2626"/>
+<circle cx="72.8" cy="326.5" r="3.5" fill="#dc2626"/>
+<circle cx="90.5" cy="325.0" r="3.5" fill="#dc2626"/>
+<circle cx="90.5" cy="324.9" r="3.5" fill="#dc2626"/>
+<circle cx="108.1" cy="323.5" r="3.5" fill="#dc2626"/>
+<circle cx="125.8" cy="321.6" r="3.5" fill="#dc2626"/>
+<circle cx="143.4" cy="320.2" r="3.5" fill="#dc2626"/>
+<circle cx="196.4" cy="314.1" r="3.5" fill="#dc2626"/>
+<circle cx="214.0" cy="312.0" r="3.5" fill="#dc2626"/>
+<circle cx="337.6" cy="294.3" r="3.5" fill="#dc2626"/>
+<circle cx="355.2" cy="290.3" r="3.5" fill="#dc2626"/>
+<circle cx="620.0" cy="258.6" r="3.5" fill="#dc2626"/>
+<rect x="74" y="59" width="12" height="12" fill="#dc2626"/>
+<text x="92" y="69">DFS</text>
+<polyline points="64.0,323.7 72.8,319.3 90.5,310.6 90.5,316.4 108.1,304.8 125.8,293.2 143.4,281.7 196.4,258.5 214.0,235.3 337.6,189.0 355.2,142.6 620.0,49.9" fill="none" stroke="#16a34a" stroke-width="2"/>
+<circle cx="64.0" cy="323.7" r="3.5" fill="#16a34a"/>
+<circle cx="72.8" cy="319.3" r="3.5" fill="#16a34a"/>
+<circle cx="90.5" cy="310.6" r="3.5" fill="#16a34a"/>
+<circle cx="90.5" cy="316.4" r="3.5" fill="#16a34a"/>
+<circle cx="108.1" cy="304.8" r="3.5" fill="#16a34a"/>
+<circle cx="125.8" cy="293.2" r="3.5" fill="#16a34a"/>
+<circle cx="143.4" cy="281.7" r="3.5" fill="#16a34a"/>
+<circle cx="196.4" cy="258.5" r="3.5" fill="#16a34a"/>
+<circle cx="214.0" cy="235.3" r="3.5" fill="#16a34a"/>
+<circle cx="337.6" cy="189.0" r="3.5" fill="#16a34a"/>
+<circle cx="355.2" cy="142.6" r="3.5" fill="#16a34a"/>
+<circle cx="620.0" cy="49.9" r="3.5" fill="#16a34a"/>
+<rect x="74" y="75" width="12" height="12" fill="#16a34a"/>
+<text x="92" y="85">BFS edge_visits / 1000</text>
+</svg>
