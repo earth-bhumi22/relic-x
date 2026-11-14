@@ -138,7 +138,110 @@ def section_t10() -> str:
     return "\n".join(out)
 
 
-SECTIONS = {"t10": section_t10}
+# --------------------------------------------------------------------------- T11
+def edge_pairs(sample: str, size: int, noise: float, erosion: float, seed: int, strip_len: int = 24):
+    """True E/W and S/N neighbour pairs, plus every non-neighbour opposite-side pair."""
+    from relicx.engine import extract_features, fragment_image
+    from relicx.samples import sample_array
+
+    fr = fragment_image(sample_array(sample), size, size, noise=noise, erosion=erosion, seed=seed)
+    feats = [(f.true_row, f.true_col, extract_features(f.pixels, strip_len=strip_len)) for f in fr.fragments]
+    true_pairs, false_pairs = [], []
+    for ra, ca, fa in feats:
+        for rb, cb, fb in feats:
+            if (ra, ca) == (rb, cb):
+                continue
+            for side_a, side_b, dr, dc in ((1, 3, 0, 1), (2, 0, 1, 0)):  # E-W, S-N
+                pair = (fa.strings[side_a], fb.strings[side_b][::-1], fa.strips[side_a], fb.strips[side_b][::-1])
+                (true_pairs if (rb - ra, cb - ca) == (dr, dc) else false_pairs).append(pair)
+    return true_pairs, false_pairs
+
+
+def separation(true_scores, false_scores) -> float:
+    """Probability that a random true pair scores higher than a random false pair (= ROC AUC)."""
+    t, f = np.asarray(true_scores), np.asarray(false_scores)
+    return float(((t[:, None] > f[None, :]).mean() + 0.5 * (t[:, None] == f[None, :]).mean()))
+
+
+def section_t11() -> str:
+    from relicx.engine.strings import edit_distance, edit_similarity, lcs_length, lcs_ratio
+
+    out = ["## T11 · LCS and edit distance (dynamic programming)\n"]
+    rng = random.Random(11)
+    Ls = [8, 16, 24, 32, 48, 64, 96, 128]
+    cells, ms_lcs, ms_edit = [], [], []
+    for L in Ls:
+        a, b = rand_str(rng, L), rand_str(rng, L)
+        c = OpCounter()
+        lcs_length(a, b, c)
+        cells.append(c.get("dp_cells"))
+        for fn, acc in ((lcs_length, ms_lcs), (edit_distance, ms_edit)):
+            best = min(_timed(fn, a, b) for _ in range(5))
+            acc.append(best * 1000)
+    out.append("**Cost vs strip length L** (random strings, both length L; best of 5 runs).\n")
+    out.append("| L | DP cells | LCS ms | edit ms |")
+    out.append("|---|---|---|---|")
+    for L, c, t1, t2 in zip(Ls, cells, ms_lcs, ms_edit, strict=True):
+        out.append(f"| {L} | {c:,} | {t1:.3f} | {t2:.3f} |")
+    out.append("")
+    out.append(f"- DP cells are exactly L² every time (the counter ticks one per cell); {fit_line('LCS time', Ls, ms_lcs, 'L')},"
+               f" {fit_line('edit time', Ls, ms_edit, 'L')}.")
+    out.append("- Memory is two rows of L + 1 integers, O(L), for the scores; only the \"Why matched?\" alignment"
+               " builds the full (L + 1)² table, for one pair at a time.\n")
+    (HERE / "matcher_dp_cost.svg").write_text(svg_chart(
+        "LCS / edit distance time vs strip length", "strip length L", "time (ms)",
+        [{"name": "LCS", "points": list(zip(Ls, ms_lcs, strict=True)), "line": True},
+         {"name": "edit distance", "points": list(zip(Ls, ms_edit, strict=True)), "line": True}]))
+    out.append("![DP time vs L](matcher_dp_cost.svg)\n")
+
+    erosions = [0.0, 0.2, 0.4, 0.6]
+    rows, auc_lcs, auc_edit, auc_motif = [], [], [], []
+    for e in erosions:
+        tl, fl, te, fe, tm, fm = [], [], [], [], [], []
+        for sample in ("mosaic-tile", "pottery-band", "manuscript"):
+            tp, fp = edge_pairs(sample, 4, noise=4.0, erosion=e, seed=7)
+            for pairs, lcs_acc, ed_acc, mo_acc in ((tp, tl, te, tm), (fp, fl, fe, fm)):
+                for sa, sb, _, _ in pairs:
+                    lcs_acc.append(lcs_ratio(sa, sb))
+                    ed_acc.append(edit_similarity(sa, sb))
+                    mo_acc.append(longest_common_motif(sa, sb, "kmp", 3)["length"] / len(sa))
+        a1, a2, a3 = separation(tl, fl), separation(te, fe), separation(tm, fm)
+        auc_lcs.append((e, a1))
+        auc_edit.append((e, a2))
+        auc_motif.append((e, a3))
+        rows.append(f"| {e:.1f} | {np.mean(tl):.2f} / {np.mean(fl):.2f} | {np.mean(te):.2f} / {np.mean(fe):.2f} |"
+                    f" {a1:.3f} | {a2:.3f} | {a3:.3f} |")
+    out.append("**Do the scores separate true neighbours from wrong pairs?** All three samples, 4×4, noise σ = 4,\n"
+               "erosion varied. Every truly adjacent E–W / S–N edge pair vs every other opposite-side pair\n"
+               "(3 samples × 24 = 72 true and 3 × 456 = 1 368 false pairs per erosion level). *Separation* = probability that a random true pair scores\n"
+               "higher than a random false pair (ROC AUC: 0.5 = useless, 1.0 = perfect).\n")
+    out.append("| erosion | LCS ratio true / false (mean) | edit sim. true / false (mean) | LCS separation | edit separation | motif separation |")
+    out.append("|---|---|---|---|---|---|")
+    out += rows
+    out.append("")
+    out.append("- LCS and edit similarity both separate true from false pairs far better than chance, and degrade"
+               " gracefully as erosion chips more of each edge: gaps cost LCS a little, a substitution costs edit"
+               " distance 1, neither collapses.")
+    out.append("- The contiguous motif is the most fragile signal: a single chipped segment breaks a run, which is"
+               " why it is combined with the gap-tolerant DP scores instead of used alone (T13).\n")
+    (HERE / "matcher_dp_separation.svg").write_text(svg_chart(
+        "True-vs-false separation (ROC AUC) vs erosion", "erosion probability per side", "separation (AUC)",
+        [{"name": "LCS ratio", "points": auc_lcs, "line": True},
+         {"name": "edit similarity", "points": auc_edit, "line": True},
+         {"name": "longest motif", "points": auc_motif, "line": True}]))
+    out.append("![separation vs erosion](matcher_dp_separation.svg)\n")
+    return "\n".join(out)
+
+
+def _timed(fn, a, b) -> float:
+    import time
+
+    t0 = time.perf_counter()
+    fn(a, b)
+    return time.perf_counter() - t0
+
+
+SECTIONS = {"t10": section_t10, "t11": section_t11}
 
 
 def main() -> None:
