@@ -339,7 +339,170 @@ def section_t12() -> str:
     return "\n".join(out)
 
 
-SECTIONS = {"t10": section_t10, "t11": section_t11, "t12": section_t12}
+# --------------------------------------------------------------------------- T13
+COMPONENTS = ("color", "lcs", "edit", "motif", "hash")
+
+
+class Dataset:
+    """Component scores of every kept side pair, indexed for fast re-weighting."""
+
+    def __init__(self, sample, size, rotate, noise, erosion, seed, **feat_kw):
+        from relicx.engine import MatchConfig, Truth, extract_features, fragment_image, match_all
+        from relicx.samples import sample_array
+
+        fr = fragment_image(sample_array(sample), size, size, rotate=rotate, noise=noise, erosion=erosion, seed=seed)
+        self.feats = {f"F{k:02d}": extract_features(f.pixels, **feat_kw) for k, f in enumerate(fr.fragments)}
+        truth = {f"F{k:02d}": Truth(f.true_row, f.true_col, f.scramble_rot) for k, f in enumerate(fr.fragments)}
+        cfg = MatchConfig(allow_rotation=rotate)
+        for key, val in feat_kw.items():
+            setattr(cfg, key, val)
+        self.matches = match_all(self.feats, cfg).matches
+        self.V = np.array([[getattr(m, c) for c in COMPONENTS] for m in self.matches])
+        # For every side that has a true right/down neighbour: candidate rows and which rows are the truth.
+        cand: dict = {}
+        for idx, m in enumerate(self.matches):
+            cand.setdefault((m.a, m.side_a), []).append((idx, m.b))
+            cand.setdefault((m.b, m.side_b), []).append((idx, m.a))
+        by_cell = {(t.row, t.col): f for f, t in truth.items()}
+        self.queries = []
+        for f, t in truth.items():
+            for d, (dr, dc) in ((1, (0, 1)), (2, (1, 0))):
+                g = by_cell.get((t.row + dr, t.col + dc))
+                if g is None:
+                    continue
+                side = (d + t.scramble_rot) % 4 if rotate else d
+                rows = cand.get((f, side), [])
+                idx = np.array([r for r, _ in rows], dtype=int)
+                hit = np.array([p == g for _, p in rows], dtype=bool)
+                self.queries.append((idx, hit))
+
+    def accuracy(self, w) -> float:
+        scores = self.V @ np.asarray(w, float)
+        ok = 0
+        for idx, hit in self.queries:
+            if len(idx) and hit[int(np.argmax(scores[idx]))]:
+                ok += 1
+        return ok / len(self.queries)
+
+
+def datasets(seed: int, noise: float = 4.0, erosion: float = 0.3, **kw):
+    out = []
+    for sample in ("mosaic-tile", "pottery-band", "manuscript"):
+        for size, rotate in ((4, False), (5, False), (4, True)):
+            out.append(Dataset(sample, size, rotate, noise, erosion, seed, **kw))
+    return out
+
+
+def mean_acc(ds, w) -> float:
+    return float(np.mean([d.accuracy(w) for d in ds]))
+
+
+def section_t13() -> str:
+    import itertools
+    import time
+
+    from relicx.engine.matcher import DEFAULT_WEIGHTS
+
+    out = ["## T13 · Edge features and the composite matcher\n"]
+    default = [DEFAULT_WEIGHTS[c] for c in COMPONENTS]
+    tune = datasets(seed=7)
+    held = datasets(seed=21) + datasets(seed=42)
+    out.append("**Setup.** 9 artifacts per seed (3 samples × {4×4, 5×5, 4×4 rotated}), noise σ = 4, erosion 0.3. Component\n"
+               "scores are computed once per artifact (the pre-filter does not depend on the weights), then re-weighted.\n"
+               "*Match accuracy* = share of true neighbours ranked first by their side. Weights are **tuned on seed 7** and\n"
+               "**checked on seeds 21 and 42** (18 unseen artifacts) to avoid overfitting.\n")
+
+    # Ablation: each component alone, and the default without each component.
+    out.append("**Ablation** (held-out seeds 21 + 42).\n")
+    out.append("| scores used | match accuracy |")
+    out.append("|---|---|")
+    out.append(f"| default weights {dict(zip(COMPONENTS, default, strict=True))} | **{mean_acc(held, default):.1%}** |")
+    alone = {}
+    for i, c in enumerate(COMPONENTS):
+        w = [0.0] * 5
+        w[i] = 1.0
+        alone[c] = mean_acc(held, w)
+        out.append(f"| {c} only | {alone[c]:.1%} |")
+    for i, c in enumerate(COMPONENTS):
+        w = list(default)
+        w[i] = 0.0
+        out.append(f"| default without {c} | {mean_acc(held, w):.1%} |")
+    out.append("")
+
+    # Grid search on the tuning seed, validated on held-out seeds.
+    t0 = time.perf_counter()
+    grid = [w for w in itertools.product(range(5), repeat=5) if any(w)]
+    scored = sorted(((mean_acc(tune, w), w) for w in grid), reverse=True)
+    best_tune, best_w = scored[0]
+    top10 = scored[:10]
+    held_best = mean_acc(held, best_w)
+    held_top = [mean_acc(held, w) for _, w in top10]
+    out.append(f"**Grid search.** Every weight in {{0, 1, 2, 3, 4}} (relative; {len(grid):,} combinations), ranked on seed 7"
+               f" ({time.perf_counter() - t0:.0f} s).\n")
+    out.append("| weights (color, lcs, edit, motif, hash) | tuning acc. (seed 7) | held-out acc. (21 + 42) |")
+    out.append("|---|---|---|")
+    out.append(f"| default (0.4, 0.2, 0.15, 0.15, 0.1) | {mean_acc(tune, default):.1%} | {mean_acc(held, default):.1%} |")
+    for (acc, w), h in zip(top10[:5], held_top[:5], strict=True):
+        out.append(f"| best-ranked {w} | {acc:.1%} | {h:.1%} |")
+    out.append("")
+    n_held = sum(len(d.queries) for d in held)
+    gain_held = held_best - mean_acc(held, default)
+    out.append(f"- Held-out set: {n_held} ranking decisions, so one decision is {1 / n_held:.1%}. The best tuned weights"
+               f" gain {gain_held:+.1%} ({round(gain_held * n_held)} decisions); the top-10 grid points average"
+               f" {np.mean(held_top):.1%} vs {mean_acc(held, default):.1%} for the default. All within 1 point: a plateau,"
+               " so **the defaults are kept**. Moving them would fit noise.")
+    out.append(f"- **Colour carries most of the signal** (alone {alone['color']:.1%}; removing it costs"
+               f" {mean_acc(held, default) - mean_acc(held, [0.0] + default[1:]):.1%}). The string scores add"
+               f" {mean_acc(held, default) - alone['color']:+.1%} on top of colour: each is weaker alone, but they fail on"
+               " different pairs than colour does.")
+    out.append(f"- **The motif does not help ranking on these artifacts** (alone {alone['motif']:.1%}; the best weights set it"
+               " to 0, and removing it changes accuracy by less than 1 point). It stays in the score at a small weight because"
+               " it is the most *explainable* evidence in the \"Why matched?\" panel (\"these 10 symbols continue across the"
+               " break\"); its weight can be set to 0 per request via `MatchParams.weights`.\n")
+    _T13_RESULT.update(best_w=best_w, gain_held=gain_held, default_held=mean_acc(held, default), n_held=n_held)
+
+    # Robustness of the default weights.
+    out.append("**Robustness of the default weights** (3 samples × 3 layouts, seed 21).\n")
+    noises, erosions = (0.0, 4.0, 8.0, 12.0, 20.0), (0.0, 0.2, 0.4, 0.6)
+    out.append("| noise σ \\ erosion | " + " | ".join(f"{e:.1f}" for e in erosions) + " |")
+    out.append("|---|" + "---|" * len(erosions))
+    curves = {e: [] for e in erosions}
+    for nz in noises:
+        cells = []
+        for e in erosions:
+            acc = mean_acc(datasets(seed=21, noise=nz, erosion=e), default)
+            curves[e].append((nz, acc * 100))
+            cells.append(f"{acc:.0%}")
+        out.append(f"| {nz:g} | " + " | ".join(cells) + " |")
+    out.append("")
+    out.append("- Erosion hurts more than pixel noise: σ = 20 costs 1–8 points, 60 % erosion costs 16–23, because a chipped"
+               " segment replaces a whole run of symbols while noise only flips a few bins. Small non-monotone steps"
+               " (e.g. σ 0 → 4 at erosion 0.6) come from the 9-artifact sample size.\n")
+    (HERE / "matcher_robustness.svg").write_text(svg_chart(
+        "Match accuracy vs noise (default weights)", "pixel noise σ", "match accuracy (%)",
+        [{"name": f"erosion {e:.1f}", "points": curves[e], "line": True} for e in erosions]))
+    out.append("![robustness](matcher_robustness.svg)\n")
+
+    # Feature resolution: quantisation levels and strip length.
+    out.append("**Feature resolution** (seed 21, noise σ = 4, erosion 0.3; time = feature extraction + matching).\n")
+    out.append("| levels | strip_len | match accuracy | ms per artifact |")
+    out.append("|---|---|---|---|")
+    for levels in (3, 4):
+        for strip_len in (16, 24, 32):
+            t0 = time.perf_counter()
+            ds = datasets(seed=21, levels=levels, strip_len=strip_len)
+            ms = (time.perf_counter() - t0) * 1000 / len(ds)
+            mark = " (default)" if (levels, strip_len) == (4, 24) else ""
+            out.append(f"| {levels} | {strip_len}{mark} | {mean_acc(ds, default):.1%} | {ms:.0f} |")
+    out.append("")
+    out.append("- All six settings are within about 2 points; cost grows with L² as expected. `levels = 4, strip_len = 24`"
+               " stays the default: middle cost, and 64 symbols keep the strings readable in the UI.\n")
+    return "\n".join(out)
+
+
+_T13_RESULT: dict = {}
+
+SECTIONS = {"t10": section_t10, "t11": section_t11, "t12": section_t12, "t13": section_t13}
 
 
 def main() -> None:
@@ -357,7 +520,8 @@ def main() -> None:
         blocks[key] = SECTIONS[key]() + "\n"
     header = (
         "# RELIC-X — Strings & Matching results\n\n"
-        "Generated by `validation/matcher_experiments.py` (owner: B). Fixed seeds; re-running gives identical numbers.\n"
+        "Generated by `validation/matcher_experiments.py` (owner: B). Fixed seeds: counts and accuracies are identical on\n"
+        "every run; wall-clock times (ms, speed-ups) vary by a few percent.\n"
         "Solver results are in [results.md](results.md).\n\n"
     )
     body = header + "".join(f"<!-- {k} -->\n{blocks[k]}<!-- /{k} -->\n\n" for k in SECTIONS if k in blocks)

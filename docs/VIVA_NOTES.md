@@ -122,7 +122,7 @@ into each side's top-k, not rank them perfectly. Recall at top_k = 6 is 100 %.
 
 **Q: What is the complexity with and without the filter?**
 A: Without: O(P·L²) for P side pairs. With: O(P·L) for stage 1 plus O(|K|·L²) for the survivors, where
-|K| ≤ k·4n. P grows as n² and |K| as n, so the saving grows with n: 2.9× on 5×5, 6.4× on a rotated 4×4.
+|K| ≤ k·4n. P grows as n² and |K| as n, so the saving grows with n: ≈ 3× on 5×5, ≈ 6× on a rotated 4×4.
 
 **Q: Can the filter change a match score?**
 A: No. It only chooses which pairs are scored; a kept pair gets exactly the score it would get without the filter
@@ -135,6 +135,35 @@ nlargest returns exactly sorted(…, reverse=True)[:k], so the results are ident
 **Q: When does the memo cache help?**
 A: When edge strings repeat exactly: plain regions. 100 % of pairs on a flat image, 13 % on the pottery sample, 0 % on
 the busy ones. It is a dict lookup, so it costs almost nothing when it misses.
+
+## Edge features and the composite score
+
+**Q: How does an image edge become a string?**
+A: Average the outer 2 pixel rows of the side, resample to 24 samples, and map each RGB sample to one of 4³ = 64 colour
+bins, each written as one symbol. Four strings per fragment, plus the numeric strips for colour.
+
+**Q: Why read every side clockwise, and why compare with the reversed edge?**
+A: Two touching sides walk their shared border in opposite directions when both are read clockwise, so the rule is
+always "side a vs side b reversed". Rotating a fragment only shifts which position a string sits in, never reverses
+it, so the same rule works for all 16 side combinations (tested for k = 1, 2, 3).
+
+**Q: How did you choose the weights?**
+A: Grid search over 3 124 weight vectors on 9 artifacts, then checked on 18 unseen ones (528 decisions). The best
+tuned weights gain 2 decisions (+0.5 %), so the defaults stay: they are on the same plateau, and changing them would
+fit noise.
+
+**Q: Which component matters most?**
+A: Colour: alone 88.3 %, and removing it costs 7.6 points. The string scores add 3.5 points on top of colour because
+they fail on different pairs.
+
+**Q: Your motif score does not help ranking. Why keep it?**
+A: Measured honestly: the best weights set it to 0, and removing it changes accuracy by under 1 point. It stays at a
+small weight because it is the clearest explanation for a person ("these symbols continue across the break"), and
+it can be switched off per request.
+
+**Q: What breaks the matcher first?**
+A: Edge erosion more than pixel noise: σ = 20 noise costs 1–8 points, 60 % erosion 16–23, because a chip replaces a
+whole run of symbols.
 
 # Part II — Graph & Search (A)
 
