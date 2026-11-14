@@ -185,7 +185,77 @@ and is less accurate on average (e.g. 73% against 81% clean at n = 64). Both sha
 
 
 ## 12. Dijkstra (`engine/solvers/dijkstra.py`)
-<!-- T16: cost = 1 − w ≥ 0, correctness, why a path-sum objective underperforms (validation/results.md). -->
+**What it computes.** Dijkstra from the seed on the fragment graph with edge cost c(u, v) = 1 − w(u, v), where w is the
+join weight (a composite score in [0, 1], CONTRACT §2). It returns the cost `dist` of the cheapest path from the seed to
+every reachable fragment and a `parent` pointer for each, i.e. a **shortest-path tree**. `solve_dijkstra` then places
+fragments in settle order, each in the cell its parent join dictates (d = (side_u + rot_parent) mod 4, rot =
+(d + 2 − side_v) mod 4); a taken or out-of-bounds cell, a forbidden rotation or an unreachable fragment goes to
+`_fallback` (best free frontier slot, shared with best-first) and is logged as a `conflict`.
+
+**Non-negativity.** The matcher's composite is a weighted average of terms in [0, 1], so w ∈ [0, 1] and c ≥ 0.
+`build_graph` itself does not enforce this, so `edge_cost` clamps to `max(0, 1 − w)`. A clamp was chosen over an
+assertion because a weight of 1.0000001 (float noise) or a custom matcher should degrade gracefully, not return a 500;
+only w > 1 can break the precondition (w < 0 only gives a cost above 1, which is still legal).
+
+**Correctness sketch.** Invariant: when a node u is settled (popped with a non-stale entry), `dist[u]` is the length of a
+shortest seed → u path. Proof by induction on the settle order. Suppose u is the first node settled with
+`dist[u]` greater than the true distance δ(u). Take a shortest seed → u path and its first node y not yet settled; its
+predecessor x is settled, so by induction `dist[x] = δ(x)` and relaxing the edge (x, y) gave `dist[y] ≤ δ(x) + c(x, y) =
+δ(y)`. Because every cost is ≥ 0, δ(y) ≤ δ(u) along the path, so `dist[y] ≤ δ(y) ≤ δ(u) < dist[u]`. But u was popped
+before y, so `dist[u] ≤ dist[y]`: contradiction. **Non-negativity is used in the step δ(y) ≤ δ(u)**: with a negative edge
+a later node could still lower an already settled distance, settled values would not be final and the algorithm would
+be wrong (it would need Bellman-Ford). Lazy deletion instead of decrease-key: a node may be pushed once per improving
+relaxation and a stale entry (node already settled) is discarded on pop, which keeps a plain binary heap and O(log E)
+per operation. Ties: heap entries are `(dist, id)` and an exactly equal-cost alternative keeps the smaller-id parent
+(never re-parenting a settled node), so the tree does not depend on the order of the adjacency lists; costs differing
+only by float rounding are not treated as ties. The settle order starts with the seed (the only initial heap entry), and
+a parent is recorded only while relaxing from a settled node, so every parent is settled, hence already placed, before
+its child.
+
+**Time and space.** Each settled node scans its adjacency list once: relaxations = Σ deg = 2E exactly, and heap pushes
+are at most the number of improving relaxations, so the heap holds at most E entries and log E = O(log V). Total
+**O((V + E) log V)** (worst case, many improving relaxations); best case O(V + E) (every node is reached once through
+its cheapest edge, e.g. a path). Space O(V + E). The placement step adds **O(U·F·R)** for the U conflict or unreachable
+fallbacks, each scanning F ≤ 4t frontier cells and R rotations. Measured (damaged 3×3…8×8, `validation/results.md`):
+relaxations equal 2E exactly (ratio 1.00 at every n) and grow as n^1.58 like E itself, `heap_pops` as n^1.18 (0.13–0.30 of
+E, the rest of the pushes are never needed), but the number of conflicts grows roughly linearly with n (16 per run at
+n = 25, 49 at n = 64) so `score_lookups` from the fallbacks grow as n^2.06 against n^1.58 for the heap work (wall time about n^2): the fallbacks,
+not the heap, are what grows fastest.
+
+**Why a path-sum objective underperforms for assembly.**
+(a) A hop never costs less than 0, so cost accumulates with depth: a fragment with one excellent join to a far-away
+fragment can be reached more cheaply through a nearby fragment by a mediocre join, so the tree hangs it there. (b) Path cost
+measures distance from the **seed**, but where a fragment belongs depends on the **single join** to its neighbour, not on
+how far it is from the seed. (c) A wrong placement propagates: a conflicting child is re-seated by `_fallback` at its actual
+cell and its own children are placed relative to that cell (tested), so one error shifts a whole subtree. (d) Prim's key is the
+single-edge weight, which is the quantity that matters; the closer path objective is a **bottleneck (minimax) path**, where
+the cost of a path is its weakest join. Measured: on 5×5 grids the mean join weight in Dijkstra's tree is 0.517 against
+0.685 for the maximum spanning tree at noise 4 / erosion 0.3, and 62% of fragments get a different parent than in the
+maximum spanning tree (clean: 0.703 against 0.820, 40%); the gap widens with damage (0.285 against 0.442 at noise 32, erosion
+0.6). Dijkstra has 16 conflicts per run at 25 fragments (clean: 11) and its neighbour accuracy is 38% on the full graph and
+49% on the mutual top-3 graph (the API default), against 84% for best-first and 91% for greedy; at 3×3 it is 73% (full graph)
+against 93% (best-first) and the gap grows with n.
+
+**Counterexample (≤ 5 fragments; 2×2 grid, no rotation, seed A).** Fragments A, B, C with three non-zero compat entries
+(b right of a means side E of a meets side W of b; b below a means side S meets side N):
+
+| join | weight | cost 1 − w |
+|---|---|---|
+| B left of A | 0.25 | 0.75 |
+| A below C | 0.35 | 0.65 |
+| C left of B | 0.60 | 0.40 |
+
+Dijkstra: dist(C) = 0.65 via A; dist(B) = min(0.75 via A, 0.65 + 0.40 = 1.05 via C) = 0.75, so the settle order is A, C, B
+and B hangs on A by the mediocre 0.25 join. Layout `. C / B A`, total 0.35 + 0.25 = **0.60**. Prim pops the strongest
+crossing edge each time: A–C (0.35), then C–B (0.60) beats A–B (0.25), giving `C B / A .` with total 0.35 + 0.60 =
+**0.95**, which equals the exhaustive optimum. The same instance backs `test_dijkstra_counterexample_*` in
+`tests/engine/test_dijkstra.py` and a row in `validation/results.md`.
+
+**Things worth knowing.** `meta["conflicts"]` counts conflicts of fragments that had a parent; unreachable fragments are
+counted in `meta["unreachable"]` and, like conflicts, appear as `conflict` steps in the trace (the message and the `parent`
+field tell them apart), so `trace conflicts = meta conflicts + placed unreachable`. The API runs Dijkstra on the mutual
+top-3 graph unless `top_k` is given, which helps it (79% against 63% clean at 25 fragments; fewer, stronger edges leave fewer
+candidate parents to choose wrongly).
 
 ## 13. Backtracking + branch & bound (`engine/solvers/backtracking.py`)
 <!-- T17: state space, both upper bounds and why they are valid, greedy starting solution, node count vs n, truncation, DP extension. -->

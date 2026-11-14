@@ -1,6 +1,7 @@
-"""Dijkstra / best-first reconstruction.
+"""Dijkstra (shortest-path-tree) reconstruction.
 
-Edge cost in the fragment graph:  cost(i, j) = 1 - weight(i, j)  (>= 0).
+Edge cost in the fragment graph:  cost(i, j) = 1 - weight(i, j)  (>= 0, see ``edge_cost``).
+(The solver called "best-first" is the separate Prim-style one in ``best_first.py``.)
 
 1. Run Dijkstra from the seed with a binary-heap priority queue. This gives
    each fragment its cheapest path from the seed and a *parent* edge, i.e. a
@@ -12,11 +13,12 @@ Edge cost in the fragment graph:  cost(i, j) = 1 - weight(i, j)  (>= 0).
 3. If that cell is taken or breaks the grid bounds, record a *conflict* and
    fall back to the best free frontier slot for that fragment.
 
-Unlike greedy, placement order is driven by *path* cost from the seed, so a
-fragment reachable only through a chain of strong joins is preferred over
-one with a single medium join.
+Unlike best-first (Prim), a fragment's parent is the neighbour that minimises the SUM of join costs from the seed,
+not the neighbour with the strongest single join. A fragment with one excellent join to a far-away fragment can
+therefore be hung on a nearer fragment through a mediocre join, and the error propagates down the tree: a conflicting
+child is re-seated by ``_fallback`` and its own children are then placed relative to that *actual* position.
 
-Time: O((V + E) log V) for Dijkstra + O(V * F * R) for conflict fallbacks.
+Time: O((V + E) log V) for Dijkstra + O(U * F * R) for the U conflict / unreachable fallbacks.
 """
 
 from __future__ import annotations
@@ -31,8 +33,21 @@ from .common import SolverResult, TraceRecorder
 from .greedy import pick_seed
 
 
+def edge_cost(weight: float) -> float:
+    """Dijkstra needs costs >= 0. Weights are composite scores in [0, 1] (CONTRACT section 2), so 1 - w >= 0; the
+    clamp only guards against a weight above 1 (float noise or a custom matcher) instead of raising mid-request."""
+    return max(0.0, 1.0 - weight)
+
+
 def dijkstra(g: FragmentGraph, source: str, counter: OpCounter | None = None):
-    """Classic Dijkstra. Returns (dist, parent, settle_order)."""
+    """Classic Dijkstra with a binary heap and lazy deletion. Returns (dist, parent, settle_order).
+
+    ``settle_order[0]`` is always the source (it is the only heap entry at the start). Every parent is settled before
+    its child (a parent is recorded only while relaxing from a settled node), so placing in settle order is safe.
+    Equal-cost ties: heap entries are ``(dist, id)`` and a not-yet-settled node keeps the smaller-id parent, so the
+    result does not depend on the order of the adjacency lists. Costs that differ only by float rounding are not
+    treated as ties.
+    """
     dist = {source: 0.0}
     parent: dict[str, str | None] = {source: None}
     order: list[str] = []
@@ -47,11 +62,14 @@ def dijkstra(g: FragmentGraph, source: str, counter: OpCounter | None = None):
         order.append(u)
         for v, e in g.adj[u].items():
             tick(counter, "relaxations")
-            nd = d + (1.0 - e.weight)
-            if nd < dist.get(v, float("inf")):
+            nd = d + edge_cost(e.weight)
+            cur = dist.get(v, float("inf"))
+            if nd < cur:
                 dist[v] = nd
                 parent[v] = u
                 heapq.heappush(pq, (nd, v))
+            elif nd == cur and v not in done and u < (parent[v] or ""):
+                parent[v] = u  # exact tie: deterministic, smaller id wins (never re-parent a settled node)
     return dist, parent, order
 
 
@@ -82,7 +100,15 @@ def solve_dijkstra(
     seed = seed or pick_seed(ids, compat)
 
     dist, parent, order = dijkstra(graph, seed, counter)
-    trace.log("seed", f"Seed {seed}; Dijkstra settled {len(order)} of {len(ids)} fragments", fragment=seed)
+    trace.log(
+        "seed",
+        f"Seed {seed}; Dijkstra settled {len(order)} of {len(ids)} fragments",
+        fragment=seed,
+        row=0,
+        col=0,
+        rot=0,
+        dist=0.0,
+    )
     layout.place(Placement(seed, 0, 0, 0))
     conflicts = 0
 
@@ -90,13 +116,15 @@ def solve_dijkstra(
     for f in order[1:] + unreachable:
         par = parent.get(f)
         placed = False
+        intended, rot_ok = None, True
         if par is not None and par in layout.where:
             e = graph.adj[par][f]
             pp = layout.where[par]
             d = (e.side_u + pp.rot) % 4  # direction the parent's joining side faces
             cell = (pp.row + DIRS[d][0], pp.col + DIRS[d][1])
             rot = ((d + 2) - e.side_v) % 4  # turn child so its side faces back
-            if (allow_rotation or rot == 0) and layout.fits(cell):
+            intended, rot_ok = cell, allow_rotation or rot == 0
+            if rot_ok and layout.fits(cell):
                 layout.place(Placement(f, cell[0], cell[1], rot))
                 placed = True
                 trace.log(
@@ -108,6 +136,7 @@ def solve_dijkstra(
                     rot=rot,
                     parent=par,
                     score=e.weight,
+                    dist=round(dist[f], 4),
                 )
         if not placed:
             fb = _fallback(layout, f, compat, rots, counter)
@@ -117,7 +146,20 @@ def solve_dijkstra(
             (score, k), cell, rot = fb
             conflicts += 1 if par is not None else 0
             layout.place(Placement(f, cell[0], cell[1], rot))
-            why = "parent cell taken/out of bounds" if par is not None else "not reachable in pruned graph"
+            if par is None:
+                why, extra = "not reachable in pruned graph", {}
+            elif par not in layout.where or intended is None:
+                why, extra = "parent was never placed", {"parent": par}
+            else:
+                why = (
+                    "parent cell taken/out of bounds" if rot_ok else "parent join needs a rotation that is not allowed"
+                )
+                extra = {
+                    "parent": par,
+                    "intended_row": intended[0],
+                    "intended_col": intended[1],
+                    "dist": round(dist[f], 4),
+                }
             trace.log(
                 "conflict",
                 f"{f}: {why}; best free slot {cell} (score {score:.3f})",
@@ -126,6 +168,7 @@ def solve_dijkstra(
                 col=cell[1],
                 rot=rot,
                 score=round(score, 4),
+                **extra,
             )
 
     placed_ids = set(layout.where)
