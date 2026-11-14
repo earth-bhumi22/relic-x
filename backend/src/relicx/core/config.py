@@ -35,6 +35,10 @@ class Settings:
     max_fragments: int = field(default_factory=lambda: int(os.getenv("RELICX_MAX_FRAGMENTS", "64")))
     log_level: str = field(default_factory=lambda: os.getenv("RELICX_LOG_LEVEL", "INFO"))
     job_workers: int = field(default_factory=lambda: int(os.getenv("RELICX_JOB_WORKERS", "2")))
+    # T22: optional shared key for write requests (unset = no key needed, the dev default).
+    api_key: str | None = field(default_factory=lambda: os.getenv("RELICX_API_KEY") or None)
+    # T22: max calls per client per minute to the expensive scaling experiment.
+    scaling_rate_per_min: int = field(default_factory=lambda: int(os.getenv("RELICX_SCALING_RATE_PER_MIN", "10")))
 
     @property
     def max_upload_bytes(self) -> int:

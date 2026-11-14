@@ -140,6 +140,9 @@ class ArtifactService:
     def list(self, limit: int, offset: int) -> list[Artifact]:
         return self.artifacts.list(limit, offset)
 
+    def count(self) -> int:
+        return self.artifacts.count()
+
     def delete(self, artifact_id: str) -> None:
         art = self.artifacts.get(artifact_id)
         self.artifacts.delete(art)

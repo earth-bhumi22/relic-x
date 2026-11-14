@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session, selectinload
 
 from ..core.errors import NotFound
@@ -33,6 +33,9 @@ class ArtifactRepository:
     def list(self, limit: int = 100, offset: int = 0) -> list[Artifact]:
         stmt = select(Artifact).order_by(Artifact.created_at.desc()).limit(limit).offset(offset)
         return list(self.db.scalars(stmt))
+
+    def count(self) -> int:
+        return self.db.scalar(select(func.count()).select_from(Artifact)) or 0
 
     def delete(self, artifact: Artifact) -> None:
         self.db.delete(artifact)

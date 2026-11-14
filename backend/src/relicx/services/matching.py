@@ -112,10 +112,12 @@ class MatchingService:
         ]
         return [f.label for f in frags], out
 
-    def list_matches(self, artifact_id: str, min_score: float, limit: int) -> list[dict]:
+    def list_matches(self, artifact_id: str, min_score: float, limit: int, offset: int = 0) -> tuple[list[dict], int]:
+        """Matches with composite >= min_score, best first; returns (page, total)."""
         art = self.artifacts.get(artifact_id)
         _, matches = self.side_matches(art)
-        return [m.__dict__ for m in matches if m.composite >= min_score][:limit]
+        kept = [m.__dict__ for m in matches if m.composite >= min_score]
+        return kept[offset : offset + limit], len(kept)
 
     # -- graph ------------------------------------------------------------------------
     def graph(self, artifact_id: str, threshold: float, top_k: int | None, traversal: str) -> dict:

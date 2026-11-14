@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Response
 
 from ...engine import MatchConfig
 from ...schemas import MatchParams, MatchSummary, SideMatchOut
@@ -27,11 +27,15 @@ def compute_matches(
 @router.get("/artifacts/{artifact_id}/matches", response_model=list[SideMatchOut])
 def list_matches(
     artifact_id: str,
+    response: Response,
     min_score: float = Query(0.0, ge=0, le=1),
     limit: int = Query(200, ge=1, le=5000),
+    offset: int = Query(0, ge=0),
     svc: MatchingService = Depends(matching_service),
 ):
-    return svc.list_matches(artifact_id, min_score, limit)
+    page, total = svc.list_matches(artifact_id, min_score, limit, offset)
+    response.headers["X-Total-Count"] = str(total)  # T22: total before limit/offset
+    return page
 
 
 @router.get("/artifacts/{artifact_id}/graph")

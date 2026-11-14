@@ -9,6 +9,7 @@ storage) so tests can spin up isolated instances.
 from __future__ import annotations
 
 import logging
+import secrets
 import time
 import uuid
 from contextlib import asynccontextmanager
@@ -23,6 +24,7 @@ from .api.routes import artifacts, exports, health, jobs, matching, runs
 from .core.config import Settings, get_settings
 from .core.errors import DomainError
 from .core.logging import configure_logging
+from .core.ratelimit import RateLimited, TokenBucket
 from .db.base import Base
 from .db.session import make_engine, make_session_factory
 from .services import JobRunner, LocalStorage
@@ -62,6 +64,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.storage = LocalStorage(settings.storage_dir)
     if settings.auto_create_schema:
         Base.metadata.create_all(app.state.engine)
+    app.state.scaling_limiter = TokenBucket(settings.scaling_rate_per_min, period=60.0)
     app.state.jobs = JobRunner(app.state.session_factory, app.state.storage, workers=settings.job_workers)
 
     app.add_middleware(
@@ -69,8 +72,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_origins=settings.cors_origins,
         allow_methods=["GET", "POST", "DELETE"],
         allow_headers=["*"],
-        expose_headers=["X-Request-ID", "X-Response-Time-ms"],
+        expose_headers=["X-Request-ID", "X-Response-Time-ms", "X-Total-Count", "Retry-After", "Content-Disposition"],
     )
+
+    write_methods = {"POST", "PUT", "PATCH", "DELETE"}
+
+    @app.middleware("http")
+    async def api_key_guard(request: Request, call_next):
+        """T22: when RELICX_API_KEY is set, write requests must send a matching X-API-Key."""
+        key = settings.api_key
+        if key and request.method in write_methods and request.url.path.startswith("/api/"):
+            sent = request.headers.get("X-API-Key", "")
+            if not secrets.compare_digest(sent.encode(), key.encode()):  # constant time: no timing leak
+                return _error(401, "unauthorized", "missing or wrong X-API-Key header")
+        return await call_next(request)
 
     @app.middleware("http")
     async def request_context(request: Request, call_next):
@@ -92,7 +107,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.exception_handler(DomainError)
     async def domain_error(_: Request, exc: DomainError):
-        return _error(exc.status, exc.code, exc.message, exc.details)
+        resp = _error(exc.status, exc.code, exc.message, exc.details)
+        if isinstance(exc, RateLimited):
+            resp.headers["Retry-After"] = str(exc.details["retry_after"])
+        return resp
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(_: Request, exc: RequestValidationError):
