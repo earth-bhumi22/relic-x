@@ -128,3 +128,48 @@ spanning tree (what Prim builds) contains such minimax paths.
 A: A binary heap cannot find an entry to lower its key. We push a new entry on every improving relaxation and discard a stale
 entry (node already settled) when it pops. It costs at most one extra pop per push and keeps O(log E) per operation.
 ## Backtracking + branch & bound
+
+**Q: What exactly is the search, and what is the state space?**
+A: Fill cells in row-major order; at each cell try every unused fragment (in every allowed rotation) or leave it `EMPTY` while
+enough empties remain. An arrangement is an injective map from fragments to cells times a rotation each: `C!/(C−n)!·R^n`;
+for a full grid without rotation that is n! leaves and `Σ n!/(n−k)!` tree nodes (65 for n = 4, 1,957 for n = 6, 9.9 million
+for n = 10). Each adjacent pair is scored once, when its later cell is filled.
+
+**Q: What are the two upper bounds and why are they valid?**
+A: `score + min(M·adj_after, Σ_unused v_best)`. (1) Only the adjacencies of the cells still to fill are unbooked; each is at
+most the largest compat value M, and there are `adj_after[k]` of them. (2) A future gain belongs to an unused fragment in
+its cell: its west and north joins are each at most the best join its W/N sides could ever have (best over rotations), so
+the sum over unused fragments bounds everything. `EMPTY` adds 0, so both still hold. If `bound ≤ best`, nothing below
+can beat `best`, so we prune. `<=` means ties are cut (the first layout of the best score is kept). Tests brute-force the
+true best completion at every partial arrangement of 2×2 and 2×3 and check both terms.
+
+**Q: Why start from greedy, and what does it buy?**
+A: It gives a real `best` from node 1 so pruning starts immediately, and it is a floor when the node limit hits: a truncated
+run is never worse than greedy. Honest number: on random tables the node saving is small (945 → 878 at n = 6, 25,441 →
+25,304 at n = 8); on synthetic images the search stays small anyway (n = 16 clean: ~1.9 thousand nodes, damaged: reaches
+the 300,000 limit on 2 of 6 instances).
+
+**Q: What happens when the node limit is hit?**
+A: We stop and return the best complete layout so far with `truncated = true` and a `limit` step. The limit is only enforced
+once one complete arrangement exists, so the result is always a valid full layout. (A bug I fixed: with no incumbent and
+a tiny limit it used to return an empty layout.) Growth is exponential: ln(nodes) vs n has slope ≈ 1.54 (×4.7 per extra
+fragment, R² = 0.998 on three points), and with a 300,000 limit truncation starts at n = 10.
+
+**Q: Can dynamic programming do better? When does it stop working?**
+A: For a two-row strip yes. State = (set of used fragments, the top and bottom option of the last column); a column adds
+`H(t,t') + H(b,b') + V(t',b')`, so `S_{j+1}(mask+t'+b', t', b') = max S_j(mask, t, b) + …`. States ≈ `2^K·K²·R²` (K = 2c):
+11,520 at c = 5, 67,584 at c = 6, 372,736 at c = 7, and over 1.5 million at c = 8, where my guard stops it. It gives the
+optimum where truncated backtracking does not (c = 5…7). It does not generalise: for more rows the profile has to carry
+the whole boundary row, so the state count explodes, which is why the general solver is branch and bound.
+
+**Q: How do the neighbour and direct accuracies differ, and what do they not tell you?**
+A: Neighbour accuracy counts true adjacent pairs reproduced (with correct net orientation); direct accuracy counts fragments
+in the right cell after the best global rotation and shift. Both ignore a global rotation or shift, a mirror image scores below
+1, and missing pieces count against both. Neither dominates: two correct halves with a gap give 2/3 neighbour vs 2/4 direct; a
+swapped pair in a 2×2 gives 1/4 vs 2/4. Without ground truth the functions return 1.0, which is vacuous (the API shows no
+accuracy for uploads).
+
+**Q: Is the best score the best reconstruction?**
+A: No. The optimum of the total compatibility is only as good as the matcher's scores. On the clean 3×3 images backtracking
+raised the mean score from 7.395 to 7.603 and neighbour accuracy from 89 % to 100 %; on 4×4 clean it matched greedy. A
+higher score can still point at the wrong picture when the matcher is wrong.

@@ -18,6 +18,16 @@ valid upper bounds, so their minimum is too.
 Worst case: O((n * R)^n) nodes - exponential. ``node_limit`` caps the search;
 if it is hit, the best solution so far is returned with ``truncated=True``.
 This is the practical limit the dashboard's scaling chart makes visible.
+
+Details worth knowing (see docs/ALGORITHMS.md section 13):
+* The compat table must be symmetric (``compat_table`` makes it so): the search scores a cell against its left/top
+  neighbours, ``Layout.total_score`` against right/bottom ones, and both must agree.
+* A branch that can only TIE the incumbent is pruned (``<=``): the score is optimal either way, but the layout
+  returned can differ from an un-pruned search among equally scored ones.
+* The node limit is not enforced until one complete arrangement exists (the first descent needs only
+  ``cells + 1`` nodes), so a truncated run always returns a valid, complete layout, never an empty one. The reported
+  ``nodes`` can therefore exceed ``node_limit`` by at most that.
+* ``best`` / ``incumbent`` / ``limit`` trace steps use the recorder's reserved slots and are never dropped by the cap.
 """
 
 from __future__ import annotations
@@ -91,26 +101,36 @@ def solve_backtracking(
             return
         state["nodes"] += 1
         counter.add("search_nodes")
-        if state["nodes"] > node_limit:
+        if state["nodes"] > node_limit and state["best_grid"] is not None:
             state["truncated"] = True
-            trace.log("limit", f"Node limit {node_limit} reached — returning best solution found")
+            trace.log_important(
+                "limit", f"Node limit {node_limit} reached — returning best solution found", nodes=state["nodes"]
+            )
             return
         if k == n_cells:
-            if score > state["best"]:
+            if score > state["best"] + 1e-9:  # ignore float-summation noise: a tie keeps the earlier layout
                 state["best"] = score
                 state["best_grid"] = list(grid)
-                trace.log("best", f"New best complete arrangement, score {score:.3f}", score=round(score, 4))
+                trace.log_important(
+                    "best",
+                    f"New best complete arrangement, score {score:.3f}",
+                    score=round(score, 4),
+                    nodes=state["nodes"],
+                )
             return
         remaining = n - len(used)
         bound_adj = M * adj_after[k]
         bound_frag = sum(v_best[f] for f in ids if f not in used)
-        if score + min(bound_adj, bound_frag) <= state["best"]:
+        bound = score + min(bound_adj, bound_frag)
+        if bound <= state["best"]:
             state["pruned"] += 1
             trace.log(
                 "prune",
-                f"Prune at cell {cells[k]}: bound cannot beat {state['best']:.3f}",
+                f"Prune at cell {cells[k]}: bound {bound:.3f} cannot beat {state['best']:.3f}",
                 row=cells[k][0],
                 col=cells[k][1],
+                bound=round(bound, 4),
+                best=round(state["best"], 4),
             )
             return
         options = [(local(k, f, r), f, r) for f in ids if f not in used for r in rots]
@@ -149,7 +169,7 @@ def solve_backtracking(
                     inc_layout.place(Placement(slot[0], cells[k][0], cells[k][1], slot[1]))
             state["best"] = inc_layout.total_score(compat)
             state["best_grid"] = grid_inc
-            trace.log(
+            trace.log_important(
                 "incumbent", f"Start from heuristic solution, score {state['best']:.3f}", score=round(state["best"], 4)
             )
 
