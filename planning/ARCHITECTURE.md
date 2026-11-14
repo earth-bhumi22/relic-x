@@ -245,7 +245,7 @@ Layering: **routes** (HTTP + validation) → **services** (logic) → **reposito
 | `src/relicx/api/routes/{health,artifacts,matching,runs}.py` | B | Endpoints |
 | `src/relicx/samples.py` | B | Procedural sample artifacts |
 | `src/relicx/services/jobs.py`, `api/routes/jobs.py` | B | Background run jobs: thread pool, progress, restart recovery (T20) |
-| *planned* `src/relicx/api/routes/exports.py` | B | CSV exports (T21) |
+| `src/relicx/services/exports.py`, `api/routes/exports.py` | B | CSV exports: placements, trace, benchmark, scaling (T21) |
 | `src/relicx/cli.py` | B | `relicx seed` demo data (T05) |
 
 ### backend — algorithm engine (split by slice)
