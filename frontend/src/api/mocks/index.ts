@@ -7,6 +7,9 @@
 //   - any unknown artifact / fragment / run id          -> 404 not_found
 //   - artifact "Pottery band (unmatched)"                -> 409 precondition_failed until POST .../match
 //   - sample name not in /samples, empty name, bad sides -> 422 invalid_input / validation_error
+//   - artifact NAME "fail-422" / "fail-413" / "fail-500" on any create call -> 422 validation_error (field `name`) /
+//     413 payload_too_large / 500 internal_error, so the wizard's error states can be exercised by hand
+//   - uploads: a non-image file -> 422 invalid_input; a file over MAX_UPLOAD_MB -> 413 payload_too_large
 import { ApiError } from "../errors";
 import { sideIndexToLetter } from "../sides";
 import type {
@@ -29,6 +32,7 @@ import {
   MATCH_CONFIG,
   SAMPLES,
   WEIGHTS,
+  artifactImage,
   buildArtifact,
   buildMatchStats,
   buildMatches,
@@ -104,6 +108,8 @@ export interface MockRequest {
   path: string;
   query: URLSearchParams;
   body: Record<string, unknown>;
+  /** The multipart body of upload requests (null for JSON requests). */
+  form: FormData | null;
 }
 export type MockHandler = (req: MockRequest) => unknown | Promise<unknown>;
 const overrides = new Map<string, MockHandler>();
@@ -126,6 +132,24 @@ const invalid = (message: string, details: Record<string, unknown> = {}) =>
   new ApiError(422, "invalid_input", message, details);
 const validation = (field: string, message: string) =>
   new ApiError(422, "validation_error", "request validation failed", { errors: [{ loc: [field], msg: message }] });
+
+/** Mirrors the server's RELICX_MAX_UPLOAD_MB default. */
+const MAX_UPLOAD_MB = 15;
+
+/** Name-based failure triggers, so the wizard's error handling can be tried in `npm run dev:mock`. */
+function nameTriggers(name: string) {
+  const key = name.trim().toLowerCase();
+  if (key === "fail-422") throw validation("name", "This name is rejected by the mock API (fail-422)");
+  if (key === "fail-413")
+    throw new ApiError(413, "payload_too_large", `image larger than ${MAX_UPLOAD_MB} MB`, { limit_mb: MAX_UPLOAD_MB });
+  if (key === "fail-500") throw new ApiError(500, "internal_error", "Mock server error (fail-500)");
+}
+
+function checkImageFile(f: File) {
+  if (f.size > MAX_UPLOAD_MB * 1024 * 1024)
+    throw new ApiError(413, "payload_too_large", `image larger than ${MAX_UPLOAD_MB} MB`, { limit_mb: MAX_UPLOAD_MB });
+  if (!f.type.startsWith("image/")) throw invalid("file is not a readable image", { filename: f.name });
+}
 
 function getArtifactOr404(id: string): MockArtifact {
   const m = store.get(id);
@@ -157,6 +181,7 @@ const r4 = (n: number) => Number(n.toFixed(4));
 function createSample(body: Record<string, unknown>): ArtifactOut {
   const name = typeof body.name === "string" ? body.name.trim() : "";
   if (!name) throw validation("name", "String should have at least 1 character");
+  nameTriggers(name);
   const sample = typeof body.sample === "string" ? body.sample : "mosaic-tile";
   if (!SAMPLES.some((s) => s.name === sample))
     throw invalid(`unknown sample '${sample}'`, { available: SAMPLES.map((s) => s.name) });
@@ -180,6 +205,88 @@ function createSample(body: Record<string, unknown>): ArtifactOut {
     createdAt: new Date().toISOString(),
   };
   const m = buildArtifact(spec, false);
+  store.set(m.artifact.id, m);
+  return m.artifact;
+}
+
+function cleanName(raw: unknown): string {
+  const name = typeof raw === "string" ? raw.trim() : "";
+  if (!name) throw validation("name", "String should have at least 1 character");
+  if (name.length > 120) throw validation("name", "String should have at most 120 characters");
+  nameTriggers(name);
+  return name;
+}
+
+function createUpload(form: FormData): ArtifactOut {
+  const image = form.get("image");
+  if (!(image instanceof File)) throw invalid("no image uploaded");
+  const name = cleanName(form.get("name"));
+  checkImageFile(image);
+  let f: Record<string, unknown>;
+  try {
+    f = JSON.parse(String(form.get("params") || "{}")) as Record<string, unknown>;
+  } catch {
+    throw invalid("params must be valid JSON");
+  }
+  const rows = Number(f.rows ?? 4);
+  const cols = Number(f.cols ?? 4);
+  if (!(rows >= 2 && rows <= 8)) throw validation("rows", "input should be between 2 and 8");
+  if (!(cols >= 2 && cols <= 8)) throw validation("cols", "input should be between 2 and 8");
+  const missing = Number(f.missing ?? 0);
+  if (missing >= rows * cols) throw invalid("cannot remove every fragment");
+  const description = form.get("description");
+  const m = buildArtifact(
+    {
+      id: nextId(),
+      name,
+      description: typeof description === "string" && description ? description : null,
+      sample: "mosaic-tile",
+      rows,
+      cols,
+      missing,
+      seed: Number(f.seed ?? 7),
+      rotate: Boolean(f.rotate ?? false),
+      noise: Number(f.noise ?? 4),
+      erosion: Number(f.erosion ?? 0.2),
+      createdAt: new Date().toISOString(),
+    },
+    false,
+  );
+  m.artifact.source_kind = "upload";
+  store.set(m.artifact.id, m);
+  return m.artifact;
+}
+
+function createFragments(form: FormData): ArtifactOut {
+  const files = form.getAll("files").filter((x): x is File => x instanceof File);
+  if (!files.length) throw invalid("no fragment images uploaded");
+  const name = cleanName(form.get("name"));
+  const rows = Number(form.get("rows"));
+  const cols = Number(form.get("cols"));
+  if (!(Number.isInteger(rows) && rows >= 1 && rows <= 8)) throw validation("rows", "input should be between 1 and 8");
+  if (!(Number.isInteger(cols) && cols >= 1 && cols <= 8)) throw validation("cols", "input should be between 1 and 8");
+  if (files.length > rows * cols) throw invalid(`${files.length} fragments do not fit a ${rows}x${cols} grid`);
+  files.forEach(checkImageFile);
+  const m = buildArtifact(
+    {
+      id: nextId(),
+      name,
+      description: null,
+      sample: "mosaic-tile",
+      rows,
+      cols,
+      missing: rows * cols - files.length,
+      seed: 7,
+      rotate: false,
+      noise: 0,
+      erosion: 0,
+      createdAt: new Date().toISOString(),
+    },
+    false,
+  );
+  m.artifact.source_kind = "fragments";
+  m.artifact.has_ground_truth = false;
+  m.artifact.fragment_params = {};
   store.set(m.artifact.id, m);
   return m.artifact;
 }
@@ -475,29 +582,40 @@ export async function mockRequest<T>(path: string, init: RequestInit = {}): Prom
   const q = url.searchParams;
   let body: Record<string, unknown> = {};
   if (typeof init.body === "string" && init.body) body = JSON.parse(init.body) as Record<string, unknown>;
-  else if (init.body instanceof FormData) throw invalid("file uploads are not available in mock mode");
+  const form = init.body instanceof FormData ? init.body : null;
 
   const override = overrides.get(overrideKey(method, p));
-  if (override) return structuredClone(await override({ method, path: p, query: q, body })) as T;
+  if (override) return structuredClone(await override({ method, path: p, query: q, body, form })) as T;
 
   // Responses are cloned so callers can never mutate the store.
   const out = (v: unknown) => structuredClone(v) as T;
   let m: RegExpMatchArray | null;
 
   if (method === "GET" && p === "/health") return out({ status: "ok", database: true, version: "mock" });
-  if (method === "GET" && p === "/samples") return out(SAMPLES);
+  if (method === "GET" && p === "/samples")
+    // Mock mode has no image server: serve inline SVG thumbnails so the wizard shows something real.
+    return out(SAMPLES.map((x, i) => ({ ...x, image_url: artifactImage(3 + (i % 2), 3 + (i % 2)) })));
   if (method === "GET" && p === "/artifacts") {
     const limit = num(q, "limit") ?? 50;
     const offset = num(q, "offset") ?? 0;
     if (limit > 200 || limit < 1) throw validation("limit", "input should be between 1 and 200");
-    return out([...store.values()].map((x) => x.artifact).slice(offset, offset + limit));
+    // The real API orders by created_at DESC; ties (same millisecond) put the later insert first.
+    const newestFirst = [...store.values()].map((x) => x.artifact).reverse();
+    newestFirst.sort((a, b) => b.created_at.localeCompare(a.created_at));
+    return out(newestFirst.slice(offset, offset + limit));
   }
   if (method === "POST" && p === "/artifacts/sample") return out(createSample(body));
-  if (method === "POST" && (p === "/artifacts/upload" || p === "/artifacts/fragments-upload"))
-    throw invalid("file uploads are not available in mock mode");
+  if (method === "POST" && p === "/artifacts/upload") return out(createUpload(form ?? new FormData()));
+  if (method === "POST" && p === "/artifacts/fragments-upload") return out(createFragments(form ?? new FormData()));
   if (method === "POST" && p === "/benchmark/scaling") return out(scaling(body as ScalingRequest));
 
   if ((m = p.match(/^\/artifacts\/([^/]+)$/)) && method === "GET") return out(getArtifactOr404(m[1]).artifact);
+  if ((m = p.match(/^\/artifacts\/([^/]+)$/)) && method === "DELETE") {
+    const gone = getArtifactOr404(m[1]);
+    for (const r of gone.runs) runIndex.delete(r.id);
+    store.delete(m[1]);
+    return undefined as T;
+  }
   if ((m = p.match(/^\/artifacts\/([^/]+)\/fragments$/)) && method === "GET")
     return out(getArtifactOr404(m[1]).fragments satisfies FragmentOut[]);
   if ((m = p.match(/^\/artifacts\/([^/]+)\/match$/)) && method === "POST")

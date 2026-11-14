@@ -106,7 +106,7 @@ const fragmentImage = (row: number, col: number, label: string) =>
   svgUri(
     `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120">${tileSvgBody(row, col, 0, 0, 120, label)}</svg>`,
   );
-function artifactImage(rows: number, cols: number): string {
+export function artifactImage(rows: number, cols: number): string {
   const size = 480 / Math.max(rows, cols);
   let body = "";
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) body += tileSvgBody(r, c, c * size, r * size, size);

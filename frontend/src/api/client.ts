@@ -10,6 +10,7 @@ import { ApiError } from "./errors";
 import type {
   Algorithm,
   ArtifactOut,
+  FragmentParams,
   Explanation,
   FragmentOut,
   GraphOut,
@@ -77,6 +78,29 @@ export const listArtifacts = (params: { limit?: number; offset?: number } = {}) 
 export const getArtifact = (id: string) => api<ArtifactOut>(`/artifacts/${id}`);
 export const createSampleArtifact = (body: Partial<SampleArtifactCreate> & { name: string }) =>
   api<ArtifactOut>("/artifacts/sample", post(body));
+
+/** DELETE /artifacts/{id} → 204 (resolves to undefined). */
+export const deleteArtifact = (id: string) => api<void>(`/artifacts/${id}`, { method: "DELETE" });
+
+/** multipart/form-data: name, image, params (a JSON *string* of FragmentParams), optional description. */
+export function createUploadArtifact(p: { name: string; image: File; params: FragmentParams; description?: string }) {
+  const form = new FormData();
+  form.set("name", p.name);
+  form.set("image", p.image);
+  form.set("params", JSON.stringify(p.params));
+  if (p.description) form.set("description", p.description);
+  return api<ArtifactOut>("/artifacts/upload", { method: "POST", body: form });
+}
+
+/** multipart/form-data: name, rows, cols and repeated `files`. The result has no ground truth. */
+export function createFragmentsArtifact(p: { name: string; rows: number; cols: number; files: File[] }) {
+  const form = new FormData();
+  form.set("name", p.name);
+  form.set("rows", String(p.rows));
+  form.set("cols", String(p.cols));
+  for (const f of p.files) form.append("files", f);
+  return api<ArtifactOut>("/artifacts/fragments-upload", { method: "POST", body: form });
+}
 
 // ---- fragments & matching ---------------------------------------------------------------
 export const listFragments = (artifactId: string) => api<FragmentOut[]>(`/artifacts/${artifactId}/fragments`);

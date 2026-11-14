@@ -283,7 +283,7 @@ Layering: **routes** (HTTP + validation) → **services** (logic) → **reposito
 | `src/api/schema.d.ts` | A | Generated from OpenAPI by `npm run gen:types`; do not edit |
 | *planned* `src/api/mocks/*` | A | Mock payloads from CONTRACT §6 (T03) |
 | *planned* `src/routes.tsx`, `src/components/layout/*` | A | Routing, navbar, layout (T03) |
-| *planned* `src/pages/ProjectsPage.tsx`, `components/ArtifactWizard.tsx` | A | T23 |
+| `src/pages/ProjectsPage.tsx`, `components/ArtifactWizard.tsx`, `ArtifactCard.tsx`, `DeleteArtifactDialog.tsx`, `Modal.tsx`, `lib/artifactForm.ts` | A | Projects page + create wizard (T23, done) |
 | *planned* `src/pages/GalleryPage.tsx`, `components/EdgeBeads.tsx` | A | T24 |
 | *planned* `src/pages/GraphPage.tsx` | A | T25 |
 | *planned* `src/components/WhyMatchedDrawer.tsx` | A | T26 |
