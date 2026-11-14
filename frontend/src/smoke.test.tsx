@@ -29,7 +29,7 @@ describe("smoke: whole app in mock mode", () => {
 
     fireEvent.click(within(sub).getByRole("link", { name: "Graph" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Similarity graph" })).toBeInTheDocument();
-    expect(await screen.findByText(/16 nodes/)).toBeInTheDocument();
+    expect(await screen.findByLabelText("Graph statistics")).toHaveTextContent("Nodes16");
 
     fireEvent.click(within(sub).getByRole("link", { name: "Reconstruct" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Reconstruction canvas" })).toBeInTheDocument();

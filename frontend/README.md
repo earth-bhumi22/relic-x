@@ -154,6 +154,31 @@ artifact; matching panel "Not matched yet" / running / matched with stats / fail
 strips (light and dark, 360 px and 1280 px); numeric strips shown; ground truth shown; ground truth missing (uploaded
 fragments); a deep link (`?fragment=F07`).
 
+### Similarity graph (`/artifacts/:id/graph`, T25)
+
+Lazy-loaded at route level (`React.lazy`), so Cytoscape 3.33.1 (the only graph library; types bundled) lives in its own
+chunk. Data comes from `GET /graph` (`threshold`, `top_k`, `traversal`); a 409 shows the matching prompt, which runs
+matching and reloads the graph.
+
+- **Controls:** threshold slider (0–1, step 0.01, plus an editable number; default 0 = the API default), top-k (off, or
+  an integer 1–16; below 1 is blocked client-side), BFS | DFS, a ground-truth hint toggle and a BFS-vs-DFS compare.
+  Changes are debounced (250 ms), stale responses are ignored, and the previous graph stays visible with a busy badge.
+- **Canvas** (`components/graph/GraphCanvas.tsx`, a thin adapter): node label = fragment label, colour = component
+  (`COMPONENT_PALETTE` in `lib/graphView.ts`, Okabe–Ito based; also in the tooltip and legend), edge width/opacity =
+  weight, edge colour = `true_neighbours`. `cose` layout with `randomize: false`, re-run only when the topology changes.
+- **Traversal:** visit-order numbers on nodes and in a list; Step / Play / Show all / Reset; `prefers-reduced-motion`
+  jumps to the final state.
+- **Selection:** click a node (incident edges + neighbours with weights) or an edge, in the canvas or the accessible
+  **edge table** (sortable by weight, filterable by node). An edge yields `MatchSelection
+  {a, sideA, b, sideB}` (labels + integer sides via `sideLetterToIndex`), exposed through the `onSelectMatch` prop and
+  the URL `?why=F03:E:F11:W`. A card with a disabled "Why matched?" button waits for T26.
+- **Tests:** page logic runs against a stubbed canvas; `GraphCanvas.test.tsx` mounts real Cytoscape headless
+  (`headless` defaults on in test mode because jsdom has no canvas).
+
+**States worth capturing (T44):** the same artifact at three thresholds (0, 0.6, 0.95); top-k 1; BFS vs DFS compare;
+step mid-play; node and edge selected; the edge table; empty state; the 409 prompt; error with retry; light and dark at
+360 px and 1280 px.
+
 ## Layout
 
 ```text
@@ -172,7 +197,7 @@ src/
                         DeleteArtifactDialog, EdgeBeads, FragmentDialog, MatchPanel, layout/
   hooks/useAsync.ts     loading/success/error state for a promise
   test/                 test helpers (renderWithProviders, mockApi, fixtures); not part of the build
-  pages/                ProjectsPage (T23) and GalleryPage (T24) are real; the other pages are placeholders until T25–T28
+  pages/                ProjectsPage (T23), GalleryPage (T24) and GraphPage (T25) are real; the other pages are placeholders until T26–T28
   lib/artifactForm.ts   wizard parameter defaults, limits, validation, formatting (pure, unit tested)
   lib/beads.ts, shuffle.ts   symbol → colour (mirrors backend quantize), seeded shuffle
 ```

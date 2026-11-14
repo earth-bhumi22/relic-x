@@ -356,24 +356,40 @@ function trueNeighbour(
 
 export function graph(m: MockArtifact, q: URLSearchParams): GraphOut {
   const matches = requireMatches(m);
-  const threshold = num(q, "threshold") ?? 0.5;
+  // Same defaults and bounds as the backend: threshold 0 (0-1), top_k absent (1-16), traversal bfs.
+  const threshold = num(q, "threshold") ?? 0;
+  if (threshold < 0 || threshold > 1) throw validation("threshold", "input should be between 0 and 1");
   const topK = num(q, "top_k") ?? null;
+  if (topK !== null && (!Number.isInteger(topK) || topK < 1 || topK > 16))
+    throw validation("top_k", "input should be between 1 and 16");
   const method = (q.get("traversal") ?? "bfs") as Traversal;
   if (method !== "bfs" && method !== "dfs") throw validation("traversal", "input should be 'bfs' or 'dfs'");
   const byLabel = new Map(m.fragments.map((f) => [f.label, f]));
 
-  let kept = matches.filter((x) => x.composite >= threshold);
+  // Like the backend (engine/graph.py build_graph): one edge per fragment pair (its best side pair, oriented so the
+  // smaller label is the source), then the threshold, then *mutual* top-k (an edge survives only if it is among the
+  // k strongest of both endpoints).
+  const pairs = new Map<string, SideMatchOut>();
+  for (const x of matches) {
+    if (x.a === x.b) continue;
+    const flip = x.a > x.b;
+    const cand = flip ? { ...x, a: x.b, b: x.a, side_a: x.side_b, side_b: x.side_a } : x;
+    const key = `${cand.a}|${cand.b}`;
+    const cur = pairs.get(key);
+    if (!cur || cand.composite > cur.composite) pairs.set(key, cand);
+  }
+  const collapsed = [...pairs.values()].sort((p, q) => q.composite - p.composite || p.a.localeCompare(q.a));
+  let kept = collapsed.filter((x) => x.composite >= threshold);
   if (topK !== null) {
-    // `matches` is sorted best first, so the strongest edges of each node survive.
-    const used = new Map<string, number>();
-    kept = kept.filter((x) => {
-      const ua = used.get(x.a) ?? 0;
-      const ub = used.get(x.b) ?? 0;
-      if (ua >= topK || ub >= topK) return false;
-      used.set(x.a, ua + 1);
-      used.set(x.b, ub + 1);
-      return true;
-    });
+    const rank = new Map<string, Set<string>>();
+    for (const label of byLabel.keys()) {
+      const top = kept
+        .filter((x) => x.a === label || x.b === label)
+        .slice(0, topK) // `kept` is already strongest first
+        .map((x) => `${x.a}|${x.b}`);
+      rank.set(label, new Set(top));
+    }
+    kept = kept.filter((x) => rank.get(x.a)!.has(`${x.a}|${x.b}`) && rank.get(x.b)!.has(`${x.a}|${x.b}`));
   }
   const edges: GraphEdge[] = kept.map((x) => ({
     source: x.a,
@@ -425,7 +441,7 @@ export function graph(m: MockArtifact, q: URLSearchParams): GraphOut {
     edges,
     components,
     traversal: { method, order, edge_visits: edges.length * 2 },
-    stats: { edges_before_pruning: matches.length, edges_after_pruning: edges.length, threshold, top_k: topK },
+    stats: { edges_before_pruning: collapsed.length, edges_after_pruning: edges.length, threshold, top_k: topK },
   };
 }
 
