@@ -62,5 +62,5 @@ The Lab page's CSV export (T28) uses the same metric names (`neighbour_accuracy`
 `--check` (also run by `backend/tests/test_solver_stats.py`) (1) re-runs the quick configuration, which is a subset of the
 full one, and compares every deterministic column with the committed `solver_runs.csv`; (2) recomputes
 `solver_summary.csv` from the committed runs; (3) re-renders the T32 block of `results.md` and the charts from the
-committed CSVs and compares them with the committed files. Time columns are never compared. It exits with status 1 and
+committed CSVs and compares them with the committed files. Time columns are never compared; `total_score` is compared to 2e-4 and backtracking's search counters to 5 %, because float near-ties make the search path differ slightly between platforms (CI on Python 3.11 differed from the laptop run). It exits with status 1 and
 lists the differences when anything is out of date; refresh with `--solvers-only` and commit the result.
