@@ -97,4 +97,34 @@ A: It only sees edges of the (pruned) graph, so threshold / top-k change its res
 (1.4 ms against 21 ms at n = 64) but less accurate on average (73% against 81% clean), because it judges one join at a
 time. Both fall into the same trap (the §10 counterexample scores 1.05 for each).
 ## Dijkstra
+
+**Q: Why is the edge cost 1 − w, and why must it be non-negative?**
+A: Dijkstra minimises a sum, and a strong join (w near 1) should be cheap, so cost = 1 − w ≥ 0 because scores are in [0, 1].
+Non-negativity is what makes a settled distance final: with a negative edge a later node could lower it, the proof
+breaks and you would need Bellman-Ford. We clamp with `max(0, 1 − w)` so a weight slightly above 1 cannot break it.
+
+**Q: What is the complexity and why?**
+A: O((V + E) log V). Each node is settled once and its adjacency list scanned once (relaxations = 2E, measured exactly).
+With lazy deletion the heap holds at most E entries, so each operation is O(log E) = O(log V). Plus O(U·F·R) for the
+fallbacks, which dominates as n grows because conflicts grow about linearly (n^2.06 for score lookups).
+
+**Q: Why does Dijkstra place worse than Prim here?**
+A: Its objective is the *sum* along a path from the seed, but a fragment's correct cell depends on its single best join.
+A fragment with one excellent join to a far fragment gets hung on a nearer one by a mediocre join. Counterexample
+(ALGORITHMS §12): B joins A with 0.25 (cost 0.75) or C with 0.60 but C is 0.65 away, so the route through C costs 1.05;
+Dijkstra totals 0.60, Prim 0.95 (the optimum). Measured at 5×5, noise 4: 38–49% accuracy against 84%.
+
+**Q: What is a conflict and what do you do about it?**
+A: The cell the parent join dictates is taken, outside the grid, or needs a rotation we do not allow (or the fragment is
+unreachable in the pruned graph). We log a `conflict` and put the fragment in the best free frontier slot. Its own
+children are then placed relative to that actual cell, so an error propagates down the tree.
+
+**Q: Could a bottleneck (minimax) path work better?**
+A: Yes, it is closer to the right objective: the cost of a path is its weakest join, so a chain of strong joins stays cheap
+and one weak join is what counts. It can be computed with the same heap by replacing the sum with max, and a maximum
+spanning tree (what Prim builds) contains such minimax paths.
+
+**Q: Why lazy deletion?**
+A: A binary heap cannot find an entry to lower its key. We push a new entry on every improving relaxation and discard a stale
+entry (node already settled) when it pops. It costs at most one extra pop per push and keeps O(log E) per operation.
 ## Backtracking + branch & bound

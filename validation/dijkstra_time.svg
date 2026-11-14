@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="380" viewBox="0 0 640 380" font-family="sans-serif" font-size="12">
+<rect width="640" height="380" fill="#ffffff"/>
+<text x="320.0" y="20" text-anchor="middle" font-size="14" font-weight="bold">Dijkstra time vs. n (damaged, full graph)</text>
+<line x1="64.0" y1="36" x2="64.0" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="328.0" x2="620" y2="328.0" stroke="#e5e7eb"/>
+<text x="64.0" y="344" text-anchor="middle" fill="#374151">4</text>
+<text x="58" y="332.0" text-anchor="end" fill="#374151">0</text>
+<line x1="175.2" y1="36" x2="175.2" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="269.6" x2="620" y2="269.6" stroke="#e5e7eb"/>
+<text x="175.2" y="344" text-anchor="middle" fill="#374151">16</text>
+<text x="58" y="273.6" text-anchor="end" fill="#374151">1.07</text>
+<line x1="286.4" y1="36" x2="286.4" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="211.2" x2="620" y2="211.2" stroke="#e5e7eb"/>
+<text x="286.4" y="344" text-anchor="middle" fill="#374151">28</text>
+<text x="58" y="215.2" text-anchor="end" fill="#374151">2.14</text>
+<line x1="397.6" y1="36" x2="397.6" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="152.8" x2="620" y2="152.8" stroke="#e5e7eb"/>
+<text x="397.6" y="344" text-anchor="middle" fill="#374151">40</text>
+<text x="58" y="156.8" text-anchor="end" fill="#374151">3.2</text>
+<line x1="508.8" y1="36" x2="508.8" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="94.4" x2="620" y2="94.4" stroke="#e5e7eb"/>
+<text x="508.8" y="344" text-anchor="middle" fill="#374151">52</text>
+<text x="58" y="98.4" text-anchor="end" fill="#374151">4.27</text>
+<line x1="620.0" y1="36" x2="620.0" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="36.0" x2="620" y2="36.0" stroke="#e5e7eb"/>
+<text x="620.0" y="344" text-anchor="middle" fill="#374151">64</text>
+<text x="58" y="40.0" text-anchor="end" fill="#374151">5.34</text>
+<rect x="64" y="36" width="556" height="292" fill="none" stroke="#9ca3af"/>
+<text x="342.0" y="370" text-anchor="middle">fragments n</text>
+<text x="14" y="182.0" text-anchor="middle" transform="rotate(-90 14 182.0)">time (ms)</text>
+<polyline points="64.0,326.7 110.3,321.8 175.2,311.3 258.6,288.4 360.5,241.2 481.0,169.7 620.0,49.9" fill="none" stroke="#2563eb" stroke-width="2"/>
+<circle cx="64.0" cy="326.7" r="3.5" fill="#2563eb"/>
+<circle cx="110.3" cy="321.8" r="3.5" fill="#2563eb"/>
+<circle cx="175.2" cy="311.3" r="3.5" fill="#2563eb"/>
+<circle cx="258.6" cy="288.4" r="3.5" fill="#2563eb"/>
+<circle cx="360.5" cy="241.2" r="3.5" fill="#2563eb"/>
+<circle cx="481.0" cy="169.7" r="3.5" fill="#2563eb"/>
+<circle cx="620.0" cy="49.9" r="3.5" fill="#2563eb"/>
+<rect x="74" y="43" width="12" height="12" fill="#2563eb"/>
+<text x="92" y="53">dijkstra full</text>
+</svg>
