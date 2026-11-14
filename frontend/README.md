@@ -179,6 +179,33 @@ matching and reloads the graph.
 step mid-play; node and edge selected; the edge table; empty state; the 409 prompt; error with retry; light and dark at
 360 px and 1280 px.
 
+### "Why matched?" drawer (`components/WhyMatchedDrawer.tsx`, T26)
+
+Not a route: a side panel (full-width sheet at 360 px) any page can mount with only `artifactId` and `match`:
+
+```tsx
+<WhyMatchedDrawer artifactId={id} match={{ a: "F03", sideA: 1, b: "F11", sideB: 3 }} onClose={...} />
+```
+
+`match` is a `MatchSelection` (labels, integer sides 0–3; `null` renders nothing). It calls `GET /explain` through
+`useAsync` (re-fetched when the match changes, stale responses ignored) and shows: header (`F03 · E ↔ F11 · W`, composite,
+ground-truth badge), both edges as aligned bead strips (edge B **reversed**, with the reason), a stacked **weighted score
+bar** with a `score × weight = contribution` table, and one section per signal: colour swatches, LCS (highlighted beads
+plus SVG connector lines), edit-operation cells (`=` `≠` `+` `−`, not colour-only), shared motif with KMP vs Rabin-Karp
+operation counts, and hash overlap (Jaccard bar, safe for an empty union). It is built on `Modal` (focus in and back,
+Esc and backdrop close, page scroll locked without a layout shift). States: skeleton, 409 → `MatchRequired`, 404, 422,
+generic error with retry, and an error boundary for a payload it cannot draw.
+
+- **On the graph page** the selection lives in `?why=F03:E:F11:W`: choosing an edge opens the drawer, closing removes the
+  parameter, and a link reopens it.
+- **Signal order and colours** are defined once in `lib/signals.ts` (`SIGNALS`: colour, lcs, edit, motif, hash) with
+  `--sig-*` tokens for both themes and a fill pattern each; T28 should reuse them.
+- LCS pairs are `[i, j]`, `i` indexing `edge_a` and `j` indexing `edge_b_reversed` (checked against the backend).
+
+**States worth capturing (T44):** a true-neighbour match and a false match side by side; LCS connectors; the edit strip;
+a motif of length 0; the score bar; the 409 prompt, loading skeleton and error states; 360 px sheet and 1280 px panel in
+both themes.
+
 ## Layout
 
 ```text
@@ -197,7 +224,7 @@ src/
                         DeleteArtifactDialog, EdgeBeads, FragmentDialog, MatchPanel, layout/
   hooks/useAsync.ts     loading/success/error state for a promise
   test/                 test helpers (renderWithProviders, mockApi, fixtures); not part of the build
-  pages/                ProjectsPage (T23), GalleryPage (T24) and GraphPage (T25) are real; the other pages are placeholders until T26–T28
+  pages/                ProjectsPage (T23), GalleryPage (T24) and GraphPage (T25) are real, with the T26 drawer mounted on the graph page; the other pages are placeholders until T27–T28
   lib/artifactForm.ts   wizard parameter defaults, limits, validation, formatting (pure, unit tested)
   lib/beads.ts, shuffle.ts   symbol → colour (mirrors backend quantize), seeded shuffle
 ```

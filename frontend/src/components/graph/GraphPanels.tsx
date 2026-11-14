@@ -210,7 +210,7 @@ export function NodePanel({
   );
 }
 
-export function SelectedMatchCard({ edge }: { edge: GraphEdge }) {
+export function SelectedMatchCard({ edge, drawerOpen = false }: { edge: GraphEdge; drawerOpen?: boolean }) {
   const s = selectionOf(edge);
   return (
     <section className="card" aria-labelledby="match-card-heading">
@@ -220,7 +220,8 @@ export function SelectedMatchCard({ edge }: { edge: GraphEdge }) {
       <p>
         Weight <strong>{edge.weight.toFixed(3)}</strong> · {truthLabel(edge.true_neighbours)}
       </p>
-      <button type="button" className="btn" disabled title="Available with the “Why matched?” drawer (T26)">
+      <p className="muted">The “Why matched?” drawer opens for the selected edge; closing it clears the selection.</p>
+      <button type="button" className="btn" aria-haspopup="dialog" aria-expanded={drawerOpen}>
         Why matched?
       </button>
     </section>

@@ -334,7 +334,9 @@ describe("GraphPage selection", () => {
       name: new RegExp(`${edge.source} ${edge.side_source} ↔ ${edge.target} ${edge.side_target}`),
     });
     expect(card).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Why matched?" })).toBeDisabled();
+    // T26: the card's button is live and the drawer opens for the selected edge
+    expect(screen.getByRole("button", { name: "Why matched?" })).toBeEnabled();
+    expect(await screen.findByRole("dialog", { name: /Why matched\? .* ↔ / })).toBeInTheDocument();
   });
 
   it("the accessible edge table lists the same edges as the canvas and selects from a row", async () => {

@@ -72,6 +72,7 @@ export default function EdgeBeads({
             key={index}
             className={classes}
             title={color ? symbol : `${symbol} (not in the ${levels}-level palette)`}
+            data-testid="bead"
             data-symbol={symbol}
             data-kind={kind}
             style={color ? { backgroundColor: rgbCss(color) } : undefined}

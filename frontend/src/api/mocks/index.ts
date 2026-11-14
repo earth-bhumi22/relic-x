@@ -470,7 +470,7 @@ function lcs(a: string, b: string) {
   return { length: dp[a.length][b.length], subsequence: pairs.map(([x]) => a[x]).join(""), pairs };
 }
 function longestCommonRun(a: string, b: string) {
-  let best = { length: 0, pos_a: 0, pos_b: 0 };
+  let best = { length: 0, pos_a: -1, pos_b: -1 }; // like the backend: no motif -> length 0, positions -1
   for (let i = 0; i < a.length; i++)
     for (let j = 0; j < b.length; j++) {
       let k = 0;
