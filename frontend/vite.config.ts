@@ -13,6 +13,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
+    env: { VITE_MOCK_LATENCY_MS: "0" },
     setupFiles: ["./src/test-setup.ts"],
   },
 });
