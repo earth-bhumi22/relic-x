@@ -16,6 +16,13 @@ def get_db(request: Request) -> Iterator[Session]:
     yield from session_scope(request.app.state.session_factory)
 
 
+# scope="function": the session commits (or rolls back) BEFORE the response is
+# sent. With the default "request" scope FastAPI sends the response first and
+# commits afterwards, so a client that immediately re-reads (e.g. GET right after
+# DELETE) could still see the old data. Found while verifying T01 on PostgreSQL.
+DB = Depends(get_db, scope="function")
+
+
 def get_settings(request: Request) -> Settings:
     return request.app.state.settings
 
@@ -25,18 +32,16 @@ def get_storage(request: Request) -> LocalStorage:
 
 
 def artifact_service(
-    db: Session = Depends(get_db),
+    db: Session = DB,
     storage: LocalStorage = Depends(get_storage),
     settings: Settings = Depends(get_settings),
 ) -> ArtifactService:
     return ArtifactService(db, storage, settings)
 
 
-def matching_service(db: Session = Depends(get_db), storage: LocalStorage = Depends(get_storage)) -> MatchingService:
+def matching_service(db: Session = DB, storage: LocalStorage = Depends(get_storage)) -> MatchingService:
     return MatchingService(db, storage)
 
 
-def reconstruction_service(
-    db: Session = Depends(get_db), storage: LocalStorage = Depends(get_storage)
-) -> ReconstructionService:
+def reconstruction_service(db: Session = DB, storage: LocalStorage = Depends(get_storage)) -> ReconstructionService:
     return ReconstructionService(db, storage)

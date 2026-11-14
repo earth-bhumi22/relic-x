@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Database writes are now committed **before** the HTTP response is sent
+  (`Depends(get_db, scope="function")`). Previously a client re-reading immediately after a
+  write (e.g. GET right after DELETE) could see stale data. Found in T01; regression test added.
+- Deleting an artifact or run lets PostgreSQL's `ON DELETE CASCADE` remove child rows in one
+  statement (`passive_deletes=True`) instead of the ORM deleting them row by row.
+
+### Added
+- `backend/scripts/smoke_pipeline.py`: end-to-end check of a running API (69 checks); runs in CI
+  against PostgreSQL 16.
+
 ## [0.1.0] — 2026-11-13
 
 ### Added

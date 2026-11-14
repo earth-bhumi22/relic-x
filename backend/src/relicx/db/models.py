@@ -61,9 +61,11 @@ class Artifact(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, onupdate=_now)
 
     fragments: Mapped[list[Fragment]] = relationship(
-        back_populates="artifact", cascade="all, delete-orphan", order_by="Fragment.label"
+        back_populates="artifact", cascade="all, delete-orphan", passive_deletes=True, order_by="Fragment.label"
     )
-    runs: Mapped[list[ReconstructionRun]] = relationship(back_populates="artifact", cascade="all, delete-orphan")
+    runs: Mapped[list[ReconstructionRun]] = relationship(
+        back_populates="artifact", cascade="all, delete-orphan", passive_deletes=True
+    )
 
     __table_args__ = (
         CheckConstraint("grid_rows BETWEEN 1 AND 16", name="grid_rows_range"),
@@ -139,8 +141,12 @@ class ReconstructionRun(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
     artifact: Mapped[Artifact] = relationship(back_populates="runs")
-    placements: Mapped[list[RunPlacement]] = relationship(cascade="all, delete-orphan")
-    trace: Mapped[list[TraceStep]] = relationship(cascade="all, delete-orphan", order_by="TraceStep.step_no")
+    # passive_deletes: the database's ON DELETE CASCADE removes children in one
+    # statement; the ORM must not load and delete them row by row as well.
+    placements: Mapped[list[RunPlacement]] = relationship(cascade="all, delete-orphan", passive_deletes=True)
+    trace: Mapped[list[TraceStep]] = relationship(
+        cascade="all, delete-orphan", passive_deletes=True, order_by="TraceStep.step_no"
+    )
 
     __table_args__ = (
         CheckConstraint("algorithm IN ('greedy','best_first','dijkstra','backtracking')", name="algorithm_enum"),
