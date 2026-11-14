@@ -1,27 +1,24 @@
 // Owner: A (Arvind)
 import { fireEvent, render, screen } from "@testing-library/react";
 import ThemeToggle from "./components/layout/ThemeToggle";
-import { THEME_KEY, ThemeProvider } from "./theme";
+import { renderWithProviders } from "./test/renderWithProviders";
+import { THEME_KEY, useTheme } from "./theme";
 
-const renderToggle = () =>
-  render(
-    <ThemeProvider>
-      <ThemeToggle />
-    </ThemeProvider>,
-  );
+const renderToggle = () => renderWithProviders(<ThemeToggle />);
 
 function stubPrefersDark(dark: boolean) {
-  vi.stubGlobal("matchMedia", (query: string) => ({ matches: dark && query.includes("dark"), media: query, addEventListener() {}, removeEventListener() {} }));
+  vi.stubGlobal("matchMedia", (query: string) => ({
+    matches: dark && query.includes("dark"),
+    media: query,
+    addEventListener() {},
+    removeEventListener() {},
+  }));
 }
 
 describe("theme", () => {
   beforeEach(() => {
     window.localStorage.clear();
     delete document.documentElement.dataset.theme;
-  });
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.unstubAllGlobals();
   });
 
   it("follows prefers-color-scheme by default", () => {
@@ -65,5 +62,17 @@ describe("theme", () => {
     expect(document.documentElement.dataset.theme).toBe("light");
     fireEvent.click(screen.getByRole("button", { name: /switch to dark theme/i }));
     expect(document.documentElement.dataset.theme).toBe("dark");
+  });
+});
+
+describe("useTheme", () => {
+  it("throws a helpful error outside a ThemeProvider", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const Probe = () => {
+      useTheme();
+      return null;
+    };
+    expect(() => render(<Probe />)).toThrow("useTheme must be used inside <ThemeProvider>");
+    expect(consoleError).toHaveBeenCalled();
   });
 });

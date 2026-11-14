@@ -29,9 +29,21 @@ export const MATCH_CONFIG: MatchSummary["config"] = {
 };
 
 export const SAMPLES: SampleInfo[] = [
-  { name: "mosaic-tile", description: "Glazed geometric tile panel with star rosettes", image_url: "/api/v1/samples/mosaic-tile/image" },
-  { name: "pottery-band", description: "Painted pottery shard with wave and meander bands", image_url: "/api/v1/samples/pottery-band/image" },
-  { name: "manuscript", description: "Illuminated manuscript leaf with glyph rows and border", image_url: "/api/v1/samples/manuscript/image" },
+  {
+    name: "mosaic-tile",
+    description: "Glazed geometric tile panel with star rosettes",
+    image_url: "/api/v1/samples/mosaic-tile/image",
+  },
+  {
+    name: "pottery-band",
+    description: "Painted pottery shard with wave and meander bands",
+    image_url: "/api/v1/samples/pottery-band/image",
+  },
+  {
+    name: "manuscript",
+    description: "Illuminated manuscript leaf with glyph rows and border",
+    image_url: "/api/v1/samples/manuscript/image",
+  },
 ];
 
 /** mulberry32: tiny seeded PRNG. */
@@ -53,7 +65,13 @@ const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
 const STRIP_LEN = 24;
 
 export const composite = (s: Weights): number =>
-  round(s.color * WEIGHTS.color + s.lcs * WEIGHTS.lcs + s.edit * WEIGHTS.edit + s.motif * WEIGHTS.motif + s.hash * WEIGHTS.hash);
+  round(
+    s.color * WEIGHTS.color +
+      s.lcs * WEIGHTS.lcs +
+      s.edit * WEIGHTS.edit +
+      s.motif * WEIGHTS.motif +
+      s.hash * WEIGHTS.hash,
+  );
 
 export interface MockFragment extends FragmentOut {
   true_row: number;
@@ -85,7 +103,9 @@ function tileSvgBody(row: number, col: number, x: number, y: number, size: numbe
   );
 }
 const fragmentImage = (row: number, col: number, label: string) =>
-  svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120">${tileSvgBody(row, col, 0, 0, 120, label)}</svg>`);
+  svgUri(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120">${tileSvgBody(row, col, 0, 0, 120, label)}</svg>`,
+  );
 function artifactImage(rows: number, cols: number): string {
   const size = 480 / Math.max(rows, cols);
   let body = "";
@@ -256,7 +276,9 @@ const TIMING: Record<Algorithm, { ms: number; ops: (n: number) => Record<string,
 
 export function lookupScore(matches: SideMatchOut[], a: string, sa: number, b: string, sb: number): number {
   const hit = matches.find(
-    (m) => (m.a === a && m.side_a === sa && m.b === b && m.side_b === sb) || (m.a === b && m.side_a === sb && m.b === a && m.side_b === sa),
+    (m) =>
+      (m.a === a && m.side_a === sa && m.b === b && m.side_b === sb) ||
+      (m.a === b && m.side_a === sb && m.b === a && m.side_b === sa),
   );
   return hit?.composite ?? 0.05;
 }
@@ -292,7 +314,10 @@ export function buildRun(
   for (const p of placements) {
     const east = at.get(posKey(p.row, p.col + 1));
     const south = at.get(posKey(p.row + 1, p.col));
-    for (const [nb, sa, sb] of [[east, 1, 3], [south, 2, 0]] as const) {
+    for (const [nb, sa, sb] of [
+      [east, 1, 3],
+      [south, 2, 0],
+    ] as const) {
       if (!nb) continue;
       placedPairs++;
       const score = lookupScore(matches, p.label, sa, nb.label, sb);
@@ -307,7 +332,12 @@ export function buildRun(
 
   const trace: TraceStepOut[] = placements.map((p, i) =>
     i === 0
-      ? { step: 1, action: "seed", message: `Seed ${p.label}: strongest total edge weight`, data: { fragment: p.label, row: 0, col: 0, rot: 0 } }
+      ? {
+          step: 1,
+          action: "seed",
+          message: `Seed ${p.label}: strongest total edge weight`,
+          data: { fragment: p.label, row: 0, col: 0, rot: 0 },
+        }
       : {
           step: i + 1,
           action: "place",
@@ -316,16 +346,36 @@ export function buildRun(
         },
   );
   if (algorithm === "backtracking") {
-    trace.push({ step: trace.length + 1, action: "prune", message: "Bound 14.20 < incumbent 19.84: prune subtree", data: {} });
-    trace.push({ step: trace.length + 1, action: "best", message: "New best layout found", data: { total_score: round(total) } });
+    trace.push({
+      step: trace.length + 1,
+      action: "prune",
+      message: "Bound 14.20 < incumbent 19.84: prune subtree",
+      data: {},
+    });
+    trace.push({
+      step: trace.length + 1,
+      action: "best",
+      message: "New best layout found",
+      data: { total_score: round(total) },
+    });
   }
-  trace.push({ step: trace.length + 1, action: "stop", message: `Placed ${placements.length}/${frags.length} fragments`, data: {} });
+  trace.push({
+    step: trace.length + 1,
+    action: "stop",
+    message: `Placed ${placements.length}/${frags.length} fragments`,
+    data: {},
+  });
 
   return {
     id: hex32(rng(Math.floor(r() * 1e9) + createdAt.length)),
     artifact_id: m.artifact.id,
     algorithm,
-    params: { threshold: params.threshold ?? 0, top_k: params.top_k ?? null, node_limit: params.node_limit ?? 150000, seed: null },
+    params: {
+      threshold: params.threshold ?? 0,
+      top_k: params.top_k ?? null,
+      node_limit: params.node_limit ?? 150000,
+      seed: null,
+    },
     elapsed_ms: TIMING[algorithm].ms,
     operations: TIMING[algorithm].ops(frags.length),
     total_score: round(total),
@@ -342,8 +392,15 @@ export function buildRun(
 }
 
 export function scalingModel(algorithm: Algorithm, n: number): { ms: number; ops: number; truncated: boolean } {
-  const f = { greedy: 0.09 * n ** 1.3, best_first: 0.16 * n ** 1.5, dijkstra: 0.25 * n ** 1.7, backtracking: 0.4 * 1.55 ** n }[algorithm];
-  const opsF = { greedy: 20 * n ** 2, best_first: 30 * n ** 2, dijkstra: 60 * n ** 2, backtracking: 90 * 1.6 ** n }[algorithm];
+  const f = {
+    greedy: 0.09 * n ** 1.3,
+    best_first: 0.16 * n ** 1.5,
+    dijkstra: 0.25 * n ** 1.7,
+    backtracking: 0.4 * 1.55 ** n,
+  }[algorithm];
+  const opsF = { greedy: 20 * n ** 2, best_first: 30 * n ** 2, dijkstra: 60 * n ** 2, backtracking: 90 * 1.6 ** n }[
+    algorithm
+  ];
   const truncated = algorithm === "backtracking" && n > 25;
   return { ms: round(f, 2), ops: Math.round(opsF), truncated };
 }

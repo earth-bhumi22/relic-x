@@ -3,17 +3,17 @@ import { render, screen } from "@testing-library/react";
 import App from "./App";
 
 describe("App", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-    vi.unstubAllEnvs();
-  });
-
   it("mounts the layout and shows the API status once health responds", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockImplementation(async (url: string) =>
-        new Response(JSON.stringify(url.endsWith("/health") ? { status: "ok", database: true, version: "0.1.0" } : [])),
-      ),
+      vi
+        .fn()
+        .mockImplementation(
+          async (url: string) =>
+            new Response(
+              JSON.stringify(url.endsWith("/health") ? { status: "ok", database: true, version: "0.1.0" } : []),
+            ),
+        ),
     );
     render(<App />);
     expect(screen.getByRole("link", { name: "RELIC-X" })).toBeInTheDocument();

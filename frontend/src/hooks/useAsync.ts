@@ -20,7 +20,8 @@ export function useAsync<T>(fn: () => Promise<T>, deps: readonly unknown[]): Asy
     setState({ status: "loading" });
     latest.current().then(
       (data) => !cancelled && setState({ status: "success", data }),
-      (error: unknown) => !cancelled && setState({ status: "error", error: error instanceof Error ? error : new Error(String(error)) }),
+      (error: unknown) =>
+        !cancelled && setState({ status: "error", error: error instanceof Error ? error : new Error(String(error)) }),
     );
     return () => {
       cancelled = true;

@@ -45,20 +45,32 @@ export const mockConfig = {
 };
 
 // ---- store --------------------------------------------------------------------------------
-const MOSAIC: ArtifactSpec = {
+export const MOSAIC: ArtifactSpec = {
   id: "4f1c2a9e0b7d4e6f8a1b2c3d4e5f6a7b",
   name: "Mughal tile panel",
   description: "Glazed geometric tile panel with star rosettes",
   sample: "mosaic-tile",
-  rows: 4, cols: 4, missing: 0, seed: 7, rotate: false, noise: 4, erosion: 0.2,
+  rows: 4,
+  cols: 4,
+  missing: 0,
+  seed: 7,
+  rotate: false,
+  noise: 4,
+  erosion: 0.2,
   createdAt: "2026-11-13T11:30:00Z",
 };
-const POTTERY: ArtifactSpec = {
+export const POTTERY: ArtifactSpec = {
   id: "7b2e5d1c9a3f4c80b6d1e2f3a4b5c6d7",
   name: "Pottery band (unmatched)",
   description: "Fragmented but not matched yet — solving returns 409 precondition_failed",
   sample: "pottery-band",
-  rows: 4, cols: 4, missing: 0, seed: 11, rotate: false, noise: 4, erosion: 0.2,
+  rows: 4,
+  cols: 4,
+  missing: 0,
+  seed: 11,
+  rotate: false,
+  noise: 4,
+  erosion: 0.2,
   createdAt: "2026-11-13T12:10:00Z",
 };
 
@@ -86,8 +98,23 @@ function seedStore() {
   saveRun(mosaic, withId(buildRun(mosaic, "greedy", {}, "2026-11-13T11:32:00Z")));
 }
 
-/** Restores the initial data (used by tests). */
+/** Per-endpoint replacement used by tests (see src/test/mockApi.ts). Never set in the running app. */
+export interface MockRequest {
+  method: string;
+  path: string;
+  query: URLSearchParams;
+  body: Record<string, unknown>;
+}
+export type MockHandler = (req: MockRequest) => unknown | Promise<unknown>;
+const overrides = new Map<string, MockHandler>();
+export const overrideKey = (method: string, path: string) => `${method.toUpperCase()} ${path}`;
+export function setMockOverride(method: string, path: string, handler: MockHandler) {
+  overrides.set(overrideKey(method, path), handler);
+}
+
+/** Restores the initial data and removes all overrides (used by tests). */
 export function resetMocks() {
+  overrides.clear();
   seedStore();
 }
 seedStore();
@@ -95,7 +122,8 @@ seedStore();
 // ---- helpers ------------------------------------------------------------------------------
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 const notFound = (what: string, id: string) => new ApiError(404, "not_found", `${what} ${id} not found`);
-const invalid = (message: string, details: Record<string, unknown> = {}) => new ApiError(422, "invalid_input", message, details);
+const invalid = (message: string, details: Record<string, unknown> = {}) =>
+  new ApiError(422, "invalid_input", message, details);
 const validation = (field: string, message: string) =>
   new ApiError(422, "validation_error", "request validation failed", { errors: [{ loc: [field], msg: message }] });
 
@@ -105,7 +133,8 @@ function getArtifactOr404(id: string): MockArtifact {
   return m;
 }
 function requireMatches(m: MockArtifact): SideMatchOut[] {
-  if (!m.matches) throw new ApiError(409, "precondition_failed", `run matching first (POST /artifacts/${m.artifact.id}/match)`);
+  if (!m.matches)
+    throw new ApiError(409, "precondition_failed", `run matching first (POST /artifacts/${m.artifact.id}/match)`);
   return m.matches;
 }
 function num(q: URLSearchParams, key: string): number | undefined {
@@ -129,7 +158,8 @@ function createSample(body: Record<string, unknown>): ArtifactOut {
   const name = typeof body.name === "string" ? body.name.trim() : "";
   if (!name) throw validation("name", "String should have at least 1 character");
   const sample = typeof body.sample === "string" ? body.sample : "mosaic-tile";
-  if (!SAMPLES.some((s) => s.name === sample)) throw invalid(`unknown sample '${sample}'`, { available: SAMPLES.map((s) => s.name) });
+  if (!SAMPLES.some((s) => s.name === sample))
+    throw invalid(`unknown sample '${sample}'`, { available: SAMPLES.map((s) => s.name) });
   const f = (body.fragment ?? {}) as Record<string, unknown>;
   const rows = Number(f.rows ?? 4);
   const cols = Number(f.cols ?? 4);
@@ -155,10 +185,26 @@ function createSample(body: Record<string, unknown>): ArtifactOut {
 }
 
 function specOf(m: MockArtifact): ArtifactSpec {
-  const p = m.artifact.fragment_params as { seed: number; rows: number; cols: number; rotate: boolean; noise: number; erosion: number; missing: number };
+  const p = m.artifact.fragment_params as {
+    seed: number;
+    rows: number;
+    cols: number;
+    rotate: boolean;
+    noise: number;
+    erosion: number;
+    missing: number;
+  };
   return {
-    name: m.artifact.name, description: m.artifact.description, sample: "mosaic-tile",
-    rows: p.rows, cols: p.cols, missing: p.missing, seed: p.seed, rotate: p.rotate, noise: p.noise, erosion: p.erosion,
+    name: m.artifact.name,
+    description: m.artifact.description,
+    sample: "mosaic-tile",
+    rows: p.rows,
+    cols: p.cols,
+    missing: p.missing,
+    seed: p.seed,
+    rotate: p.rotate,
+    noise: p.noise,
+    erosion: p.erosion,
     createdAt: m.artifact.created_at,
   };
 }
@@ -172,7 +218,12 @@ function matchArtifact(m: MockArtifact, body: Record<string, unknown>): MatchSum
   return { config, stats: m.matchStats };
 }
 
-function trueNeighbour(fa: MockFragment | undefined, sa: number, fb: MockFragment | undefined, sb: number): boolean | null {
+function trueNeighbour(
+  fa: MockFragment | undefined,
+  sa: number,
+  fb: MockFragment | undefined,
+  sb: number,
+): boolean | null {
   if (!fa || !fb) return null;
   const dr = fb.true_row - fa.true_row;
   const dc = fb.true_col - fa.true_col;
@@ -184,7 +235,7 @@ function trueNeighbour(fa: MockFragment | undefined, sa: number, fb: MockFragmen
   );
 }
 
-function graph(m: MockArtifact, q: URLSearchParams): GraphOut {
+export function graph(m: MockArtifact, q: URLSearchParams): GraphOut {
   const matches = requireMatches(m);
   const threshold = num(q, "threshold") ?? 0.5;
   const topK = num(q, "top_k") ?? null;
@@ -206,9 +257,13 @@ function graph(m: MockArtifact, q: URLSearchParams): GraphOut {
     });
   }
   const edges: GraphEdge[] = kept.map((x) => ({
-    source: x.a, target: x.b, weight: x.composite,
-    side_source: sideIndexToLetter(x.side_a), side_target: sideIndexToLetter(x.side_b),
-    side_source_index: x.side_a, side_target_index: x.side_b,
+    source: x.a,
+    target: x.b,
+    weight: x.composite,
+    side_source: sideIndexToLetter(x.side_a),
+    side_target: sideIndexToLetter(x.side_b),
+    side_source_index: x.side_a,
+    side_target_index: x.side_b,
     true_neighbours: trueNeighbour(byLabel.get(x.a), x.side_a, byLabel.get(x.b), x.side_b),
   }));
 
@@ -231,7 +286,10 @@ function graph(m: MockArtifact, q: URLSearchParams): GraphOut {
       const cur = method === "bfs" ? frontier.shift()! : frontier.pop()!;
       comp.push(cur);
       order.push(cur);
-      const next = adj.get(cur)!.map((n) => n.to).filter((t) => !seen.has(t));
+      const next = adj
+        .get(cur)!
+        .map((n) => n.to)
+        .filter((t) => !seen.has(t));
       // DFS pops from the end, so push in reverse to visit the strongest neighbour first.
       for (const t of method === "bfs" ? next : [...next].reverse()) {
         if (!seen.has(t)) {
@@ -261,7 +319,8 @@ function stripColours(edge: string): number[][] {
 function lcs(a: string, b: string) {
   const dp = Array.from({ length: a.length + 1 }, () => new Array<number>(b.length + 1).fill(0));
   for (let i = 1; i <= a.length; i++)
-    for (let j = 1; j <= b.length; j++) dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    for (let j = 1; j <= b.length; j++)
+      dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
   const pairs: [number, number][] = [];
   let i = a.length;
   let j = b.length;
@@ -286,7 +345,7 @@ function longestCommonRun(a: string, b: string) {
   return best;
 }
 
-function explain(m: MockArtifact, q: URLSearchParams): Explanation {
+export function explain(m: MockArtifact, q: URLSearchParams): Explanation {
   const matches = requireMatches(m);
   const a = q.get("a");
   const b = q.get("b");
@@ -303,7 +362,9 @@ function explain(m: MockArtifact, q: URLSearchParams): Explanation {
   const edgeA = fa.edges[letterA];
   const edgeBRev = fb.edges[letterB].split("").reverse().join("");
   const hit = matches.find(
-    (x) => (x.a === a && x.side_a === sa && x.b === b && x.side_b === sb) || (x.a === b && x.side_a === sb && x.b === a && x.side_b === sa),
+    (x) =>
+      (x.a === a && x.side_a === sa && x.b === b && x.side_b === sb) ||
+      (x.a === b && x.side_a === sb && x.b === a && x.side_b === sa),
   );
   const scores = hit
     ? { color: hit.color, lcs: hit.lcs, edit: hit.edit, motif: hit.motif, hash: hit.hash }
@@ -320,12 +381,21 @@ function explain(m: MockArtifact, q: URLSearchParams): Explanation {
   const ga = ngrams(edgeA);
   const gb = ngrams(edgeBRev);
   const shared = [...ga].filter((g) => gb.has(g)).length;
-  const ops = edgeA.split("").map((ch, i) => ({ op: (ch === edgeBRev[i] ? "match" : "sub") as "match" | "sub", a: ch, b: edgeBRev[i] }));
+  const ops = edgeA
+    .split("")
+    .map((ch, i) => ({ op: (ch === edgeBRev[i] ? "match" : "sub") as "match" | "sub", a: ch, b: edgeBRev[i] }));
   return {
-    a, side_a: letterA, b, side_b: letterB,
-    edge_a: edgeA, edge_b_reversed: edgeBRev,
-    strip_a: stripColours(edgeA), strip_b_reversed: stripColours(edgeBRev),
-    scores, weights: { ...WEIGHTS }, contributions,
+    a,
+    side_a: letterA,
+    b,
+    side_b: letterB,
+    edge_a: edgeA,
+    edge_b_reversed: edgeBRev,
+    strip_a: stripColours(edgeA),
+    strip_b_reversed: stripColours(edgeBRev),
+    scores,
+    weights: { ...WEIGHTS },
+    contributions,
     composite: hit?.composite ?? r4(Object.values(contributions).reduce((s, v) => s + v, 0)),
     lcs: lcs(edgeA, edgeBRev),
     // Mock simplification: position-wise comparison. The real API returns a true Levenshtein alignment.
@@ -338,7 +408,8 @@ function explain(m: MockArtifact, q: URLSearchParams): Explanation {
 
 function createRun(m: MockArtifact, body: Record<string, unknown>): RunDetail {
   const algorithm = body.algorithm as Algorithm;
-  if (!ALGORITHMS.includes(algorithm)) throw validation("algorithm", "input should be 'greedy', 'best_first', 'dijkstra' or 'backtracking'");
+  if (!ALGORITHMS.includes(algorithm))
+    throw validation("algorithm", "input should be 'greedy', 'best_first', 'dijkstra' or 'backtracking'");
   requireMatches(m);
   const params = {
     threshold: body.threshold as number | undefined,
@@ -354,7 +425,8 @@ function scaling(body: ScalingRequest): ScalingOut {
   const sample = body.sample ?? "mosaic-tile";
   if (!SAMPLES.some((s) => s.name === sample)) throw invalid(`unknown sample '${sample}'`);
   const sizes = body.sizes ?? [2, 3, 4, 5];
-  if (sizes.some((s) => !Number.isInteger(s) || s < 1 || s > 8)) throw validation("sizes", "each size must be an integer between 1 and 8");
+  if (sizes.some((s) => !Number.isInteger(s) || s < 1 || s > 8))
+    throw validation("sizes", "each size must be an integer between 1 and 8");
   const algorithms = body.algorithms ?? [...ALGORITHMS];
   return {
     sample,
@@ -405,6 +477,9 @@ export async function mockRequest<T>(path: string, init: RequestInit = {}): Prom
   if (typeof init.body === "string" && init.body) body = JSON.parse(init.body) as Record<string, unknown>;
   else if (init.body instanceof FormData) throw invalid("file uploads are not available in mock mode");
 
+  const override = overrides.get(overrideKey(method, p));
+  if (override) return structuredClone(await override({ method, path: p, query: q, body })) as T;
+
   // Responses are cloned so callers can never mutate the store.
   const out = (v: unknown) => structuredClone(v) as T;
   let m: RegExpMatchArray | null;
@@ -418,12 +493,15 @@ export async function mockRequest<T>(path: string, init: RequestInit = {}): Prom
     return out([...store.values()].map((x) => x.artifact).slice(offset, offset + limit));
   }
   if (method === "POST" && p === "/artifacts/sample") return out(createSample(body));
-  if (method === "POST" && (p === "/artifacts/upload" || p === "/artifacts/fragments-upload")) throw invalid("file uploads are not available in mock mode");
+  if (method === "POST" && (p === "/artifacts/upload" || p === "/artifacts/fragments-upload"))
+    throw invalid("file uploads are not available in mock mode");
   if (method === "POST" && p === "/benchmark/scaling") return out(scaling(body as ScalingRequest));
 
   if ((m = p.match(/^\/artifacts\/([^/]+)$/)) && method === "GET") return out(getArtifactOr404(m[1]).artifact);
-  if ((m = p.match(/^\/artifacts\/([^/]+)\/fragments$/)) && method === "GET") return out(getArtifactOr404(m[1]).fragments satisfies FragmentOut[]);
-  if ((m = p.match(/^\/artifacts\/([^/]+)\/match$/)) && method === "POST") return out(matchArtifact(getArtifactOr404(m[1]), body));
+  if ((m = p.match(/^\/artifacts\/([^/]+)\/fragments$/)) && method === "GET")
+    return out(getArtifactOr404(m[1]).fragments satisfies FragmentOut[]);
+  if ((m = p.match(/^\/artifacts\/([^/]+)\/match$/)) && method === "POST")
+    return out(matchArtifact(getArtifactOr404(m[1]), body));
   if ((m = p.match(/^\/artifacts\/([^/]+)\/matches$/)) && method === "GET") {
     const matches = requireMatches(getArtifactOr404(m[1]));
     const min = num(q, "min_score") ?? 0;
@@ -431,7 +509,8 @@ export async function mockRequest<T>(path: string, init: RequestInit = {}): Prom
     return out(matches.filter((x) => x.composite >= min).slice(0, limit));
   }
   if ((m = p.match(/^\/artifacts\/([^/]+)\/graph$/)) && method === "GET") return out(graph(getArtifactOr404(m[1]), q));
-  if ((m = p.match(/^\/artifacts\/([^/]+)\/explain$/)) && method === "GET") return out(explain(getArtifactOr404(m[1]), q));
+  if ((m = p.match(/^\/artifacts\/([^/]+)\/explain$/)) && method === "GET")
+    return out(explain(getArtifactOr404(m[1]), q));
   if ((m = p.match(/^\/artifacts\/([^/]+)\/runs$/))) {
     const art = getArtifactOr404(m[1]);
     if (method === "GET") return out(art.runs.map(toRunOut));

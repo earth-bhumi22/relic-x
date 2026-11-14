@@ -91,10 +91,8 @@ export const getGraph = (
   params: { threshold?: number; top_k?: number | null; traversal?: Traversal } = {},
 ) => api<GraphOut>(`/artifacts/${artifactId}/graph${qs(params)}`);
 /** `a` and `b` are fragment *labels* (e.g. "F03"); sides are integers 0–3. The response uses letters. */
-export const explainMatch = (
-  artifactId: string,
-  p: { a: string; sideA: SideIndex; b: string; sideB: SideIndex },
-) => api<Explanation>(`/artifacts/${artifactId}/explain${qs({ a: p.a, side_a: p.sideA, b: p.b, side_b: p.sideB })}`);
+export const explainMatch = (artifactId: string, p: { a: string; sideA: SideIndex; b: string; sideB: SideIndex }) =>
+  api<Explanation>(`/artifacts/${artifactId}/explain${qs({ a: p.a, side_a: p.sideA, b: p.b, side_b: p.sideB })}`);
 
 // ---- runs & benchmarks ------------------------------------------------------------------
 export const createRun = (artifactId: string, body: Partial<RunCreate> & { algorithm: Algorithm }) =>
