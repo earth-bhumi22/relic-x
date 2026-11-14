@@ -200,7 +200,7 @@ It ends with `ALL CHECKS PASSED`. CI runs the same script against PostgreSQL 16 
 ### Run the tests
 
 ```bash
-cd backend && pytest            # 70 engine + API + migration tests
+cd backend && pytest            # engine + API + migration tests
 ruff check . && black --check .
 cd ../frontend && npm test && npm run build
 ```
