@@ -258,10 +258,122 @@ top-3 graph unless `top_k` is given, which helps it (79% against 63% clean at 25
 candidate parents to choose wrongly).
 
 ## 13. Backtracking + branch & bound (`engine/solvers/backtracking.py`)
-<!-- T17: state space, both upper bounds and why they are valid, greedy starting solution, node count vs n, truncation, DP extension. -->
+**What it computes.** An exact search for the arrangement with the largest total compatibility score
+`Σ w(a, s_a, b, s_b)` over all adjacent pairs, on an R × C grid with `n ≤ R·C` fragments. It fills cells in row-major
+order; at each cell it tries every unused fragment in every allowed rotation, or leaves the cell `EMPTY` (only while
+enough empties remain, so that every fragment still fits). A placement scores the sum of its **left** and **top**
+adjacencies, so each adjacent pair is counted exactly once, when the later cell is filled. Same score convention as
+`Layout.total_score`. The compat table must be symmetric (`compat_table` stores both directions).
+
+**State space (exact).** An arrangement is an injective map from the n fragments to the C = R·C cells, plus one of R_t
+rotations per fragment (R_t = 1 or 4): `C! / (C − n)! · R_t^n` arrangements. For n = C that is `n! · R_t^n` leaves. The
+search tree (before any pruning) has `Σ_{k=0..n} n!/(n−k)!` nodes without rotation and `n = C`; this is the "unbounded
+tree" column of the generated table (65 nodes for n = 4, 1,957 for n = 6, 9,864,101 for n = 10, 1,302,061,345 for
+n = 12). Rotation multiplies each level by R_t.
+
+**Upper bound, two lemmas.** Let `score` be the total of all adjacencies already booked (cells before k), M the largest
+value in the compat table, `adj_after[k]` the number of left/top adjacencies of cells k … C−1, and `best_side(f, s)` the
+largest weight any join can give side s of f. Define, per fragment, `v_best[f] = max over rotations of
+best_side(f, west) + best_side(f, north)` (the two sides f contributes when it is the *later* cell of a pair).
+
+- *Lemma 1 (adjacency bound).* Any completion adds at most `M · adj_after[k]`. Proof: only the adjacencies of cells
+  ≥ k are not yet booked; there are exactly `adj_after[k]` of them and each is ≤ M. An `EMPTY` cell adds 0 ≤ M.
+- *Lemma 2 (fragment bound).* Any completion adds at most `Σ_{f unused} v_best[f]`. Proof: a future gain is booked
+  when its later cell is filled, and that cell holds an unused fragment f (an already-placed fragment's own gains are
+  in `score`). The gain of f in its cell is `w(left, f's W side) + w(top, f's N side)` ≤ `best_side(f, W-facing
+  side) + best_side(f, N-facing side)`, and the rotation can only choose which sides face W and N, so it is ≤
+  `v_best[f]`. Symmetry of compat lets `best_side` be read from one direction. Unused fragments that end up in cells
+  with a missing neighbour gain less, never more.
+
+Both are valid, so is their minimum: `bound = score + min(M·adj_after[k], Σ_unused v_best)`. They are incomparable
+(Lemma 1 is tight when few cells remain, Lemma 2 when few fragments remain), so the code takes the minimum.
+`tests/engine/test_backtracking.py` checks both directly: for every partial arrangement of the 2×2 (with and without
+rotation) and 2×3 grids it brute-forces the best completion and asserts it never exceeds either term.
+
+**Branch and bound correctness.** Invariant: `best` is the score of a complete arrangement that exists. A node is
+pruned when `bound ≤ best`; every completion below it scores `score + future ≤ bound ≤ best`, so it cannot beat the
+incumbent, and dropping it keeps the optimum. Pruning on `≤` (not `<`) discards ties: the first-found layout of a given
+best score is the one returned (an incumbent that is already optimal comes back unchanged, which the test asserts).
+`best` starts at −1.0 so that a score-0 arrangement is accepted as the first answer; a new best must exceed the
+old by more than 1e-9 so float-summation noise never produces a fake "improvement". When n < C the `EMPTY` option adds
+0 and consumes one of the `C − n` allowed empties; both lemmas hold unchanged. With rotation, `v_best` maximises over
+rotations and each placement tries all of them. The brute-force tests (2×2, 2×3, with and without rotation, with an
+empty cell, with and without incumbent, 109 random tables in total) always agree with an exhaustive enumeration.
+
+**Greedy starting solution.** `run_solver` runs greedy first and passes its placements as `incumbent=`. The search
+scores it (`Layout.total_score`), sets `best` to that value, and so prunes from the first node. An incumbent that does not
+fit the grid is ignored. It can never make the answer worse, and a truncated run returns at least the incumbent. Measured
+effect on random 2×k tables (generated, 5 seeds): the incumbent saves little, because greedy is rarely close to the
+optimum there and the search finds a good arrangement quickly anyway: n = 6, 945 → 878 nodes (−7 %); n = 8,
+25,441 → 25,304 (−0.5 %). Where the incumbent matters is guaranteeing a floor when the limit hits (below).
+
+**Time and space.** Worst case `O(C!/(C−n)! · R_t^n)` nodes, each costing O(n·R_t) to enumerate options and O(n) for the
+fragment bound; space O(C) for the recursion plus the capped trace. It is exponential in n; the bound only shrinks the constant, not the worst case.
+
+**Node count vs n (measured).** From the generated table (random compat tables, 2×k grid, mean over 5 seeds): 54 nodes
+at n = 4, 945 at n = 6, 25,441 at n = 8 without an incumbent, against a 109,601-node unbounded tree at n = 8. Fitting
+ln(nodes) on n over the three un-truncated sizes (n = 4, 6, 8) gives slope 1.540 (×4.66 per extra fragment), R² = 0.998
+(with incumbent: 1.556, ×4.74, R² = 0.998). Only three points, so treat it as an indication of exponential growth, not as
+a precise base. At node limit 300,000 truncation begins at **n = 10** (all 5 seeds). On the synthetic images (3×3, 4×4)
+the real compat structure is far easier than random tables: n = 16 needs 1,886 nodes on average on clean images but
+reaches the limit on 2 of 6 damaged instances.
+
+**Truncation (`node_limit`).** Guarantee: the result is always a valid, complete layout, never empty, with
+`score ≥` the incumbent score when one is given. The limit is enforced only once one complete arrangement exists
+(the first descent needs about C + 1 nodes), so with no incumbent `nodes` can exceed `node_limit` by about that much.
+This fixes a bug found in T17: previously a limit smaller than the first descent with no incumbent returned an empty
+layout. A truncated run sets `truncated = True`, and the trace ends with a `limit` step. Trace cap: routine steps
+(`place`, `backtrack`, `prune`) obey the 400-step cap and are counted in `trace_dropped`; the milestones `incumbent`,
+`best` and `limit` use a reserved 100-slot extension (`TraceRecorder.log_important`) so they are never lost. `prune`
+steps now carry `bound` and `best`.
+
+**Dynamic-programming extension (`engine/solvers/row_dp.py`, not registered in `ALGORITHMS`).** For a grid with
+exactly two rows (2 × c, K = 2c fragments) the exact optimum has a column DP. State after column j: the set of used
+fragments (bitmask) and the top and bottom options (fragment, rotation) of column j. Recurrence, with H the east/west
+compatibility, V the south/north compatibility of a vertical pair:
+`S_{j+1}(mask ∪ {t', b'}, t', b') = max over (mask, t, b) of S_j(mask, t, b) + H(t, t') + H(b, b') + V(t', b')`.
+Rotation is supported (an option is a (fragment, rotation) pair). The code splits each column into two half steps (choose
+the top, then the bottom) so each state expands O(K·R) options in each half. Number of states after j columns:
+`C(K, 2j) · 2j(2j−1) · R²`; for R = 1 the total over all columns matches the stored-state counts in the generated table
+(24, 240, 1,792, 11,520, 67,584, 372,736 for c = 2…7). Time `O(2^K · K³ · R³)`, memory `O(2^K · K² · R²)` (back-pointers for
+all layers are kept). The profile is the used-set bitmask: it is what makes the problem 2^K instead of K! — but it only
+works because the "frontier" is two cells. For an R × C grid the profile would have to hold the whole boundary row (R
+cells, each with a fragment and rotation) so the state count is the bitmask times (K·R_t)^R-style row profiles and the transition
+cost grows with it: this does not generalise, which is why backtracking stays the general solver.
+Measured (generated, random tables, density 0.35, seed 7, no rotation): the DP matches backtracking's score whenever
+backtracking completes (c = 2, 3, 4), and beats the truncated backtracking at c = 5, 6, 7 (7.338 vs 6.942, 10.188 vs 9.635,
+12.307 vs 11.200). DP time 214 ms at c = 6 (12 fragments, 67,584 states), 1,420 ms at c = 7, and it **stops at c = 8**
+(16 fragments): the 1,500,000-state limit is exceeded (the full state count there is 1,966,080). Backtracking is
+truncated at 300,000 nodes from c = 5.
+
+**Where it is used.** `backtracking` in the API runs greedy and then branch and bound seeded with it; `meta` carries
+`nodes`, `pruned`, `node_limit`, `incumbent_score`, `improved_on_incumbent`. The DP is a verification tool and a benchmark
+reference (tests assert DP = exhaustive = un-truncated backtracking on 2×2, 2×3 and 2×4).
 
 ## 14. Accuracy metrics (`engine/metrics.py`)
-<!-- T14/T17: neighbour vs direct accuracy, invariance to global rotation and shift. -->
+Two metrics, both compared with the ground truth that synthetic artifacts carry (`Truth(row, col, scramble_rot)` per
+fragment). Both are in [0, 1].
+
+- **Neighbour accuracy.** Denominator: the number of true right and down adjacencies in the picture. A true adjacency
+  (f, g) counts as reproduced when both fragments are placed, their *net* orientations agree (scramble rotation plus the
+  solver's rotation, mod 4), and g sits next to f in the direction the net orientation implies (`_rot_vec`). It does not care
+  where on the grid the pair is, so it rewards local correctness: two correct halves with a gap between them still score the
+  adjacencies inside each half.
+- **Direct accuracy.** Fragments in the right cell. Because a solution may be a global rotation and a shift of the true picture
+  and still be correct, it tries each of the four global rotations, lets every fragment vote for the shift that would put it
+  in its true cell, and takes the winning (rotation, shift) vote count divided by the number of truth fragments. It is stricter:
+  one displaced fragment in the middle changes the cells of everything pushed along with it.
+- **Invariance.** Both are invariant to a global shift and a global rotation of the whole layout (tests: exact layout, a
+  shifted copy and a layout rotated by 90, 180, 270° all score 1.0). A mirror image is *not* a rotation: it scores below 1
+  (3/7 neighbour, 2/6 direct for a mirrored 2×3 in the test).
+- **Neighbour vs direct ordering.** Neither dominates. Two correct halves with a gap: neighbour 2/3 > direct 2/4. Two pieces
+  swapped in a 2×2: neighbour 1/4 < direct 2/4. In the benchmark section the two are close because errors there are mostly one
+  displaced fragment.
+- **Missing pieces.** Denominators use the *truth*, not the layout, so an unplaced fragment is counted wrong (a 2×3 picture
+  missing one top-middle piece scores 4/7 neighbour, 5/6 direct in the test).
+- **No ground truth.** Uploaded artifacts have none; the functions return 1.0 for an empty truth (vacuous, to avoid dividing by
+  zero). The API reports no accuracy for those runs, so 1.0 never reaches the UI; do not read it as "perfect".
+- **An empty layout against a truth** scores 0 / 0.
 
 ---
 
