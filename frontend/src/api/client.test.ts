@@ -1,6 +1,7 @@
 // Owner: A (Arvind)
 import {
   ApiError,
+  api,
   createRun,
   createSampleArtifact,
   explainMatch,
@@ -16,15 +17,13 @@ import {
   runBenchmark,
   runScalingBenchmark,
 } from "./client";
-import { resetMocks } from "./mocks";
+import { mockApi } from "../test/mockApi";
 
 const MOSAIC = "4f1c2a9e0b7d4e6f8a1b2c3d4e5f6a7b";
 const POTTERY = "7b2e5d1c9a3f4c80b6d1e2f3a4b5c6d7";
 const MISSING = "00000000000000000000000000000000";
 
 describe("real mode", () => {
-  afterEach(() => vi.unstubAllGlobals());
-
   it("calls fetch with the /api/v1 prefix", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify([])));
     vi.stubGlobal("fetch", fetchMock);
@@ -45,27 +44,52 @@ describe("real mode", () => {
     expect(fetchMock.mock.calls[2][1]).toMatchObject({ method: "POST", body: '{"algorithm":"greedy"}' });
   });
 
+  it("returns undefined for 204 No Content", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 204 })));
+    await expect(api("/artifacts/x", { method: "DELETE" })).resolves.toBeUndefined();
+  });
+
+  it("sets a JSON content-type for string bodies but never for FormData", async () => {
+    const fetchMock = vi.fn().mockImplementation(async () => new Response("{}"));
+    vi.stubGlobal("fetch", fetchMock);
+    await api("/artifacts/sample", { method: "POST", body: JSON.stringify({ name: "x" }) });
+    const form = new FormData();
+    form.set("name", "upload");
+    await api("/artifacts/upload", { method: "POST", body: form });
+    await api("/health");
+    const contentType = (call: number) => (fetchMock.mock.calls[call][1].headers as Headers).get("Content-Type");
+    expect(contentType(0)).toBe("application/json");
+    expect(contentType(1)).toBeNull(); // the browser must add the multipart boundary itself
+    expect(contentType(2)).toBeNull();
+  });
+
   it("turns the backend error envelope into an ApiError", async () => {
     const body = { error: { code: "precondition_failed", message: "run matching first", details: { step: "match" } } };
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify(body), { status: 409 })));
-    await expect(getArtifact("x")).rejects.toMatchObject({ status: 409, code: "precondition_failed", message: "run matching first", details: { step: "match" } });
+    await expect(getArtifact("x")).rejects.toMatchObject({
+      status: 409,
+      code: "precondition_failed",
+      message: "run matching first",
+      details: { step: "match" },
+    });
   });
 
   it("falls back to http_error when the body is not the error envelope", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("<html>", { status: 502, statusText: "Bad Gateway" })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response("<html>", { status: 502, statusText: "Bad Gateway" })),
+    );
     await expect(getHealth()).rejects.toMatchObject({ code: "http_error", status: 502 });
   });
 });
 
 describe("mock mode", () => {
   beforeEach(() => {
-    vi.stubEnv("VITE_USE_MOCKS", "true");
-    vi.stubGlobal("fetch", vi.fn(() => Promise.reject(new Error("fetch must not be called in mock mode"))));
-    resetMocks();
-  });
-  afterEach(() => {
-    vi.unstubAllEnvs();
-    vi.unstubAllGlobals();
+    mockApi.enable();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => Promise.reject(new Error("fetch must not be called in mock mode"))),
+    );
   });
 
   it("never calls fetch and lists at least 2 artifacts", async () => {
@@ -76,7 +100,14 @@ describe("mock mode", () => {
 
   it("serves the CONTRACT §6.1 artifact", async () => {
     const a = await getArtifact(MOSAIC);
-    expect(a).toMatchObject({ name: "Mughal tile panel", grid_rows: 4, grid_cols: 4, fragment_count: 16, source_kind: "sample", has_ground_truth: true });
+    expect(a).toMatchObject({
+      name: "Mughal tile panel",
+      grid_rows: 4,
+      grid_cols: 4,
+      fragment_count: 16,
+      source_kind: "sample",
+      has_ground_truth: true,
+    });
   });
 
   it("rejects an unknown id with ApiError not_found", async () => {
@@ -127,7 +158,12 @@ describe("mock mode", () => {
 
   it("explains a match with letters in the response and rejects letter query params", async () => {
     const best = (await listMatches(MOSAIC, { limit: 1 }))[0];
-    const ex = await explainMatch(MOSAIC, { a: best.a, sideA: best.side_a as 0 | 1 | 2 | 3, b: best.b, sideB: best.side_b as 0 | 1 | 2 | 3 });
+    const ex = await explainMatch(MOSAIC, {
+      a: best.a,
+      sideA: best.side_a as 0 | 1 | 2 | 3,
+      b: best.b,
+      sideB: best.side_b as 0 | 1 | 2 | 3,
+    });
     expect(ex.composite).toBe(best.composite);
     expect(ex.side_a).toMatch(/^[NESW]$/);
     expect(ex.edge_a).toHaveLength(24);
@@ -135,7 +171,9 @@ describe("mock mode", () => {
     const sumContrib = Object.values(ex.contributions).reduce((s, v) => s + v, 0);
     expect(sumContrib).toBeCloseTo(ex.composite, 3);
     // the real API answers 422 validation_error for "N"; the mock must match
-    const raw = await import("./client").then((m) => m.api(`/artifacts/${MOSAIC}/explain?a=F01&side_a=N&b=F02&side_b=3`)).catch((e: unknown) => e);
+    const raw = await import("./client")
+      .then((m) => m.api(`/artifacts/${MOSAIC}/explain?a=F01&side_a=N&b=F02&side_b=3`))
+      .catch((e: unknown) => e);
     expect(raw).toMatchObject({ status: 422, code: "validation_error" });
   });
 
@@ -149,7 +187,9 @@ describe("mock mode", () => {
     expect((await listRuns(MOSAIC))[0]).not.toHaveProperty("placements");
     expect(await getRun(run.id)).toMatchObject({ id: run.id, algorithm: "backtracking" });
     await expect(getRun(MISSING)).rejects.toMatchObject({ code: "not_found" });
-    await expect(createRun(MOSAIC, { algorithm: "magic" as "greedy" })).rejects.toMatchObject({ code: "validation_error" });
+    await expect(createRun(MOSAIC, { algorithm: "magic" as "greedy" })).rejects.toMatchObject({
+      code: "validation_error",
+    });
   });
 
   it("benchmarks several algorithms and scaling", async () => {
@@ -162,11 +202,25 @@ describe("mock mode", () => {
   });
 
   it("creates a sample artifact and validates input", async () => {
-    const a = await createSampleArtifact({ name: "My panel", sample: "manuscript", fragment: { rows: 3, cols: 2, rotate: false, noise: 4, erosion: 0.2, missing: 0, seed: 1 } });
-    expect(a).toMatchObject({ name: "My panel", fragment_count: 6, grid_rows: 3, grid_cols: 2, run_count: 0, match_config: null });
+    const a = await createSampleArtifact({
+      name: "My panel",
+      sample: "manuscript",
+      fragment: { rows: 3, cols: 2, rotate: false, noise: 4, erosion: 0.2, missing: 0, seed: 1 },
+    });
+    expect(a).toMatchObject({
+      name: "My panel",
+      fragment_count: 6,
+      grid_rows: 3,
+      grid_cols: 2,
+      run_count: 0,
+      match_config: null,
+    });
     expect(await getArtifact(a.id)).toMatchObject({ id: a.id });
     expect((await listArtifacts()).some((x) => x.id === a.id)).toBe(true);
-    await expect(createSampleArtifact({ name: "x", sample: "nope" })).rejects.toMatchObject({ status: 422, code: "invalid_input" });
+    await expect(createSampleArtifact({ name: "x", sample: "nope" })).rejects.toMatchObject({
+      status: 422,
+      code: "invalid_input",
+    });
     await expect(createSampleArtifact({ name: "  " })).rejects.toMatchObject({ status: 422, code: "validation_error" });
   });
 
@@ -174,6 +228,17 @@ describe("mock mode", () => {
     const a = await getArtifact(MOSAIC);
     a.name = "hacked";
     expect((await getArtifact(MOSAIC)).name).toBe("Mughal tile panel");
+  });
+
+  it("rejects file uploads, which mock mode does not support", async () => {
+    await expect(api("/artifacts/upload", { method: "POST", body: new FormData() })).rejects.toMatchObject({
+      status: 422,
+      code: "invalid_input",
+    });
+  });
+
+  it("answers an unknown route with 404 not_found", async () => {
+    await expect(api("/nope")).rejects.toMatchObject({ status: 404, code: "not_found" });
   });
 
   it("serves health", async () => {

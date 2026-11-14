@@ -1,28 +1,25 @@
 // Owner: A (Arvind)
-import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { AppRoutes, ROUTER_FUTURE } from "../../routes";
-import { ThemeProvider } from "../../theme";
+import { screen } from "@testing-library/react";
+import { AppRoutes } from "../../routes";
+import { useMockApi } from "../../test/mockApi";
+import { renderWithProviders } from "../../test/renderWithProviders";
 
-function renderAt(path: string) {
-  return render(
-    <MemoryRouter initialEntries={[path]} future={ROUTER_FUTURE}>
-      <ThemeProvider>
-        <AppRoutes />
-      </ThemeProvider>
-    </MemoryRouter>,
-  );
-}
+const renderAt = (route: string) => renderWithProviders(<AppRoutes />, { route });
 
 describe("Navbar", () => {
-  beforeEach(() => vi.stubEnv("VITE_USE_MOCKS", "true"));
-  afterEach(() => vi.unstubAllEnvs());
+  useMockApi();
 
   it("always links to Projects and Lab", () => {
     renderAt("/lab");
     const main = screen.getByRole("navigation", { name: "Main" });
     expect(main).toHaveTextContent("Projects");
     expect(main).toHaveTextContent("Lab");
+  });
+
+  it("marks the current section as active", () => {
+    renderAt("/lab");
+    expect(screen.getByRole("link", { name: "Lab" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Projects" })).not.toHaveAttribute("aria-current");
   });
 
   it.each(["/", "/lab", "/nowhere"])("hides the artifact sub-links on %s", (path) => {

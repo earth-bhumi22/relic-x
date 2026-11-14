@@ -29,7 +29,15 @@ interface Props<T> {
   summarize: (data: T) => ReactNode;
 }
 
-export default function PlaceholderPage<T>({ title, ticket, description, load, deps = [], isEmpty, summarize }: Props<T>) {
+export default function PlaceholderPage<T>({
+  title,
+  ticket,
+  description,
+  load,
+  deps = [],
+  isEmpty,
+  summarize,
+}: Props<T>) {
   const [mode, setMode] = useState<Mode>("live");
   const live = useAsync(load, deps);
   const forcedError = new ApiError(404, "not_found", "Demo error: this is how a 404 from the API looks.");
@@ -52,7 +60,13 @@ export default function PlaceholderPage<T>({ title, ticket, description, load, d
       <p className="muted">{description}</p>
       <div className="seg" role="group" aria-label="State demo">
         {MODES.map((m) => (
-          <button key={m.id} type="button" className={mode === m.id ? "seg-btn active" : "seg-btn"} aria-pressed={mode === m.id} onClick={() => setMode(m.id)}>
+          <button
+            key={m.id}
+            type="button"
+            className={mode === m.id ? "seg-btn active" : "seg-btn"}
+            aria-pressed={mode === m.id}
+            onClick={() => setMode(m.id)}
+          >
             {m.label}
           </button>
         ))}

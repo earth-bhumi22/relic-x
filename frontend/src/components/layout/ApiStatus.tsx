@@ -20,7 +20,11 @@ export default function ApiStatus() {
     tone = health.data.status === "ok" ? "ok" : "warn";
   }
   return (
-    <span className={`api-status api-status-${tone}`} data-testid="api-status" title="Backend health (GET /api/v1/health)">
+    <span
+      className={`api-status api-status-${tone}`}
+      data-testid="api-status"
+      title="Backend health (GET /api/v1/health)"
+    >
       <span className="dot" aria-hidden="true" />
       {text}
     </span>

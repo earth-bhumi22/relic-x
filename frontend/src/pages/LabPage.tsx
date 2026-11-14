@@ -10,7 +10,11 @@ export default function LabPage() {
       description="All solvers side by side, the time-vs-n scaling chart and CSV export."
       load={() => listSamples()}
       isEmpty={(s) => s.length === 0}
-      summarize={(samples) => <p>{samples.length} sample artifacts available: {samples.map((s) => s.name).join(", ")}</p>}
+      summarize={(samples) => (
+        <p>
+          {samples.length} sample artifacts available: {samples.map((s) => s.name).join(", ")}
+        </p>
+      )}
     />
   );
 }
