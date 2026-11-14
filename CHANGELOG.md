@@ -10,6 +10,7 @@
   statement (`passive_deletes=True`) instead of the ORM deleting them row by row.
 
 ### Added
+- `relicx seed [--reset]` (T05): three demo artifacts (plain 4×4, rotated 4×4, 5×5 with a missing piece), each matched and solved by all four algorithms. Idempotent; `--reset` only touches demo artifacts.
 - `backend/scripts/smoke_pipeline.py`: end-to-end check of a running API (69 checks); runs in CI
   against PostgreSQL 16.
 

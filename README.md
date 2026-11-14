@@ -158,6 +158,7 @@ Node 20 and all dependencies. Then run the backend and frontend commands from Op
 ```bash
 cp .env.example .env
 docker compose up -d --build
+docker compose run --rm api relicx seed     # optional: 3 ready-to-demo artifacts
 ```
 
 | Service | URL |
@@ -175,6 +176,7 @@ cd backend
 python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
 pip install -e ".[api,dev]"
 uvicorn relicx.main:app --reload                       # http://localhost:8000/docs
+relicx seed                                            # optional demo data (idempotent; --reset to recreate)
 ```
 
 **Frontend** (Node 20+):

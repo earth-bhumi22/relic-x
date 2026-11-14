@@ -11,6 +11,9 @@ dependencies = [
     "pillow>=10.3",
 ]
 
+[project.scripts]
+relicx = "relicx.cli:main"
+
 [project.optional-dependencies]
 # Web API + persistence. Kept separate so the algorithm engine can be
 # installed and benchmarked on its own (pip install -e .).
