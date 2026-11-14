@@ -41,10 +41,21 @@ export function isMockMode(): boolean {
   return import.meta.env.VITE_USE_MOCKS === "true";
 }
 
+/** Mock mode has no network to abort, so a cancelled request rejects with an AbortError like fetch would. */
+function abortable<T>(promise: Promise<T>, signal?: AbortSignal | null): Promise<T> {
+  if (!signal) return promise;
+  const aborted = () => new DOMException("The operation was aborted.", "AbortError");
+  if (signal.aborted) return Promise.reject(aborted());
+  return new Promise<T>((resolve, reject) => {
+    signal.addEventListener("abort", () => reject(aborted()), { once: true });
+    promise.then(resolve, reject);
+  });
+}
+
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (isMockMode()) {
     const { mockRequest } = await import("./mocks");
-    return mockRequest<T>(path, init);
+    return abortable(mockRequest<T>(path, init), init.signal);
   }
   const headers = new Headers(init.headers);
   if (init.body && !(init.body instanceof FormData)) headers.set("Content-Type", "application/json");
@@ -124,10 +135,15 @@ export const explainMatch = (artifactId: string, p: { a: string; sideA: SideInde
   api<Explanation>(`/artifacts/${artifactId}/explain${qs({ a: p.a, side_a: p.sideA, b: p.b, side_b: p.sideB })}`);
 
 // ---- runs & benchmarks ------------------------------------------------------------------
-export const createRun = (artifactId: string, body: Partial<RunCreate> & { algorithm: Algorithm }) =>
-  api<RunDetail>(`/artifacts/${artifactId}/runs`, post(body));
+export const createRun = (
+  artifactId: string,
+  body: Partial<RunCreate> & { algorithm: Algorithm },
+  options: { signal?: AbortSignal } = {},
+) => api<RunDetail>(`/artifacts/${artifactId}/runs`, { ...post(body), signal: options.signal });
 export const listRuns = (artifactId: string) => api<RunOut[]>(`/artifacts/${artifactId}/runs`);
 export const getRun = (runId: string) => api<RunDetail>(`/runs/${runId}`);
+/** `DELETE /runs/{id}` answers 204 with no body. */
+export const deleteRun = (runId: string) => api<void>(`/runs/${runId}`, { method: "DELETE" });
 export const runBenchmark = (artifactId: string, body: { algorithms: Algorithm[]; node_limit?: number }) =>
   api<RunDetail[]>(`/artifacts/${artifactId}/benchmark`, post(body));
 export const runScalingBenchmark = (body: ScalingRequest = {}) => api<ScalingOut>("/benchmark/scaling", post(body));

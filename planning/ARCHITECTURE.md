@@ -298,7 +298,7 @@ Layering: **routes** (HTTP + validation) → **services** (logic) → **reposito
 | `src/pages/GalleryPage.tsx`, `components/EdgeBeads.tsx`, `FragmentDialog.tsx`, `MatchPanel.tsx`, `hooks/useMatchStatus.ts`, `lib/beads.ts`, `lib/shuffle.ts` | A | Fragment gallery + edge beads + matching panel (T24, done) |
 | `src/pages/GraphPage.tsx`, `components/graph/*`, `hooks/useGraphData.ts`, `lib/graphView.ts` | A | Similarity graph, Cytoscape, lazy-loaded (T25, done) |
 | `components/WhyMatchedDrawer.tsx`, `components/why/*`, `lib/signals.ts` | A | "Why matched?" drawer + shared signal order/colours (T26, done) |
-| *planned* `src/pages/ReconstructionPage.tsx`, `components/TracePlayer.tsx` | A | T27 |
+| `pages/ReconstructPage.tsx`, `components/ReconstructionCanvas.tsx`, `components/TracePlayer.tsx`, `components/run/*`, `lib/replay.ts`, `lib/confidence.ts`, `lib/truth.ts`, `lib/solvers.ts`, `lib/runSolver.ts` | A | Reconstruction canvas, trace player, confidence rings, ground-truth overlay (T27, done) |
 | *planned* `src/pages/LabPage.tsx`, `components/charts/*` | A | T28 |
 
 ### validation, datasets, docs

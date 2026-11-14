@@ -1,0 +1,5191 @@
+{
+  "artifact": {
+    "id": "b00a3bddfa4346168148c1f36ad63c40",
+    "name": "t",
+    "description": "Glazed geometric tile panel with star rosettes",
+    "source_kind": "sample",
+    "grid_rows": 3,
+    "grid_cols": 3,
+    "tile": 160,
+    "has_ground_truth": true,
+    "fragment_params": {
+      "rows": 3,
+      "cols": 3,
+      "rotate": true,
+      "noise": 6.0,
+      "erosion": 0.3,
+      "missing": 0,
+      "seed": 7,
+      "missing_cells": []
+    },
+    "match_config": {
+      "strip_len": 24,
+      "levels": 4,
+      "depth": 2,
+      "ngram": 3,
+      "motif_method": "kmp",
+      "min_motif": 3,
+      "top_k": 6,
+      "allow_rotation": true,
+      "color_scale": 40.0,
+      "weights": { "color": 0.4, "lcs": 0.2, "edit": 0.15, "motif": 0.15, "hash": 0.1 }
+    },
+    "match_stats": {
+      "fragments": 9,
+      "side_pairs_total": 576,
+      "side_pairs_scored": 152,
+      "side_pairs_skipped": 424,
+      "cache_hits": 0,
+      "elapsed_ms": 39.57,
+      "operations": { "prefilter_checks": 576, "dp_cells": 175104, "char_comparisons": 303071 },
+      "match_accuracy": 0.8333
+    },
+    "created_at": "2026-11-14T18:10:05.601848",
+    "fragment_count": 9,
+    "run_count": 5,
+    "best_accuracy": 1.0,
+    "image_url": "/api/v1/artifacts/b00a3bddfa4346168148c1f36ad63c40/image"
+  },
+  "fragments": [
+    {
+      "id": "2e092c4a2441482b8c8ed8b48d764ba4",
+      "label": "F01",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/2e092c4a2441482b8c8ed8b48d764ba4/image",
+      "true_row": 2,
+      "true_col": 1,
+      "scramble_rot": 3,
+      "edges": {
+        "N": "FFVVVVV11111lVVVVWVV/VRV",
+        "E": "RRRRBV5llVVVVVV/////qpVV",
+        "S": "VqVVVVVVVVV644545qBBBBBq",
+        "W": "++4000455FFFFZJVFJZFFFFF"
+      }
+    },
+    {
+      "id": "f13992731e9c49feb81ffa2a3024df94",
+      "label": "F02",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/f13992731e9c49feb81ffa2a3024df94/image",
+      "true_row": 0,
+      "true_col": 2,
+      "scramble_rot": 1,
+      "edges": {
+        "N": "VpqVVVVVVVVVVVVVVVVVVVVR",
+        "E": "VaVJVaVVVVl051101VVVVp55",
+        "S": "400045qVVVVVVVVVVVVp00hR",
+        "W": "Rk00lQQQl0000lFFFq/uJa//"
+      }
+    },
+    {
+      "id": "6bccec4970bc4cf488eb74a5d402ad46",
+      "label": "F03",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/6bccec4970bc4cf488eb74a5d402ad46/image",
+      "true_row": 0,
+      "true_col": 0,
+      "scramble_rot": 2,
+      "edges": {
+        "N": "FFF+5545pBBBFVWaZ54ZaWWW",
+        "E": "WWWWWqaJJJJJJJaaFFFFFFFF",
+        "S": "FFFFVRRRRlGGCGllRhRVCCCC",
+        "W": "CVVVVVVVVVVqRRkpFFFFFFFF"
+      }
+    },
+    {
+      "id": "06c7ed1b8d9a40d1b54efe3b1bab097a",
+      "label": "F04",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/06c7ed1b8d9a40d1b54efe3b1bab097a/image",
+      "true_row": 1,
+      "true_col": 2,
+      "scramble_rot": 3,
+      "edges": {
+        "N": "Rl006RQQUUUUUEEZEEFaJJJJ",
+        "E": "JaFFFFFq////aBFBFGRRRRVF",
+        "S": "VlVFaFFFFVFFqqFFZFFUUUUp",
+        "W": "//JJq//aFFl0000lQQQV10gR"
+      }
+    },
+    {
+      "id": "d9accd8ec06b4f17817ff149ec87946e",
+      "label": "F05",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/d9accd8ec06b4f17817ff149ec87946e/image",
+      "true_row": 0,
+      "true_col": 1,
+      "scramble_rot": 1,
+      "edges": {
+        "N": "FFFFFFFFV0hh6WCCCCCCCGaG",
+        "E": "CCq555+5GCCCW10000lVVVVV",
+        "S": "VVVVVVVVVVpVVpVVpZUUUqVV",
+        "W": "VUUUp61//565VVFFV55555VF"
+      }
+    },
+    {
+      "id": "eb9e76c898144ab488c121423703454c",
+      "label": "F06",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/eb9e76c898144ab488c121423703454c/image",
+      "true_row": 1,
+      "true_col": 1,
+      "scramble_rot": 1,
+      "edges": {
+        "N": "paFFFFFFFRRhRVBBBBWWBWqV",
+        "E": "FF5445pFFFV1166//161pUV+",
+        "S": "/VEuVFFZqFuqVVVVVVVVVVlF",
+        "W": "FFFFFZJV0VZFFFZ5440005+5"
+      }
+    },
+    {
+      "id": "94231339eb7240609b0b73e0a8bfb988",
+      "label": "F07",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/94231339eb7240609b0b73e0a8bfb988/image",
+      "true_row": 1,
+      "true_col": 0,
+      "scramble_rot": 0,
+      "edges": {
+        "N": "WWqJZ44ZJaWBBBBp4Zp+6VFF",
+        "E": "FVVVVVBBBBVh0hlFFFFFFFaq",
+        "S": "pqqVJJJJaBR+VBBq/006/qBA",
+        "W": "AVVVVVVVV55055WqWSSSSSSW"
+      }
+    },
+    {
+      "id": "c6118e73ee7e4e319aad47a02c780dde",
+      "label": "F08",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/c6118e73ee7e4e319aad47a02c780dde/image",
+      "true_row": 2,
+      "true_col": 0,
+      "scramble_rot": 0,
+      "edges": {
+        "N": "BBAq601/VBBBqqVJJJJJV/aF",
+        "E": "qBBFUUUUUUk456VVVVVVVVqV",
+        "S": "VVVVaVJVWaFFFFV00000VFFF",
+        "W": "FFFFFFFFFFFp5RR4pBAABqAA"
+      }
+    },
+    {
+      "id": "3368c9f0c2234f2b9a30708f77111df3",
+      "label": "F09",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/3368c9f0c2234f2b9a30708f77111df3/image",
+      "true_row": 2,
+      "true_col": 2,
+      "scramble_rot": 0,
+      "edges": {
+        "N": "VlRRRRWBBBBq////+FFFFFJJ",
+        "E": "JaWBBBBBBBpVAFFAAAF5qapp",
+        "S": "V5VAAAAFEEVVFVqaq/Vq/VV+",
+        "W": "WVV/VVlUUUUUUUUl0VVVVaVF"
+      }
+    }
+  ],
+  "matches": [
+    {
+      "a": "F04",
+      "side_a": 1,
+      "b": "F09",
+      "side_b": 0,
+      "color": 0.8541,
+      "lcs": 0.7083,
+      "edit": 0.6667,
+      "motif": 0.2083,
+      "hash": 0.0938,
+      "composite": 0.6239
+    },
+    {
+      "a": "F02",
+      "side_a": 3,
+      "b": "F04",
+      "side_b": 3,
+      "color": 0.6715,
+      "lcs": 0.7083,
+      "edit": 0.7083,
+      "motif": 0.4583,
+      "hash": 0.2812,
+      "composite": 0.6134
+    },
+    {
+      "a": "F01",
+      "side_a": 3,
+      "b": "F06",
+      "side_b": 3,
+      "color": 0.7047,
+      "lcs": 0.75,
+      "edit": 0.7083,
+      "motif": 0.2917,
+      "hash": 0.2,
+      "composite": 0.6019
+    },
+    {
+      "a": "F06",
+      "side_a": 0,
+      "b": "F07",
+      "side_b": 1,
+      "color": 0.5978,
+      "lcs": 0.625,
+      "edit": 0.5417,
+      "motif": 0.3333,
+      "hash": 0.1429,
+      "composite": 0.5097
+    },
+    {
+      "a": "F02",
+      "side_a": 0,
+      "b": "F05",
+      "side_b": 2,
+      "color": 0.5147,
+      "lcs": 0.6667,
+      "edit": 0.625,
+      "motif": 0.4167,
+      "hash": 0.0667,
+      "composite": 0.5021
+    },
+    {
+      "a": "F03",
+      "side_a": 0,
+      "b": "F07",
+      "side_b": 0,
+      "color": 0.6143,
+      "lcs": 0.625,
+      "edit": 0.5417,
+      "motif": 0.1667,
+      "hash": 0.0488,
+      "composite": 0.4818
+    },
+    {
+      "a": "F01",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.3902,
+      "lcs": 0.6667,
+      "edit": 0.5833,
+      "motif": 0.4167,
+      "hash": 0.2174,
+      "composite": 0.4611
+    },
+    {
+      "a": "F05",
+      "side_a": 3,
+      "b": "F06",
+      "side_b": 1,
+      "color": 0.527,
+      "lcs": 0.5833,
+      "edit": 0.5,
+      "motif": 0.1667,
+      "hash": 0.0769,
+      "composite": 0.4352
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 3,
+      "color": 0.4838,
+      "lcs": 0.5,
+      "edit": 0.375,
+      "motif": 0.1667,
+      "hash": 0.1852,
+      "composite": 0.3933
+    },
+    {
+      "a": "F07",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 0,
+      "color": 0.3946,
+      "lcs": 0.5417,
+      "edit": 0.4583,
+      "motif": 0.2083,
+      "hash": 0.0513,
+      "composite": 0.3713
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F02",
+      "side_b": 1,
+      "color": 0.2759,
+      "lcs": 0.625,
+      "edit": 0.5833,
+      "motif": 0.2083,
+      "hash": 0.0968,
+      "composite": 0.3638
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F05",
+      "side_b": 2,
+      "color": 0.301,
+      "lcs": 0.5417,
+      "edit": 0.3333,
+      "motif": 0.2083,
+      "hash": 0.0385,
+      "composite": 0.3138
+    },
+    {
+      "a": "F02",
+      "side_a": 0,
+      "b": "F03",
+      "side_b": 3,
+      "color": 0.1568,
+      "lcs": 0.5,
+      "edit": 0.4167,
+      "motif": 0.4583,
+      "hash": 0.1538,
+      "composite": 0.3094
+    },
+    {
+      "a": "F02",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 3,
+      "color": 0.3481,
+      "lcs": 0.375,
+      "edit": 0.3333,
+      "motif": 0.1667,
+      "hash": 0.05,
+      "composite": 0.2942
+    },
+    {
+      "a": "F05",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.1222,
+      "lcs": 0.5417,
+      "edit": 0.4583,
+      "motif": 0.3333,
+      "hash": 0.1364,
+      "composite": 0.2896
+    },
+    {
+      "a": "F03",
+      "side_a": 3,
+      "b": "F05",
+      "side_b": 0,
+      "color": 0.2449,
+      "lcs": 0.4167,
+      "edit": 0.3333,
+      "motif": 0.3333,
+      "hash": 0.0455,
+      "composite": 0.2858
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F03",
+      "side_b": 3,
+      "color": 0.2331,
+      "lcs": 0.5,
+      "edit": 0.375,
+      "motif": 0.2083,
+      "hash": 0.04,
+      "composite": 0.2847
+    },
+    {
+      "a": "F02",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.185,
+      "lcs": 0.4167,
+      "edit": 0.375,
+      "motif": 0.375,
+      "hash": 0.1176,
+      "composite": 0.2816
+    },
+    {
+      "a": "F03",
+      "side_a": 3,
+      "b": "F06",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.5833,
+      "edit": 0.5,
+      "motif": 0.4583,
+      "hash": 0.087,
+      "composite": 0.2691
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F02",
+      "side_b": 0,
+      "color": 0.1096,
+      "lcs": 0.5417,
+      "edit": 0.5,
+      "motif": 0.2083,
+      "hash": 0.05,
+      "composite": 0.2634
+    },
+    {
+      "a": "F02",
+      "side_a": 0,
+      "b": "F06",
+      "side_b": 2,
+      "color": 0.0475,
+      "lcs": 0.5,
+      "edit": 0.4583,
+      "motif": 0.4167,
+      "hash": 0.0526,
+      "composite": 0.2555
+    },
+    {
+      "a": "F03",
+      "side_a": 3,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.1095,
+      "lcs": 0.4583,
+      "edit": 0.4167,
+      "motif": 0.3333,
+      "hash": 0.0435,
+      "composite": 0.2523
+    },
+    {
+      "a": "F07",
+      "side_a": 3,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.1591,
+      "lcs": 0.4167,
+      "edit": 0.3333,
+      "motif": 0.3333,
+      "hash": 0.037,
+      "composite": 0.2507
+    },
+    {
+      "a": "F02",
+      "side_a": 2,
+      "b": "F05",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.5417,
+      "edit": 0.375,
+      "motif": 0.4167,
+      "hash": 0.0909,
+      "composite": 0.2362
+    },
+    {
+      "a": "F07",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.237,
+      "lcs": 0.3333,
+      "edit": 0.25,
+      "motif": 0.2083,
+      "hash": 0.0357,
+      "composite": 0.2338
+    },
+    {
+      "a": "F03",
+      "side_a": 3,
+      "b": "F08",
+      "side_b": 3,
+      "color": 0.0442,
+      "lcs": 0.5,
+      "edit": 0.3333,
+      "motif": 0.375,
+      "hash": 0.0909,
+      "composite": 0.233
+    },
+    {
+      "a": "F03",
+      "side_a": 3,
+      "b": "F06",
+      "side_b": 0,
+      "color": 0.0941,
+      "lcs": 0.4583,
+      "edit": 0.3333,
+      "motif": 0.2917,
+      "hash": 0.0385,
+      "composite": 0.2269
+    },
+    {
+      "a": "F05",
+      "side_a": 2,
+      "b": "F09",
+      "side_b": 3,
+      "color": 0.1557,
+      "lcs": 0.4167,
+      "edit": 0.25,
+      "motif": 0.1667,
+      "hash": 0.08,
+      "composite": 0.2161
+    },
+    {
+      "a": "F01",
+      "side_a": 3,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.1381,
+      "lcs": 0.375,
+      "edit": 0.3333,
+      "motif": 0.1667,
+      "hash": 0.0606,
+      "composite": 0.2113
+    },
+    {
+      "a": "F02",
+      "side_a": 2,
+      "b": "F03",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.4583,
+      "edit": 0.25,
+      "motif": 0.4583,
+      "hash": 0.0952,
+      "composite": 0.2074
+    },
+    {
+      "a": "F02",
+      "side_a": 0,
+      "b": "F07",
+      "side_b": 1,
+      "color": 0.1852,
+      "lcs": 0.2917,
+      "edit": 0.25,
+      "motif": 0.2083,
+      "hash": 0.0526,
+      "composite": 0.2064
+    },
+    {
+      "a": "F01",
+      "side_a": 1,
+      "b": "F02",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.4583,
+      "edit": 0.4167,
+      "motif": 0.25,
+      "hash": 0.1053,
+      "composite": 0.2022
+    },
+    {
+      "a": "F05",
+      "side_a": 0,
+      "b": "F07",
+      "side_b": 1,
+      "color": 0.0873,
+      "lcs": 0.375,
+      "edit": 0.2917,
+      "motif": 0.2917,
+      "hash": 0.037,
+      "composite": 0.2011
+    },
+    {
+      "a": "F06",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.0983,
+      "lcs": 0.4583,
+      "edit": 0.0417,
+      "motif": 0.375,
+      "hash": 0.0741,
+      "composite": 0.2009
+    },
+    {
+      "a": "F06",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 1,
+      "color": 0.0093,
+      "lcs": 0.5,
+      "edit": 0.375,
+      "motif": 0.2083,
+      "hash": 0.0606,
+      "composite": 0.1973
+    },
+    {
+      "a": "F03",
+      "side_a": 3,
+      "b": "F05",
+      "side_b": 2,
+      "color": 0.0545,
+      "lcs": 0.4167,
+      "edit": 0.125,
+      "motif": 0.4167,
+      "hash": 0.1053,
+      "composite": 0.1969
+    },
+    {
+      "a": "F03",
+      "side_a": 1,
+      "b": "F05",
+      "side_b": 0,
+      "color": 0.0416,
+      "lcs": 0.375,
+      "edit": 0.3333,
+      "motif": 0.3333,
+      "hash": 0.0435,
+      "composite": 0.196
+    },
+    {
+      "a": "F06",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.4583,
+      "edit": 0.4167,
+      "motif": 0.2083,
+      "hash": 0.0968,
+      "composite": 0.1951
+    },
+    {
+      "a": "F04",
+      "side_a": 2,
+      "b": "F06",
+      "side_b": 0,
+      "color": 0.1158,
+      "lcs": 0.4167,
+      "edit": 0.25,
+      "motif": 0.1667,
+      "hash": 0.0278,
+      "composite": 0.1949
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F06",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.5417,
+      "edit": 0.2917,
+      "motif": 0.2083,
+      "hash": 0.1071,
+      "composite": 0.194
+    },
+    {
+      "a": "F02",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.0834,
+      "lcs": 0.4167,
+      "edit": 0.2917,
+      "motif": 0.1667,
+      "hash": 0.0323,
+      "composite": 0.1886
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.1179,
+      "lcs": 0.375,
+      "edit": 0.2083,
+      "motif": 0.2083,
+      "hash": 0.0345,
+      "composite": 0.1881
+    },
+    {
+      "a": "F04",
+      "side_a": 1,
+      "b": "F07",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.375,
+      "motif": 0.25,
+      "hash": 0.0645,
+      "composite": 0.1835
+    },
+    {
+      "a": "F02",
+      "side_a": 0,
+      "b": "F07",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.3333,
+      "motif": 0.3333,
+      "hash": 0.0556,
+      "composite": 0.1806
+    },
+    {
+      "a": "F03",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.3333,
+      "motif": 0.3333,
+      "hash": 0.0417,
+      "composite": 0.1792
+    },
+    {
+      "a": "F05",
+      "side_a": 2,
+      "b": "F07",
+      "side_b": 3,
+      "color": 0.1121,
+      "lcs": 0.3333,
+      "edit": 0.0833,
+      "motif": 0.3333,
+      "hash": 0.0417,
+      "composite": 0.1782
+    },
+    {
+      "a": "F01",
+      "side_a": 1,
+      "b": "F02",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.3333,
+      "motif": 0.25,
+      "hash": 0.0741,
+      "composite": 0.1782
+    },
+    {
+      "a": "F04",
+      "side_a": 2,
+      "b": "F07",
+      "side_b": 1,
+      "color": 0.0863,
+      "lcs": 0.375,
+      "edit": 0.2083,
+      "motif": 0.2083,
+      "hash": 0.0606,
+      "composite": 0.1781
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0474,
+      "lcs": 0.4167,
+      "edit": 0.2917,
+      "motif": 0.1667,
+      "hash": 0.0645,
+      "composite": 0.1775
+    },
+    {
+      "a": "F03",
+      "side_a": 3,
+      "b": "F07",
+      "side_b": 1,
+      "color": 0.109,
+      "lcs": 0.375,
+      "edit": 0.0417,
+      "motif": 0.2917,
+      "hash": 0.087,
+      "composite": 0.1773
+    },
+    {
+      "a": "F02",
+      "side_a": 1,
+      "b": "F09",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.4583,
+      "edit": 0.25,
+      "motif": 0.25,
+      "hash": 0.0968,
+      "composite": 0.1763
+    },
+    {
+      "a": "F02",
+      "side_a": 1,
+      "b": "F05",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.4583,
+      "edit": 0.25,
+      "motif": 0.25,
+      "hash": 0.0882,
+      "composite": 0.1755
+    },
+    {
+      "a": "F04",
+      "side_a": 2,
+      "b": "F06",
+      "side_b": 2,
+      "color": 0.0848,
+      "lcs": 0.3333,
+      "edit": 0.3333,
+      "motif": 0.125,
+      "hash": 0.0606,
+      "composite": 0.1754
+    },
+    {
+      "a": "F02",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.1667,
+      "motif": 0.3333,
+      "hash": 0.1667,
+      "composite": 0.175
+    },
+    {
+      "a": "F02",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.086,
+      "lcs": 0.3333,
+      "edit": 0.2917,
+      "motif": 0.1667,
+      "hash": 0.0476,
+      "composite": 0.1746
+    },
+    {
+      "a": "F07",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.3333,
+      "motif": 0.2917,
+      "hash": 0.0357,
+      "composite": 0.1723
+    },
+    {
+      "a": "F01",
+      "side_a": 1,
+      "b": "F06",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.25,
+      "motif": 0.2917,
+      "hash": 0.069,
+      "composite": 0.1715
+    },
+    {
+      "a": "F08",
+      "side_a": 1,
+      "b": "F09",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.4583,
+      "edit": 0.2083,
+      "motif": 0.25,
+      "hash": 0.0714,
+      "composite": 0.1676
+    },
+    {
+      "a": "F02",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.1667,
+      "motif": 0.375,
+      "hash": 0.08,
+      "composite": 0.1643
+    },
+    {
+      "a": "F01",
+      "side_a": 1,
+      "b": "F05",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.25,
+      "motif": 0.25,
+      "hash": 0.08,
+      "composite": 0.158
+    },
+    {
+      "a": "F06",
+      "side_a": 3,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.3333,
+      "motif": 0.1667,
+      "hash": 0.0606,
+      "composite": 0.1561
+    },
+    {
+      "a": "F03",
+      "side_a": 3,
+      "b": "F04",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.25,
+      "motif": 0.2083,
+      "hash": 0.037,
+      "composite": 0.1558
+    },
+    {
+      "a": "F01",
+      "side_a": 2,
+      "b": "F03",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.0,
+      "motif": 0.4167,
+      "hash": 0.0909,
+      "composite": 0.1549
+    },
+    {
+      "a": "F03",
+      "side_a": 1,
+      "b": "F04",
+      "side_b": 2,
+      "color": 0.0743,
+      "lcs": 0.3333,
+      "edit": 0.1667,
+      "motif": 0.1667,
+      "hash": 0.0333,
+      "composite": 0.1497
+    },
+    {
+      "a": "F01",
+      "side_a": 1,
+      "b": "F02",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.1667,
+      "motif": 0.2083,
+      "hash": 0.0968,
+      "composite": 0.1493
+    },
+    {
+      "a": "F03",
+      "side_a": 2,
+      "b": "F09",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.1667,
+      "motif": 0.2083,
+      "hash": 0.0909,
+      "composite": 0.1487
+    },
+    {
+      "a": "F01",
+      "side_a": 3,
+      "b": "F04",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.2083,
+      "motif": 0.1667,
+      "hash": 0.0857,
+      "composite": 0.1482
+    },
+    {
+      "a": "F03",
+      "side_a": 1,
+      "b": "F07",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.0417,
+      "motif": 0.3333,
+      "hash": 0.0833,
+      "composite": 0.1479
+    },
+    {
+      "a": "F02",
+      "side_a": 3,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.2083,
+      "motif": 0.1667,
+      "hash": 0.0571,
+      "composite": 0.1453
+    },
+    {
+      "a": "F01",
+      "side_a": 1,
+      "b": "F04",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.125,
+      "motif": 0.2083,
+      "hash": 0.0968,
+      "composite": 0.143
+    },
+    {
+      "a": "F02",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.1667,
+      "motif": 0.1667,
+      "hash": 0.0714,
+      "composite": 0.1405
+    },
+    {
+      "a": "F04",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.0705,
+      "lcs": 0.2917,
+      "edit": 0.1667,
+      "motif": 0.1667,
+      "hash": 0.0303,
+      "composite": 0.1396
+    },
+    {
+      "a": "F06",
+      "side_a": 0,
+      "b": "F07",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.125,
+      "motif": 0.2083,
+      "hash": 0.0556,
+      "composite": 0.1389
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F07",
+      "side_b": 3,
+      "color": 0.0156,
+      "lcs": 0.3333,
+      "edit": 0.2083,
+      "motif": 0.2083,
+      "hash": 0.0345,
+      "composite": 0.1388
+    },
+    {
+      "a": "F01",
+      "side_a": 1,
+      "b": "F09",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.4167,
+      "edit": 0.125,
+      "motif": 0.1667,
+      "hash": 0.1034,
+      "composite": 0.1374
+    },
+    {
+      "a": "F05",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.125,
+      "motif": 0.2083,
+      "hash": 0.1111,
+      "composite": 0.1361
+    },
+    {
+      "a": "F03",
+      "side_a": 3,
+      "b": "F07",
+      "side_b": 3,
+      "color": 0.0342,
+      "lcs": 0.3333,
+      "edit": 0.0,
+      "motif": 0.3333,
+      "hash": 0.0435,
+      "composite": 0.1347
+    },
+    {
+      "a": "F05",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 3,
+      "color": 0.0351,
+      "lcs": 0.3333,
+      "edit": 0.0,
+      "motif": 0.3333,
+      "hash": 0.0385,
+      "composite": 0.1346
+    },
+    {
+      "a": "F06",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 3,
+      "color": 0.0138,
+      "lcs": 0.3333,
+      "edit": 0.0833,
+      "motif": 0.2917,
+      "hash": 0.0333,
+      "composite": 0.1318
+    },
+    {
+      "a": "F04",
+      "side_a": 2,
+      "b": "F05",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.25,
+      "motif": 0.125,
+      "hash": 0.0811,
+      "composite": 0.131
+    },
+    {
+      "a": "F05",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.1667,
+      "motif": 0.1667,
+      "hash": 0.0588,
+      "composite": 0.1309
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.25,
+      "motif": 0.125,
+      "hash": 0.0588,
+      "composite": 0.1288
+    },
+    {
+      "a": "F04",
+      "side_a": 2,
+      "b": "F06",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.125,
+      "motif": 0.1667,
+      "hash": 0.0857,
+      "composite": 0.1273
+    },
+    {
+      "a": "F07",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.125,
+      "motif": 0.2083,
+      "hash": 0.1034,
+      "composite": 0.127
+    },
+    {
+      "a": "F03",
+      "side_a": 2,
+      "b": "F04",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.125,
+      "motif": 0.25,
+      "hash": 0.1212,
+      "composite": 0.1267
+    },
+    {
+      "a": "F03",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0602,
+      "lcs": 0.25,
+      "edit": 0.2083,
+      "motif": 0.125,
+      "hash": 0.0263,
+      "composite": 0.1267
+    },
+    {
+      "a": "F03",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.1667,
+      "motif": 0.1667,
+      "hash": 0.0833,
+      "composite": 0.125
+    },
+    {
+      "a": "F07",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 0,
+      "color": 0.0689,
+      "lcs": 0.25,
+      "edit": 0.1667,
+      "motif": 0.125,
+      "hash": 0.025,
+      "composite": 0.1238
+    },
+    {
+      "a": "F01",
+      "side_a": 3,
+      "b": "F03",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.2083,
+      "motif": 0.125,
+      "hash": 0.0526,
+      "composite": 0.1219
+    },
+    {
+      "a": "F01",
+      "side_a": 1,
+      "b": "F09",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.2083,
+      "motif": 0.125,
+      "hash": 0.0286,
+      "composite": 0.1195
+    },
+    {
+      "a": "F04",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.125,
+      "motif": 0.1667,
+      "hash": 0.0882,
+      "composite": 0.1192
+    },
+    {
+      "a": "F07",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.0833,
+      "motif": 0.1667,
+      "hash": 0.0606,
+      "composite": 0.1186
+    },
+    {
+      "a": "F03",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.375,
+      "edit": 0.0833,
+      "motif": 0.1667,
+      "hash": 0.0526,
+      "composite": 0.1178
+    },
+    {
+      "a": "F01",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.125,
+      "motif": 0.1667,
+      "hash": 0.0625,
+      "composite": 0.1167
+    },
+    {
+      "a": "F04",
+      "side_a": 0,
+      "b": "F07",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.0833,
+      "motif": 0.2083,
+      "hash": 0.0526,
+      "composite": 0.1157
+    },
+    {
+      "a": "F02",
+      "side_a": 2,
+      "b": "F06",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.1667,
+      "motif": 0.1667,
+      "hash": 0.069,
+      "composite": 0.1152
+    },
+    {
+      "a": "F01",
+      "side_a": 1,
+      "b": "F04",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.1667,
+      "motif": 0.125,
+      "hash": 0.0278,
+      "composite": 0.1132
+    },
+    {
+      "a": "F01",
+      "side_a": 2,
+      "b": "F09",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.125,
+      "motif": 0.2083,
+      "hash": 0.0323,
+      "composite": 0.1116
+    },
+    {
+      "a": "F07",
+      "side_a": 1,
+      "b": "F09",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.2083,
+      "motif": 0.125,
+      "hash": 0.0294,
+      "composite": 0.1113
+    },
+    {
+      "a": "F07",
+      "side_a": 1,
+      "b": "F09",
+      "side_b": 1,
+      "color": 0.0458,
+      "lcs": 0.2917,
+      "edit": 0.0417,
+      "motif": 0.1667,
+      "hash": 0.0312,
+      "composite": 0.111
+    },
+    {
+      "a": "F04",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.1667,
+      "motif": 0.2083,
+      "hash": 0.0294,
+      "composite": 0.1092
+    },
+    {
+      "a": "F04",
+      "side_a": 3,
+      "b": "F07",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.1667,
+      "motif": 0.125,
+      "hash": 0.0588,
+      "composite": 0.108
+    },
+    {
+      "a": "F06",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.125,
+      "motif": 0.1667,
+      "hash": 0.0541,
+      "composite": 0.1075
+    },
+    {
+      "a": "F01",
+      "side_a": 3,
+      "b": "F06",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.1667,
+      "motif": 0.125,
+      "hash": 0.0526,
+      "composite": 0.1073
+    },
+    {
+      "a": "F07",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.125,
+      "motif": 0.125,
+      "hash": 0.0294,
+      "composite": 0.1071
+    },
+    {
+      "a": "F05",
+      "side_a": 1,
+      "b": "F06",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0833,
+      "motif": 0.25,
+      "hash": 0.0625,
+      "composite": 0.1063
+    },
+    {
+      "a": "F05",
+      "side_a": 1,
+      "b": "F09",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.1667,
+      "motif": 0.1667,
+      "hash": 0.0606,
+      "composite": 0.1061
+    },
+    {
+      "a": "F03",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.1667,
+      "motif": 0.1667,
+      "hash": 0.0588,
+      "composite": 0.1059
+    },
+    {
+      "a": "F03",
+      "side_a": 3,
+      "b": "F06",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.1667,
+      "motif": 0.125,
+      "hash": 0.0323,
+      "composite": 0.1053
+    },
+    {
+      "a": "F01",
+      "side_a": 2,
+      "b": "F07",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0417,
+      "motif": 0.2083,
+      "hash": 0.0741,
+      "composite": 0.1032
+    },
+    {
+      "a": "F01",
+      "side_a": 0,
+      "b": "F05",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0833,
+      "motif": 0.1667,
+      "hash": 0.0588,
+      "composite": 0.1017
+    },
+    {
+      "a": "F01",
+      "side_a": 2,
+      "b": "F07",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.0417,
+      "motif": 0.1667,
+      "hash": 0.0294,
+      "composite": 0.1009
+    },
+    {
+      "a": "F02",
+      "side_a": 3,
+      "b": "F05",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0833,
+      "motif": 0.2083,
+      "hash": 0.0541,
+      "composite": 0.0992
+    },
+    {
+      "a": "F04",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0417,
+      "motif": 0.2083,
+      "hash": 0.0312,
+      "composite": 0.099
+    },
+    {
+      "a": "F06",
+      "side_a": 0,
+      "b": "F08",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.125,
+      "motif": 0.125,
+      "hash": 0.0278,
+      "composite": 0.0986
+    },
+    {
+      "a": "F01",
+      "side_a": 1,
+      "b": "F09",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0417,
+      "motif": 0.2083,
+      "hash": 0.1,
+      "composite": 0.0975
+    },
+    {
+      "a": "F05",
+      "side_a": 1,
+      "b": "F06",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.0417,
+      "motif": 0.125,
+      "hash": 0.0571,
+      "composite": 0.0974
+    },
+    {
+      "a": "F03",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0833,
+      "motif": 0.2083,
+      "hash": 0.0333,
+      "composite": 0.0971
+    },
+    {
+      "a": "F02",
+      "side_a": 2,
+      "b": "F05",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0,
+      "motif": 0.2083,
+      "hash": 0.0667,
+      "composite": 0.0963
+    },
+    {
+      "a": "F01",
+      "side_a": 3,
+      "b": "F02",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.2083,
+      "edit": 0.0833,
+      "motif": 0.2083,
+      "hash": 0.1071,
+      "composite": 0.0961
+    },
+    {
+      "a": "F03",
+      "side_a": 0,
+      "b": "F07",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0833,
+      "motif": 0.125,
+      "hash": 0.0571,
+      "composite": 0.0953
+    },
+    {
+      "a": "F02",
+      "side_a": 3,
+      "b": "F06",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0833,
+      "motif": 0.125,
+      "hash": 0.0556,
+      "composite": 0.0951
+    },
+    {
+      "a": "F04",
+      "side_a": 2,
+      "b": "F06",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0833,
+      "motif": 0.125,
+      "hash": 0.05,
+      "composite": 0.0946
+    },
+    {
+      "a": "F03",
+      "side_a": 1,
+      "b": "F07",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0417,
+      "motif": 0.2083,
+      "hash": 0.0667,
+      "composite": 0.0942
+    },
+    {
+      "a": "F05",
+      "side_a": 3,
+      "b": "F07",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.125,
+      "motif": 0.125,
+      "hash": 0.0625,
+      "composite": 0.0938
+    },
+    {
+      "a": "F04",
+      "side_a": 3,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0417,
+      "motif": 0.1667,
+      "hash": 0.027,
+      "composite": 0.0923
+    },
+    {
+      "a": "F05",
+      "side_a": 3,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.125,
+      "motif": 0.125,
+      "hash": 0.0303,
+      "composite": 0.0905
+    },
+    {
+      "a": "F05",
+      "side_a": 0,
+      "b": "F07",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.125,
+      "motif": 0.125,
+      "hash": 0.0303,
+      "composite": 0.0905
+    },
+    {
+      "a": "F07",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.125,
+      "motif": 0.125,
+      "hash": 0.0294,
+      "composite": 0.0904
+    },
+    {
+      "a": "F06",
+      "side_a": 1,
+      "b": "F08",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0,
+      "motif": 0.2083,
+      "hash": 0.0909,
+      "composite": 0.0903
+    },
+    {
+      "a": "F03",
+      "side_a": 2,
+      "b": "F05",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0,
+      "motif": 0.1667,
+      "hash": 0.0667,
+      "composite": 0.09
+    },
+    {
+      "a": "F03",
+      "side_a": 2,
+      "b": "F04",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0,
+      "motif": 0.1667,
+      "hash": 0.0541,
+      "composite": 0.0887
+    },
+    {
+      "a": "F03",
+      "side_a": 1,
+      "b": "F04",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0,
+      "motif": 0.2083,
+      "hash": 0.0714,
+      "composite": 0.0884
+    },
+    {
+      "a": "F05",
+      "side_a": 3,
+      "b": "F08",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0833,
+      "motif": 0.125,
+      "hash": 0.0571,
+      "composite": 0.087
+    },
+    {
+      "a": "F02",
+      "side_a": 3,
+      "b": "F04",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0833,
+      "motif": 0.125,
+      "hash": 0.0556,
+      "composite": 0.0868
+    },
+    {
+      "a": "F04",
+      "side_a": 3,
+      "b": "F05",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0,
+      "motif": 0.2083,
+      "hash": 0.0526,
+      "composite": 0.0865
+    },
+    {
+      "a": "F01",
+      "side_a": 2,
+      "b": "F07",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.2917,
+      "edit": 0.0417,
+      "motif": 0.125,
+      "hash": 0.0294,
+      "composite": 0.0863
+    },
+    {
+      "a": "F01",
+      "side_a": 2,
+      "b": "F09",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.3333,
+      "edit": 0.125,
+      "motif": 0.0,
+      "hash": 0.0,
+      "composite": 0.0854
+    },
+    {
+      "a": "F08",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.25,
+      "edit": 0.0833,
+      "motif": 0.125,
+      "hash": 0.027,
+      "composite": 0.084
+    },
+    {
+      "a": "F07",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 1,
+      "color": 0.0,
+      "lcs": 0.2083,
+      "edit": 0.0833,
+      "motif": 0.1667,
+      "hash": 0.0263,
+      "composite": 0.0818
+    },
+    {
+      "a": "F02",
+      "side_a": 0,
+      "b": "F06",
+      "side_b": 0,
+      "color": 0.0849,
+      "lcs": 0.1667,
+      "edit": 0.0833,
+      "motif": 0.0,
+      "hash": 0.0,
+      "composite": 0.0798
+    },
+    {
+      "a": "F01",
+      "side_a": 2,
+      "b": "F09",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.2083,
+      "edit": 0.0,
+      "motif": 0.2083,
+      "hash": 0.069,
+      "composite": 0.0798
+    },
+    {
+      "a": "F01",
+      "side_a": 2,
+      "b": "F03",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.2083,
+      "edit": 0.0833,
+      "motif": 0.125,
+      "hash": 0.0588,
+      "composite": 0.0788
+    },
+    {
+      "a": "F03",
+      "side_a": 0,
+      "b": "F06",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.2083,
+      "edit": 0.0417,
+      "motif": 0.125,
+      "hash": 0.0541,
+      "composite": 0.0721
+    },
+    {
+      "a": "F02",
+      "side_a": 2,
+      "b": "F04",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.2083,
+      "edit": 0.0417,
+      "motif": 0.125,
+      "hash": 0.0303,
+      "composite": 0.0697
+    },
+    {
+      "a": "F03",
+      "side_a": 2,
+      "b": "F06",
+      "side_b": 0,
+      "color": 0.0,
+      "lcs": 0.1667,
+      "edit": 0.0,
+      "motif": 0.1667,
+      "hash": 0.0588,
+      "composite": 0.0642
+    },
+    {
+      "a": "F01",
+      "side_a": 3,
+      "b": "F02",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.1667,
+      "edit": 0.0417,
+      "motif": 0.125,
+      "hash": 0.0556,
+      "composite": 0.0639
+    },
+    {
+      "a": "F07",
+      "side_a": 2,
+      "b": "F08",
+      "side_b": 3,
+      "color": 0.0,
+      "lcs": 0.125,
+      "edit": 0.0833,
+      "motif": 0.125,
+      "hash": 0.0294,
+      "composite": 0.0592
+    },
+    {
+      "a": "F04",
+      "side_a": 0,
+      "b": "F05",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.1667,
+      "edit": 0.0,
+      "motif": 0.125,
+      "hash": 0.0345,
+      "composite": 0.0555
+    },
+    {
+      "a": "F04",
+      "side_a": 0,
+      "b": "F09",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.125,
+      "edit": 0.0417,
+      "motif": 0.125,
+      "hash": 0.0263,
+      "composite": 0.0526
+    },
+    {
+      "a": "F01",
+      "side_a": 3,
+      "b": "F09",
+      "side_b": 2,
+      "color": 0.0,
+      "lcs": 0.1667,
+      "edit": 0.125,
+      "motif": 0.0,
+      "hash": 0.0,
+      "composite": 0.0521
+    },
+    {
+      "a": "F02",
+      "side_a": 0,
+      "b": "F04",
+      "side_b": 0,
+      "color": 0.0537,
+      "lcs": 0.0417,
+      "edit": 0.0417,
+      "motif": 0.0,
+      "hash": 0.0,
+      "composite": 0.036
+    }
+  ],
+  "runs": {
+    "greedy": {
+      "id": "df0c39ce6483431fa43aeba6cebac855",
+      "artifact_id": "b00a3bddfa4346168148c1f36ad63c40",
+      "algorithm": "greedy",
+      "params": { "threshold": 0.0, "top_k": null, "node_limit": 150000, "seed": null },
+      "elapsed_ms": 0.54,
+      "operations": { "score_lookups": 864 },
+      "total_score": 5.4549,
+      "neighbour_accuracy": 1.0,
+      "direct_accuracy": 1.0,
+      "coverage": 1.0,
+      "truncated": false,
+      "meta": { "seed": "F06", "unplaced": [] },
+      "created_at": "2026-11-14T18:14:12.563943Z",
+      "placements": [
+        { "fragment_id": "eb9e76c898144ab488c121423703454c", "label": "F06", "row": 1, "col": 1, "rot": 0 },
+        { "fragment_id": "2e092c4a2441482b8c8ed8b48d764ba4", "label": "F01", "row": 1, "col": 0, "rot": 2 },
+        { "fragment_id": "94231339eb7240609b0b73e0a8bfb988", "label": "F07", "row": 0, "col": 1, "rot": 1 },
+        { "fragment_id": "c6118e73ee7e4e319aad47a02c780dde", "label": "F08", "row": 0, "col": 0, "rot": 1 },
+        { "fragment_id": "6bccec4970bc4cf488eb74a5d402ad46", "label": "F03", "row": 0, "col": 2, "rot": 3 },
+        { "fragment_id": "d9accd8ec06b4f17817ff149ec87946e", "label": "F05", "row": 1, "col": 2, "rot": 0 },
+        { "fragment_id": "f13992731e9c49feb81ffa2a3024df94", "label": "F02", "row": 2, "col": 2, "rot": 0 },
+        { "fragment_id": "06c7ed1b8d9a40d1b54efe3b1bab097a", "label": "F04", "row": 2, "col": 1, "rot": 2 },
+        { "fragment_id": "3368c9f0c2234f2b9a30708f77111df3", "label": "F09", "row": 2, "col": 0, "rot": 1 }
+      ],
+      "trace": [
+        {
+          "step": 1,
+          "action": "seed",
+          "message": "Seed F06: strongest total edge weight",
+          "data": { "fragment": "F06", "row": 0, "col": 0, "rot": 0 }
+        },
+        {
+          "step": 2,
+          "action": "place",
+          "message": "Place F01 at (0, -1) rot 180\u00b0 \u2014 best local score 0.602 from 1 neighbour(s)",
+          "data": { "fragment": "F01", "row": 0, "col": -1, "rot": 2, "score": 0.6019 }
+        },
+        {
+          "step": 3,
+          "action": "place",
+          "message": "Place F07 at (-1, 0) rot 90\u00b0 \u2014 best local score 0.510 from 1 neighbour(s)",
+          "data": { "fragment": "F07", "row": -1, "col": 0, "rot": 1, "score": 0.5097 }
+        },
+        {
+          "step": 4,
+          "action": "place",
+          "message": "Place F08 at (-1, -1) rot 90\u00b0 \u2014 best local score 0.832 from 2 neighbour(s)",
+          "data": { "fragment": "F08", "row": -1, "col": -1, "rot": 1, "score": 0.8324 }
+        },
+        {
+          "step": 5,
+          "action": "place",
+          "message": "Place F03 at (-1, 1) rot 270\u00b0 \u2014 best local score 0.482 from 1 neighbour(s)",
+          "data": { "fragment": "F03", "row": -1, "col": 1, "rot": 3, "score": 0.4818 }
+        },
+        {
+          "step": 6,
+          "action": "place",
+          "message": "Place F05 at (0, 1) rot 0\u00b0 \u2014 best local score 0.721 from 2 neighbour(s)",
+          "data": { "fragment": "F05", "row": 0, "col": 1, "rot": 0, "score": 0.721 }
+        },
+        {
+          "step": 7,
+          "action": "place",
+          "message": "Place F02 at (1, 1) rot 0\u00b0 \u2014 best local score 0.502 from 1 neighbour(s)",
+          "data": { "fragment": "F02", "row": 1, "col": 1, "rot": 0, "score": 0.5021 }
+        },
+        {
+          "step": 8,
+          "action": "place",
+          "message": "Place F04 at (1, 0) rot 180\u00b0 \u2014 best local score 0.789 from 2 neighbour(s)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 2, "score": 0.7888 }
+        },
+        {
+          "step": 9,
+          "action": "place",
+          "message": "Place F09 at (1, -1) rot 90\u00b0 \u2014 best local score 1.017 from 2 neighbour(s)",
+          "data": { "fragment": "F09", "row": 1, "col": -1, "rot": 1, "score": 1.0172 }
+        }
+      ],
+      "trace_dropped": {}
+    },
+    "bestFirstFallback": {
+      "id": "9041c8f5d16a4fd890b9247d307f4c79",
+      "artifact_id": "b00a3bddfa4346168148c1f36ad63c40",
+      "algorithm": "best_first",
+      "params": { "threshold": 0.55, "top_k": 1, "node_limit": 150000, "seed": null },
+      "elapsed_ms": 0.19,
+      "operations": { "heap_pushes": 1, "heap_pops": 1, "score_lookups": 164 },
+      "total_score": 3.3006,
+      "neighbour_accuracy": 0.25,
+      "direct_accuracy": 0.2222,
+      "coverage": 1.0,
+      "truncated": false,
+      "meta": { "seed": "F06", "conflicts": 0, "unplaced": [] },
+      "created_at": "2026-11-14T18:14:12.568907Z",
+      "placements": [
+        { "fragment_id": "eb9e76c898144ab488c121423703454c", "label": "F06", "row": 0, "col": 2, "rot": 0 },
+        { "fragment_id": "2e092c4a2441482b8c8ed8b48d764ba4", "label": "F01", "row": 0, "col": 1, "rot": 2 },
+        { "fragment_id": "f13992731e9c49feb81ffa2a3024df94", "label": "F02", "row": 1, "col": 1, "rot": 3 },
+        { "fragment_id": "6bccec4970bc4cf488eb74a5d402ad46", "label": "F03", "row": 1, "col": 0, "rot": 2 },
+        { "fragment_id": "06c7ed1b8d9a40d1b54efe3b1bab097a", "label": "F04", "row": 2, "col": 1, "rot": 1 },
+        { "fragment_id": "d9accd8ec06b4f17817ff149ec87946e", "label": "F05", "row": 1, "col": 2, "rot": 1 },
+        { "fragment_id": "94231339eb7240609b0b73e0a8bfb988", "label": "F07", "row": 2, "col": 0, "rot": 0 },
+        { "fragment_id": "c6118e73ee7e4e319aad47a02c780dde", "label": "F08", "row": 2, "col": 2, "rot": 2 },
+        { "fragment_id": "3368c9f0c2234f2b9a30708f77111df3", "label": "F09", "row": 0, "col": 0, "rot": 2 }
+      ],
+      "trace": [
+        {
+          "step": 1,
+          "action": "seed",
+          "message": "Seed F06",
+          "data": { "fragment": "F06", "row": 0, "col": 0, "rot": 0 }
+        },
+        {
+          "step": 2,
+          "action": "place",
+          "message": "Place F01 at (0, -1) via strongest open join F06->F01 (0.602)",
+          "data": { "fragment": "F01", "row": 0, "col": -1, "rot": 2, "parent": "F06", "score": 0.6019 }
+        },
+        {
+          "step": 3,
+          "action": "fallback",
+          "message": "F02 not attached by any join; best free slot (1, -1) (0.364)",
+          "data": { "fragment": "F02", "row": 1, "col": -1, "rot": 3, "score": 0.3638 }
+        },
+        {
+          "step": 4,
+          "action": "fallback",
+          "message": "F03 not attached by any join; best free slot (1, -2) (0.309)",
+          "data": { "fragment": "F03", "row": 1, "col": -2, "rot": 2, "score": 0.3094 }
+        },
+        {
+          "step": 5,
+          "action": "fallback",
+          "message": "F04 not attached by any join; best free slot (2, -1) (0.613)",
+          "data": { "fragment": "F04", "row": 2, "col": -1, "rot": 1, "score": 0.6134 }
+        },
+        {
+          "step": 6,
+          "action": "fallback",
+          "message": "F05 not attached by any join; best free slot (1, 0) (0.236)",
+          "data": { "fragment": "F05", "row": 1, "col": 0, "rot": 1, "score": 0.2362 }
+        },
+        {
+          "step": 7,
+          "action": "fallback",
+          "message": "F07 not attached by any join; best free slot (2, -2) (0.660)",
+          "data": { "fragment": "F07", "row": 2, "col": -2, "rot": 0, "score": 0.6599 }
+        },
+        {
+          "step": 8,
+          "action": "fallback",
+          "message": "F08 not attached by any join; best free slot (2, 0) (0.230)",
+          "data": { "fragment": "F08", "row": 2, "col": 0, "rot": 2, "score": 0.2299 }
+        },
+        {
+          "step": 9,
+          "action": "fallback",
+          "message": "F09 not attached by any join; best free slot (0, -2) (0.286)",
+          "data": { "fragment": "F09", "row": 0, "col": -2, "rot": 2, "score": 0.2861 }
+        }
+      ],
+      "trace_dropped": {}
+    },
+    "dijkstraConflict": {
+      "id": "548d2fe1fa5544fca359b2d7cbaa14a3",
+      "artifact_id": "b00a3bddfa4346168148c1f36ad63c40",
+      "algorithm": "dijkstra",
+      "params": { "threshold": 0.55, "top_k": 1, "node_limit": 150000, "seed": null },
+      "elapsed_ms": 0.18,
+      "operations": { "heap_pops": 2, "relaxations": 2, "score_lookups": 164 },
+      "total_score": 3.3006,
+      "neighbour_accuracy": 0.25,
+      "direct_accuracy": 0.2222,
+      "coverage": 1.0,
+      "truncated": false,
+      "meta": { "seed": "F06", "conflicts": 0, "unreachable": 7, "unplaced": [] },
+      "created_at": "2026-11-14T18:14:12.573735Z",
+      "placements": [
+        { "fragment_id": "eb9e76c898144ab488c121423703454c", "label": "F06", "row": 0, "col": 2, "rot": 0 },
+        { "fragment_id": "2e092c4a2441482b8c8ed8b48d764ba4", "label": "F01", "row": 0, "col": 1, "rot": 2 },
+        { "fragment_id": "f13992731e9c49feb81ffa2a3024df94", "label": "F02", "row": 1, "col": 1, "rot": 3 },
+        { "fragment_id": "6bccec4970bc4cf488eb74a5d402ad46", "label": "F03", "row": 1, "col": 0, "rot": 2 },
+        { "fragment_id": "06c7ed1b8d9a40d1b54efe3b1bab097a", "label": "F04", "row": 2, "col": 1, "rot": 1 },
+        { "fragment_id": "d9accd8ec06b4f17817ff149ec87946e", "label": "F05", "row": 1, "col": 2, "rot": 1 },
+        { "fragment_id": "94231339eb7240609b0b73e0a8bfb988", "label": "F07", "row": 2, "col": 0, "rot": 0 },
+        { "fragment_id": "c6118e73ee7e4e319aad47a02c780dde", "label": "F08", "row": 2, "col": 2, "rot": 2 },
+        { "fragment_id": "3368c9f0c2234f2b9a30708f77111df3", "label": "F09", "row": 0, "col": 0, "rot": 2 }
+      ],
+      "trace": [
+        {
+          "step": 1,
+          "action": "seed",
+          "message": "Seed F06; Dijkstra settled 2 of 9 fragments",
+          "data": { "fragment": "F06", "row": 0, "col": 0, "rot": 0, "dist": 0.0 }
+        },
+        {
+          "step": 2,
+          "action": "place",
+          "message": "Place F01 at (0, -1) via parent F06 (path cost 0.398, join 0.602)",
+          "data": { "fragment": "F01", "row": 0, "col": -1, "rot": 2, "parent": "F06", "score": 0.6019, "dist": 0.3981 }
+        },
+        {
+          "step": 3,
+          "action": "conflict",
+          "message": "F02: not reachable in pruned graph; best free slot (1, -1) (score 0.364)",
+          "data": { "fragment": "F02", "row": 1, "col": -1, "rot": 3, "score": 0.3638 }
+        },
+        {
+          "step": 4,
+          "action": "conflict",
+          "message": "F03: not reachable in pruned graph; best free slot (1, -2) (score 0.309)",
+          "data": { "fragment": "F03", "row": 1, "col": -2, "rot": 2, "score": 0.3094 }
+        },
+        {
+          "step": 5,
+          "action": "conflict",
+          "message": "F04: not reachable in pruned graph; best free slot (2, -1) (score 0.613)",
+          "data": { "fragment": "F04", "row": 2, "col": -1, "rot": 1, "score": 0.6134 }
+        },
+        {
+          "step": 6,
+          "action": "conflict",
+          "message": "F05: not reachable in pruned graph; best free slot (1, 0) (score 0.236)",
+          "data": { "fragment": "F05", "row": 1, "col": 0, "rot": 1, "score": 0.2362 }
+        },
+        {
+          "step": 7,
+          "action": "conflict",
+          "message": "F07: not reachable in pruned graph; best free slot (2, -2) (score 0.660)",
+          "data": { "fragment": "F07", "row": 2, "col": -2, "rot": 0, "score": 0.6599 }
+        },
+        {
+          "step": 8,
+          "action": "conflict",
+          "message": "F08: not reachable in pruned graph; best free slot (2, 0) (score 0.230)",
+          "data": { "fragment": "F08", "row": 2, "col": 0, "rot": 2, "score": 0.2299 }
+        },
+        {
+          "step": 9,
+          "action": "conflict",
+          "message": "F09: not reachable in pruned graph; best free slot (0, -2) (score 0.286)",
+          "data": { "fragment": "F09", "row": 0, "col": -2, "rot": 2, "score": 0.2861 }
+        }
+      ],
+      "trace_dropped": {}
+    },
+    "backtrackingCapped": {
+      "id": "295b21a9bde240a1b4ae63341f86a19f",
+      "artifact_id": "b00a3bddfa4346168148c1f36ad63c40",
+      "algorithm": "backtracking",
+      "params": { "threshold": 0.0, "top_k": null, "node_limit": 2000, "seed": null },
+      "elapsed_ms": 5.73,
+      "operations": { "search_nodes": 2001, "score_lookups": 4264 },
+      "total_score": 5.4549,
+      "neighbour_accuracy": 1.0,
+      "direct_accuracy": 1.0,
+      "coverage": 1.0,
+      "truncated": true,
+      "meta": {
+        "nodes": 2001,
+        "pruned": 1907,
+        "node_limit": 2000,
+        "incumbent_score": 5.4549,
+        "improved_on_incumbent": false
+      },
+      "created_at": "2026-11-14T18:14:12.587432Z",
+      "placements": [
+        { "fragment_id": "c6118e73ee7e4e319aad47a02c780dde", "label": "F08", "row": 0, "col": 0, "rot": 1 },
+        { "fragment_id": "94231339eb7240609b0b73e0a8bfb988", "label": "F07", "row": 0, "col": 1, "rot": 1 },
+        { "fragment_id": "6bccec4970bc4cf488eb74a5d402ad46", "label": "F03", "row": 0, "col": 2, "rot": 3 },
+        { "fragment_id": "2e092c4a2441482b8c8ed8b48d764ba4", "label": "F01", "row": 1, "col": 0, "rot": 2 },
+        { "fragment_id": "eb9e76c898144ab488c121423703454c", "label": "F06", "row": 1, "col": 1, "rot": 0 },
+        { "fragment_id": "d9accd8ec06b4f17817ff149ec87946e", "label": "F05", "row": 1, "col": 2, "rot": 0 },
+        { "fragment_id": "3368c9f0c2234f2b9a30708f77111df3", "label": "F09", "row": 2, "col": 0, "rot": 1 },
+        { "fragment_id": "06c7ed1b8d9a40d1b54efe3b1bab097a", "label": "F04", "row": 2, "col": 1, "rot": 2 },
+        { "fragment_id": "f13992731e9c49feb81ffa2a3024df94", "label": "F02", "row": 2, "col": 2, "rot": 0 }
+      ],
+      "trace": [
+        {
+          "step": 1,
+          "action": "incumbent",
+          "message": "Start from heuristic solution, score 5.455",
+          "data": { "score": 5.4549 }
+        },
+        {
+          "step": 2,
+          "action": "place",
+          "message": "Try F01 at (0, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F01", "row": 0, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 3,
+          "action": "place",
+          "message": "Try F02 at (0, 1) rot 270\u00b0 (+0.202)",
+          "data": { "fragment": "F02", "row": 0, "col": 1, "rot": 3, "score": 0.2022 }
+        },
+        {
+          "step": 4,
+          "action": "place",
+          "message": "Try F05 at (0, 2) rot 90\u00b0 (+0.236)",
+          "data": { "fragment": "F05", "row": 0, "col": 2, "rot": 1, "score": 0.2362 }
+        },
+        {
+          "step": 5,
+          "action": "place",
+          "message": "Try F08 at (1, 0) rot 270\u00b0 (+0.461)",
+          "data": { "fragment": "F08", "row": 1, "col": 0, "rot": 3, "score": 0.4611 }
+        },
+        {
+          "step": 6,
+          "action": "place",
+          "message": "Try F04 at (1, 1) rot 90\u00b0 (+0.733)",
+          "data": { "fragment": "F04", "row": 1, "col": 1, "rot": 1, "score": 0.7326 }
+        },
+        {
+          "step": 7,
+          "action": "place",
+          "message": "Try F09 at (1, 2) rot 90\u00b0 (+0.159)",
+          "data": { "fragment": "F09", "row": 1, "col": 2, "rot": 1, "score": 0.1587 }
+        },
+        {
+          "step": 8,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.685 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.6851, "best": 5.4549 }
+        },
+        {
+          "step": 9,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 2)",
+          "data": { "fragment": "F09", "row": 1, "col": 2 }
+        },
+        {
+          "step": 10,
+          "action": "place",
+          "message": "Try F07 at (1, 2) rot 90\u00b0 (+0.116)",
+          "data": { "fragment": "F07", "row": 1, "col": 2, "rot": 1, "score": 0.1157 }
+        },
+        {
+          "step": 11,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.668 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.6678, "best": 5.4549 }
+        },
+        {
+          "step": 12,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 2)",
+          "data": { "fragment": "F07", "row": 1, "col": 2 }
+        },
+        {
+          "step": 13,
+          "action": "place",
+          "message": "Try F09 at (1, 2) rot 0\u00b0 (+0.109)",
+          "data": { "fragment": "F09", "row": 1, "col": 2, "rot": 0, "score": 0.1092 }
+        },
+        {
+          "step": 14,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.636 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.6356, "best": 5.4549 }
+        },
+        {
+          "step": 15,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 2)",
+          "data": { "fragment": "F09", "row": 1, "col": 2 }
+        },
+        {
+          "step": 16,
+          "action": "place",
+          "message": "Try F06 at (1, 2) rot 180\u00b0 (+0.106)",
+          "data": { "fragment": "F06", "row": 1, "col": 2, "rot": 2, "score": 0.1063 }
+        },
+        {
+          "step": 17,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.538 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.5383, "best": 5.4549 }
+        },
+        {
+          "step": 18,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 2)",
+          "data": { "fragment": "F06", "row": 1, "col": 2 }
+        },
+        {
+          "step": 19,
+          "action": "place",
+          "message": "Try F06 at (1, 2) rot 90\u00b0 (+0.097)",
+          "data": { "fragment": "F06", "row": 1, "col": 2, "rot": 1, "score": 0.0974 }
+        },
+        {
+          "step": 20,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.529 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.5294, "best": 5.4549 }
+        },
+        {
+          "step": 21,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 2)",
+          "data": { "fragment": "F06", "row": 1, "col": 2 }
+        },
+        {
+          "step": 22,
+          "action": "place",
+          "message": "Try F03 at (1, 2) rot 180\u00b0 (+0.088)",
+          "data": { "fragment": "F03", "row": 1, "col": 2, "rot": 2, "score": 0.0884 }
+        },
+        {
+          "step": 23,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.840 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.84, "best": 5.4549 }
+        },
+        {
+          "step": 24,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 2)",
+          "data": { "fragment": "F03", "row": 1, "col": 2 }
+        },
+        {
+          "step": 25,
+          "action": "place",
+          "message": "Try F03 at (1, 2) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F03", "row": 1, "col": 2, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 26,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.752 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.7516, "best": 5.4549 }
+        },
+        {
+          "step": 27,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 2)",
+          "data": { "fragment": "F03", "row": 1, "col": 2 }
+        },
+        {
+          "step": 28,
+          "action": "place",
+          "message": "Try F03 at (1, 2) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F03", "row": 1, "col": 2, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 29,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.752 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.7516, "best": 5.4549 }
+        },
+        {
+          "step": 30,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 2)",
+          "data": { "fragment": "F03", "row": 1, "col": 2 }
+        },
+        {
+          "step": 31,
+          "action": "place",
+          "message": "Try F03 at (1, 2) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F03", "row": 1, "col": 2, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 32,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.752 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.7516, "best": 5.4549 }
+        },
+        {
+          "step": 33,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 2)",
+          "data": { "fragment": "F03", "row": 1, "col": 2 }
+        },
+        {
+          "step": 34,
+          "action": "place",
+          "message": "Try F06 at (1, 2) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 2, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 35,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.432 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.432, "best": 5.4549 }
+        },
+        {
+          "step": 36,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 2)",
+          "data": { "fragment": "F06", "row": 1, "col": 2 }
+        },
+        {
+          "step": 37,
+          "action": "place",
+          "message": "Try F06 at (1, 2) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 2, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 38,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.432 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.432, "best": 5.4549 }
+        },
+        {
+          "step": 39,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 2)",
+          "data": { "fragment": "F06", "row": 1, "col": 2 }
+        },
+        {
+          "step": 40,
+          "action": "place",
+          "message": "Try F07 at (1, 2) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 2, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 41,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.552 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.5521, "best": 5.4549 }
+        },
+        {
+          "step": 42,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 2)",
+          "data": { "fragment": "F07", "row": 1, "col": 2 }
+        },
+        {
+          "step": 43,
+          "action": "place",
+          "message": "Try F07 at (1, 2) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 2, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 44,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.552 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.5521, "best": 5.4549 }
+        },
+        {
+          "step": 45,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 2)",
+          "data": { "fragment": "F07", "row": 1, "col": 2 }
+        },
+        {
+          "step": 46,
+          "action": "place",
+          "message": "Try F07 at (1, 2) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 2, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 47,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.552 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.5521, "best": 5.4549 }
+        },
+        {
+          "step": 48,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 2)",
+          "data": { "fragment": "F07", "row": 1, "col": 2 }
+        },
+        {
+          "step": 49,
+          "action": "place",
+          "message": "Try F09 at (1, 2) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 2, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 50,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.526 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.5264, "best": 5.4549 }
+        },
+        {
+          "step": 51,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 2)",
+          "data": { "fragment": "F09", "row": 1, "col": 2 }
+        },
+        {
+          "step": 52,
+          "action": "place",
+          "message": "Try F09 at (1, 2) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 2, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 53,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.526 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.5264, "best": 5.4549 }
+        },
+        {
+          "step": 54,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 2)",
+          "data": { "fragment": "F09", "row": 1, "col": 2 }
+        },
+        {
+          "step": 55,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 1)",
+          "data": { "fragment": "F04", "row": 1, "col": 1 }
+        },
+        {
+          "step": 56,
+          "action": "place",
+          "message": "Try F06 at (1, 1) rot 0\u00b0 (+0.156)",
+          "data": { "fragment": "F06", "row": 1, "col": 1, "rot": 0, "score": 0.1561 }
+        },
+        {
+          "step": 57,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.674 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6743, "best": 5.4549 }
+        },
+        {
+          "step": 58,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 1)",
+          "data": { "fragment": "F06", "row": 1, "col": 1 }
+        },
+        {
+          "step": 59,
+          "action": "place",
+          "message": "Try F07 at (1, 1) rot 180\u00b0 (+0.127)",
+          "data": { "fragment": "F07", "row": 1, "col": 1, "rot": 2, "score": 0.127 }
+        },
+        {
+          "step": 60,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.765 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.7653, "best": 5.4549 }
+        },
+        {
+          "step": 61,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 1)",
+          "data": { "fragment": "F07", "row": 1, "col": 1 }
+        },
+        {
+          "step": 62,
+          "action": "place",
+          "message": "Try F03 at (1, 1) rot 270\u00b0 (+0.127)",
+          "data": { "fragment": "F03", "row": 1, "col": 1, "rot": 3, "score": 0.1267 }
+        },
+        {
+          "step": 63,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.965 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.9653, "best": 5.4549 }
+        },
+        {
+          "step": 64,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 1)",
+          "data": { "fragment": "F03", "row": 1, "col": 1 }
+        },
+        {
+          "step": 65,
+          "action": "place",
+          "message": "Try F06 at (1, 1) rot 180\u00b0 (+0.107)",
+          "data": { "fragment": "F06", "row": 1, "col": 1, "rot": 2, "score": 0.1075 }
+        },
+        {
+          "step": 66,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.626 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6257, "best": 5.4549 }
+        },
+        {
+          "step": 67,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 1)",
+          "data": { "fragment": "F06", "row": 1, "col": 1 }
+        },
+        {
+          "step": 68,
+          "action": "place",
+          "message": "Try F03 at (1, 1) rot 90\u00b0 (+0.106)",
+          "data": { "fragment": "F03", "row": 1, "col": 1, "rot": 1, "score": 0.1059 }
+        },
+        {
+          "step": 69,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.944 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.9445, "best": 5.4549 }
+        },
+        {
+          "step": 70,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 1)",
+          "data": { "fragment": "F03", "row": 1, "col": 1 }
+        },
+        {
+          "step": 71,
+          "action": "place",
+          "message": "Try F06 at (1, 1) rot 90\u00b0 (+0.095)",
+          "data": { "fragment": "F06", "row": 1, "col": 1, "rot": 1, "score": 0.0951 }
+        },
+        {
+          "step": 72,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.613 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6133, "best": 5.4549 }
+        },
+        {
+          "step": 73,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 1)",
+          "data": { "fragment": "F06", "row": 1, "col": 1 }
+        },
+        {
+          "step": 74,
+          "action": "place",
+          "message": "Try F04 at (1, 1) rot 0\u00b0 (+0.092)",
+          "data": { "fragment": "F04", "row": 1, "col": 1, "rot": 0, "score": 0.0923 }
+        },
+        {
+          "step": 75,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.903 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.9033, "best": 5.4549 }
+        },
+        {
+          "step": 76,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 1)",
+          "data": { "fragment": "F04", "row": 1, "col": 1 }
+        },
+        {
+          "step": 77,
+          "action": "place",
+          "message": "Try F04 at (1, 1) rot 270\u00b0 (+0.087)",
+          "data": { "fragment": "F04", "row": 1, "col": 1, "rot": 3, "score": 0.0868 }
+        },
+        {
+          "step": 78,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.898 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.8978, "best": 5.4549 }
+        },
+        {
+          "step": 79,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 1)",
+          "data": { "fragment": "F04", "row": 1, "col": 1 }
+        },
+        {
+          "step": 80,
+          "action": "place",
+          "message": "Try F03 at (1, 1) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F03", "row": 1, "col": 1, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 81,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.839 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.8386, "best": 5.4549 }
+        },
+        {
+          "step": 82,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 1)",
+          "data": { "fragment": "F03", "row": 1, "col": 1 }
+        },
+        {
+          "step": 83,
+          "action": "place",
+          "message": "Try F03 at (1, 1) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F03", "row": 1, "col": 1, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 84,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.839 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.8386, "best": 5.4549 }
+        },
+        {
+          "step": 85,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 1)",
+          "data": { "fragment": "F03", "row": 1, "col": 1 }
+        },
+        {
+          "step": 86,
+          "action": "place",
+          "message": "Try F04 at (1, 1) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 1, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 87,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.811 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.811, "best": 5.4549 }
+        },
+        {
+          "step": 88,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 1)",
+          "data": { "fragment": "F04", "row": 1, "col": 1 }
+        },
+        {
+          "step": 89,
+          "action": "place",
+          "message": "Try F06 at (1, 1) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 1, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 90,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.518 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.5182, "best": 5.4549 }
+        },
+        {
+          "step": 91,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 1)",
+          "data": { "fragment": "F06", "row": 1, "col": 1 }
+        },
+        {
+          "step": 92,
+          "action": "place",
+          "message": "Try F07 at (1, 1) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 1, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 93,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.638 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6383, "best": 5.4549 }
+        },
+        {
+          "step": 94,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 1)",
+          "data": { "fragment": "F07", "row": 1, "col": 1 }
+        },
+        {
+          "step": 95,
+          "action": "place",
+          "message": "Try F07 at (1, 1) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 1, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 96,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.638 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6383, "best": 5.4549 }
+        },
+        {
+          "step": 97,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 1)",
+          "data": { "fragment": "F07", "row": 1, "col": 1 }
+        },
+        {
+          "step": 98,
+          "action": "place",
+          "message": "Try F07 at (1, 1) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 1, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 99,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.638 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6383, "best": 5.4549 }
+        },
+        {
+          "step": 100,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 1)",
+          "data": { "fragment": "F07", "row": 1, "col": 1 }
+        },
+        {
+          "step": 101,
+          "action": "place",
+          "message": "Try F09 at (1, 1) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 1, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 102,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.613 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6126, "best": 5.4549 }
+        },
+        {
+          "step": 103,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 1)",
+          "data": { "fragment": "F09", "row": 1, "col": 1 }
+        },
+        {
+          "step": 104,
+          "action": "place",
+          "message": "Try F09 at (1, 1) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 1, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 105,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.613 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6126, "best": 5.4549 }
+        },
+        {
+          "step": 106,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 1)",
+          "data": { "fragment": "F09", "row": 1, "col": 1 }
+        },
+        {
+          "step": 107,
+          "action": "place",
+          "message": "Try F09 at (1, 1) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 1, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 108,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.613 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6126, "best": 5.4549 }
+        },
+        {
+          "step": 109,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 1)",
+          "data": { "fragment": "F09", "row": 1, "col": 1 }
+        },
+        {
+          "step": 110,
+          "action": "place",
+          "message": "Try F09 at (1, 1) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 1, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 111,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.613 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6126, "best": 5.4549 }
+        },
+        {
+          "step": 112,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 1)",
+          "data": { "fragment": "F09", "row": 1, "col": 1 }
+        },
+        {
+          "step": 113,
+          "action": "backtrack",
+          "message": "Undo F08 at (1, 0)",
+          "data": { "fragment": "F08", "row": 1, "col": 0 }
+        },
+        {
+          "step": 114,
+          "action": "place",
+          "message": "Try F03 at (1, 0) rot 90\u00b0 (+0.155)",
+          "data": { "fragment": "F03", "row": 1, "col": 0, "rot": 1, "score": 0.1549 }
+        },
+        {
+          "step": 115,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.365 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.3648, "best": 5.4549 }
+        },
+        {
+          "step": 116,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 0)",
+          "data": { "fragment": "F03", "row": 1, "col": 0 }
+        },
+        {
+          "step": 117,
+          "action": "place",
+          "message": "Try F08 at (1, 0) rot 0\u00b0 (+0.117)",
+          "data": { "fragment": "F08", "row": 1, "col": 0, "rot": 0, "score": 0.1167 }
+        },
+        {
+          "step": 118,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.285 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2854, "best": 5.4549 }
+        },
+        {
+          "step": 119,
+          "action": "backtrack",
+          "message": "Undo F08 at (1, 0)",
+          "data": { "fragment": "F08", "row": 1, "col": 0 }
+        },
+        {
+          "step": 120,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 270\u00b0 (+0.112)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 3, "score": 0.1116 }
+        },
+        {
+          "step": 121,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.096 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.0955, "best": 5.4549 }
+        },
+        {
+          "step": 122,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 123,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 270\u00b0 (+0.103)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 3, "score": 0.1032 }
+        },
+        {
+          "step": 124,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.113 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1128, "best": 5.4549 }
+        },
+        {
+          "step": 125,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 126,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 0\u00b0 (+0.101)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 0, "score": 0.1009 }
+        },
+        {
+          "step": 127,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.111 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1105, "best": 5.4549 }
+        },
+        {
+          "step": 128,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 129,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 180\u00b0 (+0.086)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 2, "score": 0.0863 }
+        },
+        {
+          "step": 130,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.096 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.0959, "best": 5.4549 }
+        },
+        {
+          "step": 131,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 132,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 180\u00b0 (+0.085)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 2, "score": 0.0854 }
+        },
+        {
+          "step": 133,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.069 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.0693, "best": 5.4549 }
+        },
+        {
+          "step": 134,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 135,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 0\u00b0 (+0.080)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 0, "score": 0.0798 }
+        },
+        {
+          "step": 136,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.064 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.0637, "best": 5.4549 }
+        },
+        {
+          "step": 137,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 138,
+          "action": "place",
+          "message": "Try F03 at (1, 0) rot 0\u00b0 (+0.079)",
+          "data": { "fragment": "F03", "row": 1, "col": 0, "rot": 0, "score": 0.0788 }
+        },
+        {
+          "step": 139,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.289 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2887, "best": 5.4549 }
+        },
+        {
+          "step": 140,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 0)",
+          "data": { "fragment": "F03", "row": 1, "col": 0 }
+        },
+        {
+          "step": 141,
+          "action": "place",
+          "message": "Try F03 at (1, 0) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F03", "row": 1, "col": 0, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 142,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.210 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2099, "best": 5.4549 }
+        },
+        {
+          "step": 143,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 0)",
+          "data": { "fragment": "F03", "row": 1, "col": 0 }
+        },
+        {
+          "step": 144,
+          "action": "place",
+          "message": "Try F03 at (1, 0) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F03", "row": 1, "col": 0, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 145,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.210 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2099, "best": 5.4549 }
+        },
+        {
+          "step": 146,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 0)",
+          "data": { "fragment": "F03", "row": 1, "col": 0 }
+        },
+        {
+          "step": 147,
+          "action": "place",
+          "message": "Try F04 at (1, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 148,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.182 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1823, "best": 5.4549 }
+        },
+        {
+          "step": 149,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 0)",
+          "data": { "fragment": "F04", "row": 1, "col": 0 }
+        },
+        {
+          "step": 150,
+          "action": "place",
+          "message": "Try F04 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 151,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.182 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1823, "best": 5.4549 }
+        },
+        {
+          "step": 152,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 0)",
+          "data": { "fragment": "F04", "row": 1, "col": 0 }
+        },
+        {
+          "step": 153,
+          "action": "place",
+          "message": "Try F04 at (1, 0) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 154,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.182 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1823, "best": 5.4549 }
+        },
+        {
+          "step": 155,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 0)",
+          "data": { "fragment": "F04", "row": 1, "col": 0 }
+        },
+        {
+          "step": 156,
+          "action": "place",
+          "message": "Try F04 at (1, 0) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 157,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.182 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1823, "best": 5.4549 }
+        },
+        {
+          "step": 158,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 0)",
+          "data": { "fragment": "F04", "row": 1, "col": 0 }
+        },
+        {
+          "step": 159,
+          "action": "place",
+          "message": "Try F06 at (1, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 160,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 4.889 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 4.8895, "best": 5.4549 }
+        },
+        {
+          "step": 161,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 0)",
+          "data": { "fragment": "F06", "row": 1, "col": 0 }
+        },
+        {
+          "step": 162,
+          "action": "place",
+          "message": "Try F06 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 163,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 4.889 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 4.8895, "best": 5.4549 }
+        },
+        {
+          "step": 164,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 0)",
+          "data": { "fragment": "F06", "row": 1, "col": 0 }
+        },
+        {
+          "step": 165,
+          "action": "place",
+          "message": "Try F06 at (1, 0) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 0, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 166,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 4.889 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 4.8895, "best": 5.4549 }
+        },
+        {
+          "step": 167,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 0)",
+          "data": { "fragment": "F06", "row": 1, "col": 0 }
+        },
+        {
+          "step": 168,
+          "action": "place",
+          "message": "Try F06 at (1, 0) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 0, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 169,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 4.889 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 4.8895, "best": 5.4549 }
+        },
+        {
+          "step": 170,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 0)",
+          "data": { "fragment": "F06", "row": 1, "col": 0 }
+        },
+        {
+          "step": 171,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 172,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.010 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.0096, "best": 5.4549 }
+        },
+        {
+          "step": 173,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 174,
+          "action": "place",
+          "message": "Try F08 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F08", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 175,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.169 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1687, "best": 5.4549 }
+        },
+        {
+          "step": 176,
+          "action": "backtrack",
+          "message": "Undo F08 at (1, 0)",
+          "data": { "fragment": "F08", "row": 1, "col": 0 }
+        },
+        {
+          "step": 177,
+          "action": "place",
+          "message": "Try F08 at (1, 0) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F08", "row": 1, "col": 0, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 178,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.169 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1687, "best": 5.4549 }
+        },
+        {
+          "step": 179,
+          "action": "backtrack",
+          "message": "Undo F08 at (1, 0)",
+          "data": { "fragment": "F08", "row": 1, "col": 0 }
+        },
+        {
+          "step": 180,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 181,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 4.984 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 4.9839, "best": 5.4549 }
+        },
+        {
+          "step": 182,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 183,
+          "action": "backtrack",
+          "message": "Undo F05 at (0, 2)",
+          "data": { "fragment": "F05", "row": 0, "col": 2 }
+        },
+        {
+          "step": 184,
+          "action": "place",
+          "message": "Try F03 at (0, 2) rot 0\u00b0 (+0.207)",
+          "data": { "fragment": "F03", "row": 0, "col": 2, "rot": 0, "score": 0.2074 }
+        },
+        {
+          "step": 185,
+          "action": "place",
+          "message": "Try F08 at (1, 0) rot 270\u00b0 (+0.461)",
+          "data": { "fragment": "F08", "row": 1, "col": 0, "rot": 3, "score": 0.4611 }
+        },
+        {
+          "step": 186,
+          "action": "place",
+          "message": "Try F04 at (1, 1) rot 90\u00b0 (+0.733)",
+          "data": { "fragment": "F04", "row": 1, "col": 1, "rot": 1, "score": 0.7326 }
+        },
+        {
+          "step": 187,
+          "action": "place",
+          "message": "Try F09 at (1, 2) rot 0\u00b0 (+0.258)",
+          "data": { "fragment": "F09", "row": 1, "col": 2, "rot": 0, "score": 0.2579 }
+        },
+        {
+          "step": 188,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.902 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.9016, "best": 5.4549 }
+        },
+        {
+          "step": 189,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 2)",
+          "data": { "fragment": "F09", "row": 1, "col": 2 }
+        },
+        {
+          "step": 190,
+          "action": "place",
+          "message": "Try F07 at (1, 2) rot 90\u00b0 (+0.116)",
+          "data": { "fragment": "F07", "row": 1, "col": 2, "rot": 1, "score": 0.1157 }
+        },
+        {
+          "step": 191,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.785 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.7851, "best": 5.4549 }
+        },
+        {
+          "step": 192,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 2)",
+          "data": { "fragment": "F07", "row": 1, "col": 2 }
+        },
+        {
+          "step": 193,
+          "action": "place",
+          "message": "Try F05 at (1, 2) rot 0\u00b0 (+0.090)",
+          "data": { "fragment": "F05", "row": 1, "col": 2, "rot": 0, "score": 0.09 }
+        },
+        {
+          "step": 194,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.813 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.8128, "best": 5.4549 }
+        },
+        {
+          "step": 195,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 2)",
+          "data": { "fragment": "F05", "row": 1, "col": 2 }
+        },
+        {
+          "step": 196,
+          "action": "place",
+          "message": "Try F06 at (1, 2) rot 0\u00b0 (+0.064)",
+          "data": { "fragment": "F06", "row": 1, "col": 2, "rot": 0, "score": 0.0642 }
+        },
+        {
+          "step": 197,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.614 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.6135, "best": 5.4549 }
+        },
+        {
+          "step": 198,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 2)",
+          "data": { "fragment": "F06", "row": 1, "col": 2 }
+        },
+        {
+          "step": 199,
+          "action": "place",
+          "message": "Try F05 at (1, 2) rot 90\u00b0 (+0.056)",
+          "data": { "fragment": "F05", "row": 1, "col": 2, "rot": 1, "score": 0.0555 }
+        },
+        {
+          "step": 200,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.778 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.7783, "best": 5.4549 }
+        },
+        {
+          "step": 201,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 2)",
+          "data": { "fragment": "F05", "row": 1, "col": 2 }
+        },
+        {
+          "step": 202,
+          "action": "place",
+          "message": "Try F09 at (1, 2) rot 90\u00b0 (+0.053)",
+          "data": { "fragment": "F09", "row": 1, "col": 2, "rot": 1, "score": 0.0526 }
+        },
+        {
+          "step": 203,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.696 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.6963, "best": 5.4549 }
+        },
+        {
+          "step": 204,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 2)",
+          "data": { "fragment": "F09", "row": 1, "col": 2 }
+        },
+        {
+          "step": 205,
+          "action": "place",
+          "message": "Try F05 at (1, 2) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F05", "row": 1, "col": 2, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 206,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.723 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.7228, "best": 5.4549 }
+        },
+        {
+          "step": 207,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 2)",
+          "data": { "fragment": "F05", "row": 1, "col": 2 }
+        },
+        {
+          "step": 208,
+          "action": "place",
+          "message": "Try F05 at (1, 2) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F05", "row": 1, "col": 2, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 209,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.723 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.7228, "best": 5.4549 }
+        },
+        {
+          "step": 210,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 2)",
+          "data": { "fragment": "F05", "row": 1, "col": 2 }
+        },
+        {
+          "step": 211,
+          "action": "place",
+          "message": "Try F06 at (1, 2) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 2, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 212,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.549 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.5493, "best": 5.4549 }
+        },
+        {
+          "step": 213,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 2)",
+          "data": { "fragment": "F06", "row": 1, "col": 2 }
+        },
+        {
+          "step": 214,
+          "action": "place",
+          "message": "Try F06 at (1, 2) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 2, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 215,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.549 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.5493, "best": 5.4549 }
+        },
+        {
+          "step": 216,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 2)",
+          "data": { "fragment": "F06", "row": 1, "col": 2 }
+        },
+        {
+          "step": 217,
+          "action": "place",
+          "message": "Try F06 at (1, 2) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 2, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 218,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.549 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.5493, "best": 5.4549 }
+        },
+        {
+          "step": 219,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 2)",
+          "data": { "fragment": "F06", "row": 1, "col": 2 }
+        },
+        {
+          "step": 220,
+          "action": "place",
+          "message": "Try F07 at (1, 2) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 2, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 221,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.669 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.6694, "best": 5.4549 }
+        },
+        {
+          "step": 222,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 2)",
+          "data": { "fragment": "F07", "row": 1, "col": 2 }
+        },
+        {
+          "step": 223,
+          "action": "place",
+          "message": "Try F07 at (1, 2) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 2, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 224,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.669 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.6694, "best": 5.4549 }
+        },
+        {
+          "step": 225,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 2)",
+          "data": { "fragment": "F07", "row": 1, "col": 2 }
+        },
+        {
+          "step": 226,
+          "action": "place",
+          "message": "Try F07 at (1, 2) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 2, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 227,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.669 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.6694, "best": 5.4549 }
+        },
+        {
+          "step": 228,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 2)",
+          "data": { "fragment": "F07", "row": 1, "col": 2 }
+        },
+        {
+          "step": 229,
+          "action": "place",
+          "message": "Try F09 at (1, 2) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 2, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 230,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.644 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.6437, "best": 5.4549 }
+        },
+        {
+          "step": 231,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 2)",
+          "data": { "fragment": "F09", "row": 1, "col": 2 }
+        },
+        {
+          "step": 232,
+          "action": "place",
+          "message": "Try F09 at (1, 2) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 2, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 233,
+          "action": "prune",
+          "message": "Prune at cell (2, 0): bound 4.644 cannot beat 5.455",
+          "data": { "row": 2, "col": 0, "bound": 4.6437, "best": 5.4549 }
+        },
+        {
+          "step": 234,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 2)",
+          "data": { "fragment": "F09", "row": 1, "col": 2 }
+        },
+        {
+          "step": 235,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 1)",
+          "data": { "fragment": "F04", "row": 1, "col": 1 }
+        },
+        {
+          "step": 236,
+          "action": "place",
+          "message": "Try F05 at (1, 1) rot 270\u00b0 (+0.235)",
+          "data": { "fragment": "F05", "row": 1, "col": 1, "rot": 3, "score": 0.2353 }
+        },
+        {
+          "step": 237,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 5.045 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 5.0451, "best": 5.4549 }
+        },
+        {
+          "step": 238,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 1)",
+          "data": { "fragment": "F05", "row": 1, "col": 1 }
+        },
+        {
+          "step": 239,
+          "action": "place",
+          "message": "Try F06 at (1, 1) rot 0\u00b0 (+0.156)",
+          "data": { "fragment": "F06", "row": 1, "col": 1, "rot": 0, "score": 0.1561 }
+        },
+        {
+          "step": 240,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.792 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.7916, "best": 5.4549 }
+        },
+        {
+          "step": 241,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 1)",
+          "data": { "fragment": "F06", "row": 1, "col": 1 }
+        },
+        {
+          "step": 242,
+          "action": "place",
+          "message": "Try F05 at (1, 1) rot 180\u00b0 (+0.131)",
+          "data": { "fragment": "F05", "row": 1, "col": 1, "rot": 2, "score": 0.1309 }
+        },
+        {
+          "step": 243,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.941 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.9407, "best": 5.4549 }
+        },
+        {
+          "step": 244,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 1)",
+          "data": { "fragment": "F05", "row": 1, "col": 1 }
+        },
+        {
+          "step": 245,
+          "action": "place",
+          "message": "Try F07 at (1, 1) rot 180\u00b0 (+0.127)",
+          "data": { "fragment": "F07", "row": 1, "col": 1, "rot": 2, "score": 0.127 }
+        },
+        {
+          "step": 246,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.883 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.8826, "best": 5.4549 }
+        },
+        {
+          "step": 247,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 1)",
+          "data": { "fragment": "F07", "row": 1, "col": 1 }
+        },
+        {
+          "step": 248,
+          "action": "place",
+          "message": "Try F06 at (1, 1) rot 180\u00b0 (+0.107)",
+          "data": { "fragment": "F06", "row": 1, "col": 1, "rot": 2, "score": 0.1075 }
+        },
+        {
+          "step": 249,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.743 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.743, "best": 5.4549 }
+        },
+        {
+          "step": 250,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 1)",
+          "data": { "fragment": "F06", "row": 1, "col": 1 }
+        },
+        {
+          "step": 251,
+          "action": "place",
+          "message": "Try F06 at (1, 1) rot 90\u00b0 (+0.095)",
+          "data": { "fragment": "F06", "row": 1, "col": 1, "rot": 1, "score": 0.0951 }
+        },
+        {
+          "step": 252,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.731 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.7306, "best": 5.4549 }
+        },
+        {
+          "step": 253,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 1)",
+          "data": { "fragment": "F06", "row": 1, "col": 1 }
+        },
+        {
+          "step": 254,
+          "action": "place",
+          "message": "Try F04 at (1, 1) rot 0\u00b0 (+0.092)",
+          "data": { "fragment": "F04", "row": 1, "col": 1, "rot": 0, "score": 0.0923 }
+        },
+        {
+          "step": 255,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 5.021 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 5.0206, "best": 5.4549 }
+        },
+        {
+          "step": 256,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 1)",
+          "data": { "fragment": "F04", "row": 1, "col": 1 }
+        },
+        {
+          "step": 257,
+          "action": "place",
+          "message": "Try F05 at (1, 1) rot 0\u00b0 (+0.087)",
+          "data": { "fragment": "F05", "row": 1, "col": 1, "rot": 0, "score": 0.087 }
+        },
+        {
+          "step": 258,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.897 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.8968, "best": 5.4549 }
+        },
+        {
+          "step": 259,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 1)",
+          "data": { "fragment": "F05", "row": 1, "col": 1 }
+        },
+        {
+          "step": 260,
+          "action": "place",
+          "message": "Try F04 at (1, 1) rot 270\u00b0 (+0.087)",
+          "data": { "fragment": "F04", "row": 1, "col": 1, "rot": 3, "score": 0.0868 }
+        },
+        {
+          "step": 261,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 5.015 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 5.0151, "best": 5.4549 }
+        },
+        {
+          "step": 262,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 1)",
+          "data": { "fragment": "F04", "row": 1, "col": 1 }
+        },
+        {
+          "step": 263,
+          "action": "place",
+          "message": "Try F04 at (1, 1) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 1, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 264,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.928 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.9283, "best": 5.4549 }
+        },
+        {
+          "step": 265,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 1)",
+          "data": { "fragment": "F04", "row": 1, "col": 1 }
+        },
+        {
+          "step": 266,
+          "action": "place",
+          "message": "Try F05 at (1, 1) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F05", "row": 1, "col": 1, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 267,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.810 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.8098, "best": 5.4549 }
+        },
+        {
+          "step": 268,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 1)",
+          "data": { "fragment": "F05", "row": 1, "col": 1 }
+        },
+        {
+          "step": 269,
+          "action": "place",
+          "message": "Try F06 at (1, 1) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 1, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 270,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.636 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.6355, "best": 5.4549 }
+        },
+        {
+          "step": 271,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 1)",
+          "data": { "fragment": "F06", "row": 1, "col": 1 }
+        },
+        {
+          "step": 272,
+          "action": "place",
+          "message": "Try F07 at (1, 1) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 1, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 273,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.756 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.7556, "best": 5.4549 }
+        },
+        {
+          "step": 274,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 1)",
+          "data": { "fragment": "F07", "row": 1, "col": 1 }
+        },
+        {
+          "step": 275,
+          "action": "place",
+          "message": "Try F07 at (1, 1) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 1, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 276,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.756 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.7556, "best": 5.4549 }
+        },
+        {
+          "step": 277,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 1)",
+          "data": { "fragment": "F07", "row": 1, "col": 1 }
+        },
+        {
+          "step": 278,
+          "action": "place",
+          "message": "Try F07 at (1, 1) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 1, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 279,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.756 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.7556, "best": 5.4549 }
+        },
+        {
+          "step": 280,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 1)",
+          "data": { "fragment": "F07", "row": 1, "col": 1 }
+        },
+        {
+          "step": 281,
+          "action": "place",
+          "message": "Try F09 at (1, 1) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 1, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 282,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.730 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.7299, "best": 5.4549 }
+        },
+        {
+          "step": 283,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 1)",
+          "data": { "fragment": "F09", "row": 1, "col": 1 }
+        },
+        {
+          "step": 284,
+          "action": "place",
+          "message": "Try F09 at (1, 1) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 1, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 285,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.730 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.7299, "best": 5.4549 }
+        },
+        {
+          "step": 286,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 1)",
+          "data": { "fragment": "F09", "row": 1, "col": 1 }
+        },
+        {
+          "step": 287,
+          "action": "place",
+          "message": "Try F09 at (1, 1) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 1, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 288,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.730 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.7299, "best": 5.4549 }
+        },
+        {
+          "step": 289,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 1)",
+          "data": { "fragment": "F09", "row": 1, "col": 1 }
+        },
+        {
+          "step": 290,
+          "action": "place",
+          "message": "Try F09 at (1, 1) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 1, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 291,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 4.730 cannot beat 5.455",
+          "data": { "row": 1, "col": 2, "bound": 4.7299, "best": 5.4549 }
+        },
+        {
+          "step": 292,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 1)",
+          "data": { "fragment": "F09", "row": 1, "col": 1 }
+        },
+        {
+          "step": 293,
+          "action": "backtrack",
+          "message": "Undo F08 at (1, 0)",
+          "data": { "fragment": "F08", "row": 1, "col": 0 }
+        },
+        {
+          "step": 294,
+          "action": "place",
+          "message": "Try F08 at (1, 0) rot 0\u00b0 (+0.117)",
+          "data": { "fragment": "F08", "row": 1, "col": 0, "rot": 0, "score": 0.1167 }
+        },
+        {
+          "step": 295,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.403 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.4027, "best": 5.4549 }
+        },
+        {
+          "step": 296,
+          "action": "backtrack",
+          "message": "Undo F08 at (1, 0)",
+          "data": { "fragment": "F08", "row": 1, "col": 0 }
+        },
+        {
+          "step": 297,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 270\u00b0 (+0.112)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 3, "score": 0.1116 }
+        },
+        {
+          "step": 298,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.213 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2128, "best": 5.4549 }
+        },
+        {
+          "step": 299,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 300,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 270\u00b0 (+0.103)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 3, "score": 0.1032 }
+        },
+        {
+          "step": 301,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.230 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2301, "best": 5.4549 }
+        },
+        {
+          "step": 302,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 303,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 0\u00b0 (+0.101)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 0, "score": 0.1009 }
+        },
+        {
+          "step": 304,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.228 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2278, "best": 5.4549 }
+        },
+        {
+          "step": 305,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 306,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 180\u00b0 (+0.086)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 2, "score": 0.0863 }
+        },
+        {
+          "step": 307,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.213 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2132, "best": 5.4549 }
+        },
+        {
+          "step": 308,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 309,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 180\u00b0 (+0.085)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 2, "score": 0.0854 }
+        },
+        {
+          "step": 310,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.187 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1866, "best": 5.4549 }
+        },
+        {
+          "step": 311,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 312,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 0\u00b0 (+0.080)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 0, "score": 0.0798 }
+        },
+        {
+          "step": 313,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.181 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.181, "best": 5.4549 }
+        },
+        {
+          "step": 314,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 315,
+          "action": "place",
+          "message": "Try F04 at (1, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 316,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.300 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2996, "best": 5.4549 }
+        },
+        {
+          "step": 317,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 0)",
+          "data": { "fragment": "F04", "row": 1, "col": 0 }
+        },
+        {
+          "step": 318,
+          "action": "place",
+          "message": "Try F04 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 319,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.300 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2996, "best": 5.4549 }
+        },
+        {
+          "step": 320,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 0)",
+          "data": { "fragment": "F04", "row": 1, "col": 0 }
+        },
+        {
+          "step": 321,
+          "action": "place",
+          "message": "Try F04 at (1, 0) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 322,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.300 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2996, "best": 5.4549 }
+        },
+        {
+          "step": 323,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 0)",
+          "data": { "fragment": "F04", "row": 1, "col": 0 }
+        },
+        {
+          "step": 324,
+          "action": "place",
+          "message": "Try F04 at (1, 0) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 325,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.300 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2996, "best": 5.4549 }
+        },
+        {
+          "step": 326,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 0)",
+          "data": { "fragment": "F04", "row": 1, "col": 0 }
+        },
+        {
+          "step": 327,
+          "action": "place",
+          "message": "Try F05 at (1, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F05", "row": 1, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 328,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.181 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1811, "best": 5.4549 }
+        },
+        {
+          "step": 329,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 0)",
+          "data": { "fragment": "F05", "row": 1, "col": 0 }
+        },
+        {
+          "step": 330,
+          "action": "place",
+          "message": "Try F05 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F05", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 331,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.181 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1811, "best": 5.4549 }
+        },
+        {
+          "step": 332,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 0)",
+          "data": { "fragment": "F05", "row": 1, "col": 0 }
+        },
+        {
+          "step": 333,
+          "action": "place",
+          "message": "Try F05 at (1, 0) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F05", "row": 1, "col": 0, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 334,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.181 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1811, "best": 5.4549 }
+        },
+        {
+          "step": 335,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 0)",
+          "data": { "fragment": "F05", "row": 1, "col": 0 }
+        },
+        {
+          "step": 336,
+          "action": "place",
+          "message": "Try F05 at (1, 0) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F05", "row": 1, "col": 0, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 337,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.181 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1811, "best": 5.4549 }
+        },
+        {
+          "step": 338,
+          "action": "backtrack",
+          "message": "Undo F05 at (1, 0)",
+          "data": { "fragment": "F05", "row": 1, "col": 0 }
+        },
+        {
+          "step": 339,
+          "action": "place",
+          "message": "Try F06 at (1, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 340,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.007 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.0068, "best": 5.4549 }
+        },
+        {
+          "step": 341,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 0)",
+          "data": { "fragment": "F06", "row": 1, "col": 0 }
+        },
+        {
+          "step": 342,
+          "action": "place",
+          "message": "Try F06 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 343,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.007 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.0068, "best": 5.4549 }
+        },
+        {
+          "step": 344,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 0)",
+          "data": { "fragment": "F06", "row": 1, "col": 0 }
+        },
+        {
+          "step": 345,
+          "action": "place",
+          "message": "Try F06 at (1, 0) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 0, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 346,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.007 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.0068, "best": 5.4549 }
+        },
+        {
+          "step": 347,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 0)",
+          "data": { "fragment": "F06", "row": 1, "col": 0 }
+        },
+        {
+          "step": 348,
+          "action": "place",
+          "message": "Try F06 at (1, 0) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 1, "col": 0, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 349,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.007 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.0068, "best": 5.4549 }
+        },
+        {
+          "step": 350,
+          "action": "backtrack",
+          "message": "Undo F06 at (1, 0)",
+          "data": { "fragment": "F06", "row": 1, "col": 0 }
+        },
+        {
+          "step": 351,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 352,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.127 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1269, "best": 5.4549 }
+        },
+        {
+          "step": 353,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 354,
+          "action": "place",
+          "message": "Try F08 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F08", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 355,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.286 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.286, "best": 5.4549 }
+        },
+        {
+          "step": 356,
+          "action": "backtrack",
+          "message": "Undo F08 at (1, 0)",
+          "data": { "fragment": "F08", "row": 1, "col": 0 }
+        },
+        {
+          "step": 357,
+          "action": "place",
+          "message": "Try F08 at (1, 0) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F08", "row": 1, "col": 0, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 358,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.286 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.286, "best": 5.4549 }
+        },
+        {
+          "step": 359,
+          "action": "backtrack",
+          "message": "Undo F08 at (1, 0)",
+          "data": { "fragment": "F08", "row": 1, "col": 0 }
+        },
+        {
+          "step": 360,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 361,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.101 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1012, "best": 5.4549 }
+        },
+        {
+          "step": 362,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 363,
+          "action": "backtrack",
+          "message": "Undo F03 at (0, 2)",
+          "data": { "fragment": "F03", "row": 0, "col": 2 }
+        },
+        {
+          "step": 364,
+          "action": "place",
+          "message": "Try F08 at (0, 2) rot 180\u00b0 (+0.164)",
+          "data": { "fragment": "F08", "row": 0, "col": 2, "rot": 2, "score": 0.1643 }
+        },
+        {
+          "step": 365,
+          "action": "place",
+          "message": "Try F03 at (1, 0) rot 90\u00b0 (+0.155)",
+          "data": { "fragment": "F03", "row": 1, "col": 0, "rot": 1, "score": 0.1549 }
+        },
+        {
+          "step": 366,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.398 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.3978, "best": 5.4549 }
+        },
+        {
+          "step": 367,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 0)",
+          "data": { "fragment": "F03", "row": 1, "col": 0 }
+        },
+        {
+          "step": 368,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 270\u00b0 (+0.112)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 3, "score": 0.1116 }
+        },
+        {
+          "step": 369,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.129 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1285, "best": 5.4549 }
+        },
+        {
+          "step": 370,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 371,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 270\u00b0 (+0.103)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 3, "score": 0.1032 }
+        },
+        {
+          "step": 372,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.146 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1458, "best": 5.4549 }
+        },
+        {
+          "step": 373,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 374,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 0\u00b0 (+0.101)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 0, "score": 0.1009 }
+        },
+        {
+          "step": 375,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.143 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1435, "best": 5.4549 }
+        },
+        {
+          "step": 376,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 377,
+          "action": "place",
+          "message": "Try F07 at (1, 0) rot 180\u00b0 (+0.086)",
+          "data": { "fragment": "F07", "row": 1, "col": 0, "rot": 2, "score": 0.0863 }
+        },
+        {
+          "step": 378,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.129 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1289, "best": 5.4549 }
+        },
+        {
+          "step": 379,
+          "action": "backtrack",
+          "message": "Undo F07 at (1, 0)",
+          "data": { "fragment": "F07", "row": 1, "col": 0 }
+        },
+        {
+          "step": 380,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 180\u00b0 (+0.085)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 2, "score": 0.0854 }
+        },
+        {
+          "step": 381,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.102 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.1023, "best": 5.4549 }
+        },
+        {
+          "step": 382,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 383,
+          "action": "place",
+          "message": "Try F09 at (1, 0) rot 0\u00b0 (+0.080)",
+          "data": { "fragment": "F09", "row": 1, "col": 0, "rot": 0, "score": 0.0798 }
+        },
+        {
+          "step": 384,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.097 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.0967, "best": 5.4549 }
+        },
+        {
+          "step": 385,
+          "action": "backtrack",
+          "message": "Undo F09 at (1, 0)",
+          "data": { "fragment": "F09", "row": 1, "col": 0 }
+        },
+        {
+          "step": 386,
+          "action": "place",
+          "message": "Try F03 at (1, 0) rot 0\u00b0 (+0.079)",
+          "data": { "fragment": "F03", "row": 1, "col": 0, "rot": 0, "score": 0.0788 }
+        },
+        {
+          "step": 387,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.322 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.3217, "best": 5.4549 }
+        },
+        {
+          "step": 388,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 0)",
+          "data": { "fragment": "F03", "row": 1, "col": 0 }
+        },
+        {
+          "step": 389,
+          "action": "place",
+          "message": "Try F03 at (1, 0) rot 180\u00b0 (+0.000)",
+          "data": { "fragment": "F03", "row": 1, "col": 0, "rot": 2, "score": 0.0 }
+        },
+        {
+          "step": 390,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.243 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2429, "best": 5.4549 }
+        },
+        {
+          "step": 391,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 0)",
+          "data": { "fragment": "F03", "row": 1, "col": 0 }
+        },
+        {
+          "step": 392,
+          "action": "place",
+          "message": "Try F03 at (1, 0) rot 270\u00b0 (+0.000)",
+          "data": { "fragment": "F03", "row": 1, "col": 0, "rot": 3, "score": 0.0 }
+        },
+        {
+          "step": 393,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.243 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2429, "best": 5.4549 }
+        },
+        {
+          "step": 394,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 0)",
+          "data": { "fragment": "F03", "row": 1, "col": 0 }
+        },
+        {
+          "step": 395,
+          "action": "place",
+          "message": "Try F04 at (1, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 396,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.215 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2153, "best": 5.4549 }
+        },
+        {
+          "step": 397,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 0)",
+          "data": { "fragment": "F04", "row": 1, "col": 0 }
+        },
+        {
+          "step": 398,
+          "action": "place",
+          "message": "Try F04 at (1, 0) rot 90\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 1, "col": 0, "rot": 1, "score": 0.0 }
+        },
+        {
+          "step": 399,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 5.215 cannot beat 5.455",
+          "data": { "row": 1, "col": 1, "bound": 5.2153, "best": 5.4549 }
+        },
+        {
+          "step": 400,
+          "action": "backtrack",
+          "message": "Undo F04 at (1, 0)",
+          "data": { "fragment": "F04", "row": 1, "col": 0 }
+        },
+        {
+          "step": 401,
+          "action": "limit",
+          "message": "Node limit 2000 reached \u2014 returning best solution found",
+          "data": { "nodes": 2001 }
+        }
+      ],
+      "trace_dropped": { "place": 1863, "prune": 1779, "backtrack": 1861 }
+    },
+    "backtrackingFull": {
+      "id": "250a2d4babe847a8a8e156c7a3fffb18",
+      "artifact_id": "31355d1657304f4fbf5aee51d7afaaad",
+      "algorithm": "backtracking",
+      "params": { "threshold": 0.0, "top_k": null, "node_limit": 150000, "seed": null },
+      "elapsed_ms": 0.09,
+      "operations": { "search_nodes": 22, "score_lookups": 42 },
+      "total_score": 3.649,
+      "neighbour_accuracy": 1.0,
+      "direct_accuracy": 1.0,
+      "coverage": 1.0,
+      "truncated": false,
+      "meta": {
+        "nodes": 22,
+        "pruned": 15,
+        "node_limit": 150000,
+        "incumbent_score": 3.649,
+        "improved_on_incumbent": false
+      },
+      "created_at": "2026-11-14T18:14:12.597882Z",
+      "placements": [
+        { "fragment_id": "f9c68a2c0b5745d593b7c8a2901a699b", "label": "F06", "row": 0, "col": 0, "rot": 0 },
+        { "fragment_id": "9205cdaabcad44ccb0acfbc7847e8168", "label": "F04", "row": 0, "col": 1, "rot": 0 },
+        { "fragment_id": "9a52e88f347d4040893387459203f377", "label": "F05", "row": 0, "col": 2, "rot": 0 },
+        { "fragment_id": "bae7ff1b3e0f41c2b75cd96bd9e28737", "label": "F02", "row": 1, "col": 0, "rot": 0 },
+        { "fragment_id": "0090a31431ac46109b8687f511655ed6", "label": "F03", "row": 1, "col": 1, "rot": 0 },
+        { "fragment_id": "74935332bf434e3f97402c3c6d25ff73", "label": "F01", "row": 1, "col": 2, "rot": 0 }
+      ],
+      "trace": [
+        {
+          "step": 1,
+          "action": "incumbent",
+          "message": "Start from heuristic solution, score 3.649",
+          "data": { "score": 3.649 }
+        },
+        {
+          "step": 2,
+          "action": "place",
+          "message": "Try F01 at (0, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F01", "row": 0, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 3,
+          "action": "prune",
+          "message": "Prune at cell (0, 1): bound 3.112 cannot beat 3.649",
+          "data": { "row": 0, "col": 1, "bound": 3.1119, "best": 3.649 }
+        },
+        {
+          "step": 4,
+          "action": "backtrack",
+          "message": "Undo F01 at (0, 0)",
+          "data": { "fragment": "F01", "row": 0, "col": 0 }
+        },
+        {
+          "step": 5,
+          "action": "place",
+          "message": "Try F02 at (0, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F02", "row": 0, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 6,
+          "action": "prune",
+          "message": "Prune at cell (0, 1): bound 3.595 cannot beat 3.649",
+          "data": { "row": 0, "col": 1, "bound": 3.5951, "best": 3.649 }
+        },
+        {
+          "step": 7,
+          "action": "backtrack",
+          "message": "Undo F02 at (0, 0)",
+          "data": { "fragment": "F02", "row": 0, "col": 0 }
+        },
+        {
+          "step": 8,
+          "action": "place",
+          "message": "Try F03 at (0, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F03", "row": 0, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 9,
+          "action": "prune",
+          "message": "Prune at cell (0, 1): bound 3.482 cannot beat 3.649",
+          "data": { "row": 0, "col": 1, "bound": 3.4825, "best": 3.649 }
+        },
+        {
+          "step": 10,
+          "action": "backtrack",
+          "message": "Undo F03 at (0, 0)",
+          "data": { "fragment": "F03", "row": 0, "col": 0 }
+        },
+        {
+          "step": 11,
+          "action": "place",
+          "message": "Try F04 at (0, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F04", "row": 0, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 12,
+          "action": "prune",
+          "message": "Prune at cell (0, 1): bound 3.578 cannot beat 3.649",
+          "data": { "row": 0, "col": 1, "bound": 3.578, "best": 3.649 }
+        },
+        {
+          "step": 13,
+          "action": "backtrack",
+          "message": "Undo F04 at (0, 0)",
+          "data": { "fragment": "F04", "row": 0, "col": 0 }
+        },
+        {
+          "step": 14,
+          "action": "place",
+          "message": "Try F05 at (0, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F05", "row": 0, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 15,
+          "action": "prune",
+          "message": "Prune at cell (0, 1): bound 3.579 cannot beat 3.649",
+          "data": { "row": 0, "col": 1, "bound": 3.5786, "best": 3.649 }
+        },
+        {
+          "step": 16,
+          "action": "backtrack",
+          "message": "Undo F05 at (0, 0)",
+          "data": { "fragment": "F05", "row": 0, "col": 0 }
+        },
+        {
+          "step": 17,
+          "action": "place",
+          "message": "Try F06 at (0, 0) rot 0\u00b0 (+0.000)",
+          "data": { "fragment": "F06", "row": 0, "col": 0, "rot": 0, "score": 0.0 }
+        },
+        {
+          "step": 18,
+          "action": "place",
+          "message": "Try F04 at (0, 1) rot 0\u00b0 (+0.586)",
+          "data": { "fragment": "F04", "row": 0, "col": 1, "rot": 0, "score": 0.5861 }
+        },
+        {
+          "step": 19,
+          "action": "place",
+          "message": "Try F05 at (0, 2) rot 0\u00b0 (+0.632)",
+          "data": { "fragment": "F05", "row": 0, "col": 2, "rot": 0, "score": 0.632 }
+        },
+        {
+          "step": 20,
+          "action": "place",
+          "message": "Try F02 at (1, 0) rot 0\u00b0 (+0.496)",
+          "data": { "fragment": "F02", "row": 1, "col": 0, "rot": 0, "score": 0.4957 }
+        },
+        {
+          "step": 21,
+          "action": "place",
+          "message": "Try F03 at (1, 1) rot 0\u00b0 (+0.782)",
+          "data": { "fragment": "F03", "row": 1, "col": 1, "rot": 0, "score": 0.7823 }
+        },
+        {
+          "step": 22,
+          "action": "place",
+          "message": "Try F01 at (1, 2) rot 0\u00b0 (+1.153)",
+          "data": { "fragment": "F01", "row": 1, "col": 2, "rot": 0, "score": 1.1529 }
+        },
+        {
+          "step": 23,
+          "action": "backtrack",
+          "message": "Undo F01 at (1, 2)",
+          "data": { "fragment": "F01", "row": 1, "col": 2 }
+        },
+        {
+          "step": 24,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 1)",
+          "data": { "fragment": "F03", "row": 1, "col": 1 }
+        },
+        {
+          "step": 25,
+          "action": "place",
+          "message": "Try F01 at (1, 1) rot 0\u00b0 (+0.219)",
+          "data": { "fragment": "F01", "row": 1, "col": 1, "rot": 0, "score": 0.2187 }
+        },
+        {
+          "step": 26,
+          "action": "prune",
+          "message": "Prune at cell (1, 2): bound 2.715 cannot beat 3.649",
+          "data": { "row": 1, "col": 2, "bound": 2.7148, "best": 3.649 }
+        },
+        {
+          "step": 27,
+          "action": "backtrack",
+          "message": "Undo F01 at (1, 1)",
+          "data": { "fragment": "F01", "row": 1, "col": 1 }
+        },
+        {
+          "step": 28,
+          "action": "backtrack",
+          "message": "Undo F02 at (1, 0)",
+          "data": { "fragment": "F02", "row": 1, "col": 0 }
+        },
+        {
+          "step": 29,
+          "action": "place",
+          "message": "Try F03 at (1, 0) rot 0\u00b0 (+0.101)",
+          "data": { "fragment": "F03", "row": 1, "col": 0, "rot": 0, "score": 0.1006 }
+        },
+        {
+          "step": 30,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 3.141 cannot beat 3.649",
+          "data": { "row": 1, "col": 1, "bound": 3.1413, "best": 3.649 }
+        },
+        {
+          "step": 31,
+          "action": "backtrack",
+          "message": "Undo F03 at (1, 0)",
+          "data": { "fragment": "F03", "row": 1, "col": 0 }
+        },
+        {
+          "step": 32,
+          "action": "place",
+          "message": "Try F01 at (1, 0) rot 0\u00b0 (+0.017)",
+          "data": { "fragment": "F01", "row": 1, "col": 0, "rot": 0, "score": 0.0167 }
+        },
+        {
+          "step": 33,
+          "action": "prune",
+          "message": "Prune at cell (1, 1): bound 2.687 cannot beat 3.649",
+          "data": { "row": 1, "col": 1, "bound": 2.6868, "best": 3.649 }
+        },
+        {
+          "step": 34,
+          "action": "backtrack",
+          "message": "Undo F01 at (1, 0)",
+          "data": { "fragment": "F01", "row": 1, "col": 0 }
+        },
+        {
+          "step": 35,
+          "action": "backtrack",
+          "message": "Undo F05 at (0, 2)",
+          "data": { "fragment": "F05", "row": 0, "col": 2 }
+        },
+        {
+          "step": 36,
+          "action": "place",
+          "message": "Try F02 at (0, 2) rot 0\u00b0 (+0.174)",
+          "data": { "fragment": "F02", "row": 0, "col": 2, "rot": 0, "score": 0.174 }
+        },
+        {
+          "step": 37,
+          "action": "prune",
+          "message": "Prune at cell (1, 0): bound 3.381 cannot beat 3.649",
+          "data": { "row": 1, "col": 0, "bound": 3.3815, "best": 3.649 }
+        },
+        {
+          "step": 38,
+          "action": "backtrack",
+          "message": "Undo F02 at (0, 2)",
+          "data": { "fragment": "F02", "row": 0, "col": 2 }
+        },
+        {
+          "step": 39,
+          "action": "place",
+          "message": "Try F01 at (0, 2) rot 0\u00b0 (+0.067)",
+          "data": { "fragment": "F01", "row": 0, "col": 2, "rot": 0, "score": 0.0667 }
+        },
+        {
+          "step": 40,
+          "action": "prune",
+          "message": "Prune at cell (1, 0): bound 2.791 cannot beat 3.649",
+          "data": { "row": 1, "col": 0, "bound": 2.791, "best": 3.649 }
+        },
+        {
+          "step": 41,
+          "action": "backtrack",
+          "message": "Undo F01 at (0, 2)",
+          "data": { "fragment": "F01", "row": 0, "col": 2 }
+        },
+        {
+          "step": 42,
+          "action": "place",
+          "message": "Try F03 at (0, 2) rot 0\u00b0 (+0.040)",
+          "data": { "fragment": "F03", "row": 0, "col": 2, "rot": 0, "score": 0.0396 }
+        },
+        {
+          "step": 43,
+          "action": "prune",
+          "message": "Prune at cell (1, 0): bound 3.135 cannot beat 3.649",
+          "data": { "row": 1, "col": 0, "bound": 3.1345, "best": 3.649 }
+        },
+        {
+          "step": 44,
+          "action": "backtrack",
+          "message": "Undo F03 at (0, 2)",
+          "data": { "fragment": "F03", "row": 0, "col": 2 }
+        },
+        {
+          "step": 45,
+          "action": "backtrack",
+          "message": "Undo F04 at (0, 1)",
+          "data": { "fragment": "F04", "row": 0, "col": 1 }
+        },
+        {
+          "step": 46,
+          "action": "place",
+          "message": "Try F03 at (0, 1) rot 0\u00b0 (+0.203)",
+          "data": { "fragment": "F03", "row": 0, "col": 1, "rot": 0, "score": 0.2025 }
+        },
+        {
+          "step": 47,
+          "action": "prune",
+          "message": "Prune at cell (0, 2): bound 3.398 cannot beat 3.649",
+          "data": { "row": 0, "col": 2, "bound": 3.3981, "best": 3.649 }
+        },
+        {
+          "step": 48,
+          "action": "backtrack",
+          "message": "Undo F03 at (0, 1)",
+          "data": { "fragment": "F03", "row": 0, "col": 1 }
+        },
+        {
+          "step": 49,
+          "action": "place",
+          "message": "Try F01 at (0, 1) rot 0\u00b0 (+0.126)",
+          "data": { "fragment": "F01", "row": 0, "col": 1, "rot": 0, "score": 0.1264 }
+        },
+        {
+          "step": 50,
+          "action": "prune",
+          "message": "Prune at cell (0, 2): bound 2.951 cannot beat 3.649",
+          "data": { "row": 0, "col": 2, "bound": 2.9514, "best": 3.649 }
+        },
+        {
+          "step": 51,
+          "action": "backtrack",
+          "message": "Undo F01 at (0, 1)",
+          "data": { "fragment": "F01", "row": 0, "col": 1 }
+        },
+        {
+          "step": 52,
+          "action": "place",
+          "message": "Try F02 at (0, 1) rot 0\u00b0 (+0.063)",
+          "data": { "fragment": "F02", "row": 0, "col": 1, "rot": 0, "score": 0.063 }
+        },
+        {
+          "step": 53,
+          "action": "prune",
+          "message": "Prune at cell (0, 2): bound 3.371 cannot beat 3.649",
+          "data": { "row": 0, "col": 2, "bound": 3.3712, "best": 3.649 }
+        },
+        {
+          "step": 54,
+          "action": "backtrack",
+          "message": "Undo F02 at (0, 1)",
+          "data": { "fragment": "F02", "row": 0, "col": 1 }
+        },
+        {
+          "step": 55,
+          "action": "place",
+          "message": "Try F05 at (0, 1) rot 0\u00b0 (+0.025)",
+          "data": { "fragment": "F05", "row": 0, "col": 1, "rot": 0, "score": 0.025 }
+        },
+        {
+          "step": 56,
+          "action": "prune",
+          "message": "Prune at cell (0, 2): bound 3.317 cannot beat 3.649",
+          "data": { "row": 0, "col": 2, "bound": 3.3167, "best": 3.649 }
+        },
+        {
+          "step": 57,
+          "action": "backtrack",
+          "message": "Undo F05 at (0, 1)",
+          "data": { "fragment": "F05", "row": 0, "col": 1 }
+        },
+        {
+          "step": 58,
+          "action": "backtrack",
+          "message": "Undo F06 at (0, 0)",
+          "data": { "fragment": "F06", "row": 0, "col": 0 }
+        }
+      ],
+      "trace_dropped": {}
+    }
+  },
+  "fragments2": [
+    {
+      "id": "74935332bf434e3f97402c3c6d25ff73",
+      "label": "F01",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/74935332bf434e3f97402c3c6d25ff73/image",
+      "true_row": 1,
+      "true_col": 2,
+      "scramble_rot": 0,
+      "edges": {
+        "N": "//JJq//qFFl0000lQQQV10kR",
+        "E": "Rl016QQQQAAEEEEZEEFaJJJJ",
+        "S": "JaFFFFFq////aFBBBGRRRRVF",
+        "W": "VmFFaFFFFVFFqqFFaFFF+VZ/"
+      }
+    },
+    {
+      "id": "bae7ff1b3e0f41c2b75cd96bd9e28737",
+      "label": "F02",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/bae7ff1b3e0f41c2b75cd96bd9e28737/image",
+      "true_row": 1,
+      "true_col": 0,
+      "scramble_rot": 0,
+      "edges": {
+        "N": "WWqJZ44ZJaWBBBBp4Zp+6VFF",
+        "E": "F6FBaFBBBBVh0hlFFFFFFFaq",
+        "S": "pqqVJJJJaBR+RBBq/006/qBA",
+        "W": "BVVVVVVVV54045WqWSSSSSSW"
+      }
+    },
+    {
+      "id": "0090a31431ac46109b8687f511655ed6",
+      "label": "F03",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/0090a31431ac46109b8687f511655ed6/image",
+      "true_row": 1,
+      "true_col": 1,
+      "scramble_rot": 0,
+      "edges": {
+        "N": "FF55445FFFV1166//161pUV+",
+        "E": "/VFuVFFZqFuqFVqFFFFFFFmF",
+        "S": "FFFFFZJV0VZFFFZ5450005+5",
+        "W": "paFFFFFFFlRhRVBBBBWWBWqV"
+      }
+    },
+    {
+      "id": "9205cdaabcad44ccb0acfbc7847e8168",
+      "label": "F04",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/9205cdaabcad44ccb0acfbc7847e8168/image",
+      "true_row": 0,
+      "true_col": 1,
+      "scramble_rot": 0,
+      "edges": {
+        "N": "CCq554+5GCCCW10000lVVVVV",
+        "E": "RVVVVVVVVVqVVpVVpZUUUqVV",
+        "S": "VUUUUUUUUUp5VFFFV54555VF",
+        "W": "FFFFFFFFV0hh6WCCCCCCCGaG"
+      }
+    },
+    {
+      "id": "9a52e88f347d4040893387459203f377",
+      "label": "F05",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/9a52e88f347d4040893387459203f377/image",
+      "true_row": 0,
+      "true_col": 2,
+      "scramble_rot": 0,
+      "edges": {
+        "N": "VaVJVaVVVVl051101VVVVp55",
+        "E": "400kUUUUUUUUUUVVVVVp00hR",
+        "S": "Rk00lQQQl0000lFFFq/qJa/+",
+        "W": "VqqUUUVUVVpVVVVVVVVRVZVR"
+      }
+    },
+    {
+      "id": "f9c68a2c0b5745d593b7c8a2901a699b",
+      "label": "F06",
+      "width": 160,
+      "height": 160,
+      "image_url": "/api/v1/fragments/f9c68a2c0b5745d593b7c8a2901a699b/image",
+      "true_row": 0,
+      "true_col": 0,
+      "scramble_rot": 0,
+      "edges": {
+        "N": "FFFFVRRRRlGGGGVlRllVCCCC",
+        "E": "CWCCCCCCCW16RRkpFFFFFFFF",
+        "S": "FFF+5544pBBBFVWaZ54ZaWWW",
+        "W": "WWWWWqaJJJJJJJaaFFFFFFFF"
+      }
+    }
+  ]
+}

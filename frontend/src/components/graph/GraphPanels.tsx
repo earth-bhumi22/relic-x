@@ -1,5 +1,6 @@
 // Owner: A (Arvind)
 // Stats bar, legend, traversal panel (order list + step/play), node neighbours, selected-match card, edge table.
+import { prefersReducedMotion } from "../../lib/motion";
 import { useEffect, useRef, useState } from "react";
 import type { GraphEdge, GraphOut, Traversal } from "../../api/types";
 import {
@@ -67,15 +68,6 @@ export function GraphLegend({ graph, showTruth }: { graph: GraphOut; showTruth: 
     </div>
   );
 }
-
-/** Reduced motion: no animated play, the final state is shown at once. */
-export const prefersReducedMotion = (): boolean => {
-  try {
-    return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-  } catch {
-    return false;
-  }
-};
 
 export function TraversalPanel({
   method,

@@ -348,41 +348,10 @@ export function buildRun(
     return f.true_row === p.row && f.true_col === p.col;
   }).length;
 
-  const trace: TraceStepOut[] = placements.map((p, i) =>
-    i === 0
-      ? {
-          step: 1,
-          action: "seed",
-          message: `Seed ${p.label}: strongest total edge weight`,
-          data: { fragment: p.label, row: 0, col: 0, rot: 0 },
-        }
-      : {
-          step: i + 1,
-          action: "place",
-          message: `Place ${p.label} at (${p.row}, ${p.col}) rot 0° — best local score ${(0.6 + r() * 0.35).toFixed(3)} from 1 neighbour(s)`,
-          data: { fragment: p.label, row: p.row, col: p.col, rot: 0, score: round(0.6 + r() * 0.35, 3) },
-        },
-  );
-  if (algorithm === "backtracking") {
-    trace.push({
-      step: trace.length + 1,
-      action: "prune",
-      message: "Bound 14.20 < incumbent 19.84: prune subtree",
-      data: {},
-    });
-    trace.push({
-      step: trace.length + 1,
-      action: "best",
-      message: "New best layout found",
-      data: { total_score: round(total) },
-    });
-  }
-  trace.push({
-    step: trace.length + 1,
-    action: "stop",
-    message: `Placed ${placements.length}/${frags.length} fragments`,
-    data: {},
-  });
+  const nodeLimit = params.node_limit ?? 150000;
+  const built = buildTrace(algorithm, placements, matches, r, total, nodeLimit);
+  const trace = built.trace;
+  const truncated = built.truncated;
 
   return {
     id: hex32(rng(Math.floor(r() * 1e9) + createdAt.length)),
@@ -400,13 +369,180 @@ export function buildRun(
     neighbour_accuracy: placedPairs ? round(goodPairs / placedPairs) : null,
     direct_accuracy: frags.length ? round(direct / frags.length) : null,
     coverage: 1.0,
-    truncated: false,
-    meta: { seed: placements[0]?.label ?? null, unplaced: [] },
+    truncated,
+    meta: built.meta,
     created_at: createdAt,
     placements,
     trace,
-    trace_dropped: algorithm === "backtracking" ? { place: 12575, prune: 8120 } : {},
+    trace_dropped: built.dropped,
   };
+}
+
+// ---- trace generation -----------------------------------------------------------------------
+// Mirrors what the real solvers record (verified against the live API):
+//  * greedy / best-first / Dijkstra put the SEED at (0, 0) and every other cell relative to it, so internal coordinates
+//    go negative; `placements` are shifted so the top-left is (0, 0). `conflict` and `fallback` steps place a tile too.
+//  * backtracking traces use grid-cell coordinates, start with `incumbent`, `place` = a tentative try, `backtrack` undoes
+//    it, and a capped run (small node_limit) ends with `limit` and reports what it did not record in `trace_dropped`.
+const dist = (a: PlacementOut, b: PlacementOut) => Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
+const deg = (rot: number) => `${rot * 90}°`;
+
+function buildTrace(
+  algorithm: Algorithm,
+  placements: PlacementOut[],
+  matches: SideMatchOut[],
+  r: () => number,
+  total: number,
+  nodeLimit: number,
+): {
+  trace: TraceStepOut[];
+  truncated: boolean;
+  dropped: Record<string, number>;
+  meta: Record<string, unknown>;
+} {
+  const n = placements.length;
+  const trace: TraceStepOut[] = [];
+  const push = (action: string, message: string, data: Record<string, unknown>) =>
+    trace.push({ step: trace.length + 1, action, message, data });
+  const score = () => round(0.4 + r() * 0.55, 3);
+  const unplaced: string[] = [];
+  if (n === 0) return { trace, truncated: false, dropped: {}, meta: { seed: null, unplaced } };
+
+  if (algorithm === "backtracking") {
+    const truncated = nodeLimit < 1000;
+    const ordered = [...placements]; // already row-major
+    const wrong = (i: number) => placements[(i + 1) % n];
+    push("incumbent", `Start from heuristic solution, score ${total.toFixed(3)}`, { score: round(total) });
+    const stopAt = truncated ? Math.max(2, Math.ceil(n * 0.6)) : n;
+    let nodes = 1;
+    let pruned = 0;
+    ordered.slice(0, stopAt).forEach((p, i) => {
+      if (i % 3 === 0 && n > 1) {
+        const w = wrong(i);
+        push("place", `Try ${w.label} at (${p.row}, ${p.col}) rot 0° (+0.000)`, {
+          fragment: w.label,
+          row: p.row,
+          col: p.col,
+          rot: 0,
+          score: 0,
+        });
+        push(
+          "prune",
+          `Prune at cell (${p.row}, ${p.col}): bound ${(total * 0.7).toFixed(3)} cannot beat ${total.toFixed(3)}`,
+          {
+            row: p.row,
+            col: p.col,
+            bound: round(total * 0.7),
+            best: round(total),
+          },
+        );
+        push("backtrack", `Undo ${w.label} at (${p.row}, ${p.col})`, { fragment: w.label, row: p.row, col: p.col });
+        nodes += 2;
+        pruned += 1;
+      }
+      const sc = score();
+      push("place", `Try ${p.label} at (${p.row}, ${p.col}) rot ${deg(p.rot)} (+${sc.toFixed(3)})`, {
+        fragment: p.label,
+        row: p.row,
+        col: p.col,
+        rot: p.rot,
+        score: sc,
+      });
+      nodes += 1;
+    });
+    if (truncated) {
+      push("limit", `Node limit ${nodeLimit} reached — returning best solution found`, { nodes: nodeLimit + 1 });
+    } else {
+      push("best", `New best layout, score ${total.toFixed(3)}`, { total_score: round(total) });
+      push("stop", `Search finished after ${nodes} nodes`, { nodes });
+    }
+    return {
+      trace,
+      truncated,
+      dropped: truncated ? { place: 1863, prune: 1779, backtrack: 1861 } : {},
+      meta: {
+        nodes: truncated ? nodeLimit + 1 : nodes,
+        pruned: truncated ? 1907 : pruned,
+        node_limit: nodeLimit,
+        incumbent_score: round(total),
+        improved_on_incumbent: false,
+      },
+    };
+  }
+
+  // Constructive solvers: the seed is the placement nearest the middle, at internal (0, 0).
+  const seed = placements[Math.floor(n / 2)];
+  const rel = (p: PlacementOut) => ({ row: p.row - seed.row, col: p.col - seed.col });
+  const rest = placements
+    .filter((p) => p !== seed)
+    .sort((a, b) => dist(a, seed) - dist(b, seed) || a.row - b.row || a.col - b.col);
+  const placed = [seed];
+  const parentOf = (p: PlacementOut) => placed.reduce((best, q) => (dist(q, p) < dist(best, p) ? q : best), seed);
+  const seedMsg = {
+    greedy: `Seed ${seed.label}: strongest total edge weight`,
+    best_first: `Seed ${seed.label}`,
+    dijkstra: `Seed ${seed.label}; Dijkstra settled ${n} of ${n} fragments`,
+  }[algorithm];
+  push("seed", seedMsg, {
+    fragment: seed.label,
+    row: 0,
+    col: 0,
+    rot: 0,
+    ...(algorithm === "dijkstra" ? { dist: 0 } : {}),
+  });
+  let conflicts = 0;
+  rest.forEach((p, i) => {
+    const { row, col } = rel(p);
+    const last = i === rest.length - 1 && n >= 6;
+    const sc = score();
+    const parent = parentOf(p);
+    const base = { fragment: p.label, row, col, rot: p.rot, score: sc };
+    if (last && algorithm === "best_first") {
+      p.rot = 2; // fallback tiles land wherever they fit, rotated
+      push("fallback", `${p.label} not attached by any join; best free slot (${row}, ${col}) (${sc.toFixed(3)})`, {
+        ...base,
+        rot: 2,
+      });
+    } else if (last && algorithm === "dijkstra") {
+      conflicts = 1;
+      push(
+        "conflict",
+        `${p.label}: not reachable in pruned graph; best free slot (${row}, ${col}) (score ${sc.toFixed(3)})`,
+        base,
+      );
+    } else if (algorithm === "greedy") {
+      push(
+        "place",
+        `Place ${p.label} at (${row}, ${col}) rot ${deg(p.rot)} — best local score ${sc.toFixed(3)} from 1 neighbour(s)`,
+        base,
+      );
+    } else if (algorithm === "best_first") {
+      push(
+        "place",
+        `Place ${p.label} at (${row}, ${col}) via strongest open join ${parent.label}->${p.label} (${sc.toFixed(3)})`,
+        {
+          ...base,
+          parent: parent.label,
+        },
+      );
+    } else {
+      push(
+        "place",
+        `Place ${p.label} at (${row}, ${col}) via parent ${parent.label} (path cost ${(1 - sc).toFixed(3)}, join ${sc.toFixed(3)})`,
+        {
+          ...base,
+          parent: parent.label,
+          dist: round(1 - sc, 4),
+        },
+      );
+    }
+    placed.push(p);
+  });
+  const meta: Record<string, unknown> = { seed: seed.label, unplaced };
+  if (algorithm === "best_first") meta.conflicts = 0;
+  if (algorithm === "dijkstra") Object.assign(meta, { conflicts, unreachable: conflicts });
+  void matches;
+  return { trace, truncated: false, dropped: {}, meta };
 }
 
 export function scalingModel(algorithm: Algorithm, n: number): { ms: number; ops: number; truncated: boolean } {
