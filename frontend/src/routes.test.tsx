@@ -70,9 +70,9 @@ describe("routing", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("not_found");
   });
 
-  it("shows precondition_failed (409) for an artifact that has not been matched", async () => {
+  it("shows the run-matching prompt (409 precondition_failed) for an artifact that has not been matched", async () => {
     renderAt(`/artifacts/${UNMATCHED}/graph`);
-    expect(await screen.findByRole("alert")).toHaveTextContent("precondition_failed");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Run matching first");
   });
 
   it("retries a failed request from the error state", async () => {

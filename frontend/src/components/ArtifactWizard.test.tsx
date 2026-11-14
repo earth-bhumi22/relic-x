@@ -51,7 +51,7 @@ describe("ArtifactWizard — sources", () => {
   it("creates from a sample: JSON body with the fragment parameters", async () => {
     mockApi.respond("POST", "/artifacts/sample", created);
     const { onCreated } = setup();
-    expect(await screen.findByRole("radio", { name: /mosaic-tile/ })).toBeChecked(); // first sample preselected
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked()); // first sample preselected
     choose("Sample"); // already selected; keeps the radio group reachable
     fireEvent.click(screen.getByRole("radio", { name: /pottery-band/ }));
     next();

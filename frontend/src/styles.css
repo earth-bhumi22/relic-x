@@ -945,3 +945,179 @@ a:focus-visible {
   color: var(--muted);
   padding: 0 0.25rem;
 }
+
+/* ---- similarity graph (T25) ---- */
+.graph-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.5rem 1.5rem;
+  margin: 0.75rem 0;
+}
+.graph-controls .field {
+  margin: 0;
+}
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.slider-row input[type="range"] {
+  flex: 1 1 auto;
+  min-width: 0;
+  accent-color: var(--accent);
+}
+.slider-row input[type="number"],
+.graph-controls input[type="number"] {
+  width: 5.5rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.3rem 0.5rem;
+}
+.graph-controls input:focus-visible,
+.edge-table input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.graph-controls fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.graph-controls legend {
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0;
+}
+.graph-toggles {
+  display: flex;
+  flex-direction: column;
+}
+.graph-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+}
+.graph-canvas {
+  width: 100%;
+  height: 24rem;
+  min-height: 16rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+.graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  font-size: 0.85rem;
+}
+.legend-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.legend-swatch {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  margin-right: 0.3rem;
+  vertical-align: -1px;
+  border: 1px solid var(--border);
+}
+.legend-line {
+  display: inline-block;
+  width: 1.4rem;
+  height: 0;
+  border-top: 3px solid var(--muted);
+  margin-right: 0.3rem;
+  vertical-align: middle;
+}
+.legend-true {
+  border-top-color: var(--success);
+}
+.legend-false {
+  border-top-color: var(--danger);
+}
+.legend-note {
+  margin: 0;
+}
+.graph-side {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+.traversal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+.order-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: visit;
+}
+.order-list li {
+  counter-increment: visit;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+.order-list li::before {
+  content: counter(visit) ". ";
+  color: var(--muted);
+}
+.order-list li.unvisited {
+  opacity: 0.45;
+}
+.order-list li[aria-current="step"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+.compare-grid h3 {
+  font-size: 0.9rem;
+  margin: 0 0 0.3rem;
+}
+.edge-table {
+  margin-top: 0.75rem;
+}
+.table-scroll {
+  max-height: 22rem;
+  overflow: auto;
+}
+.edge-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.edge-table th,
+.edge-table td {
+  text-align: left;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.edge-table .selected-row {
+  background: var(--surface-2);
+}
