@@ -185,10 +185,22 @@ npm install
 npm run dev                                            # http://localhost:5173
 ```
 
+### Verify an installation
+
+With the stack running (Docker or local), run the end-to-end smoke test. It calls every
+endpoint group, runs all four solvers, and cleans up after itself:
+
+```bash
+python backend/scripts/smoke_pipeline.py                         # API on :8000
+python backend/scripts/smoke_pipeline.py --base http://localhost:8080   # through nginx (Docker)
+```
+
+It ends with `ALL CHECKS PASSED`. CI runs the same script against PostgreSQL 16 on every PR.
+
 ### Run the tests
 
 ```bash
-cd backend && pytest            # 69 engine + API + migration tests
+cd backend && pytest            # 70 engine + API + migration tests
 ruff check . && black --check .
 cd ../frontend && npm test && npm run build
 ```

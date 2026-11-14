@@ -36,7 +36,7 @@ jobs:
         run: pytest --cov=relicx --cov-report=term-missing
 
   postgres:
-    name: Backend · migrations on PostgreSQL 16
+    name: Backend · migrations + smoke test on PostgreSQL 16
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -68,6 +68,15 @@ jobs:
           alembic upgrade head
           alembic downgrade base
           alembic upgrade head
+      - name: End-to-end smoke test against a live API on PostgreSQL (T01)
+        run: |
+          RELICX_AUTO_CREATE_SCHEMA=false RELICX_STORAGE_DIR=/tmp/relicx-storage \
+            uvicorn relicx.main:app --port 8000 > /tmp/api.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf localhost:8000/api/v1/health && break; sleep 1; done
+          python scripts/smoke_pipeline.py --base http://localhost:8000
+      - name: API log (on failure)
+        if: failure()
+        run: cat /tmp/api.log || true
       # T30 (B) adds the full API test-suite against this database here.
 
   frontend:

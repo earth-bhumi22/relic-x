@@ -15,7 +15,7 @@ dependencies = [
 # Web API + persistence. Kept separate so the algorithm engine can be
 # installed and benchmarked on its own (pip install -e .).
 api = [
-    "fastapi>=0.115",
+    "fastapi>=0.121",  # Depends(scope="function")
     "uvicorn[standard]>=0.30",
     "sqlalchemy>=2.0.30",
     "alembic>=1.13",
