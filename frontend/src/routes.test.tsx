@@ -38,9 +38,10 @@ describe("routing", () => {
     expect(await screen.findByText("Mughal tile panel")).toBeInTheDocument();
   });
 
-  it("lets a page demonstrate loading, empty and error states", async () => {
-    renderAt("/");
-    await screen.findByText("Mughal tile panel");
+  // Lab is still a placeholder page, so it is the one that demonstrates the shared states (Projects is real since T23).
+  it("lets a placeholder page demonstrate loading, empty and error states", async () => {
+    renderAt("/lab");
+    await screen.findByText(/sample artifacts available/);
     fireEvent.click(screen.getByRole("button", { name: "Loading" }));
     expect(await screen.findByRole("status")).toHaveTextContent("Loading…");
     fireEvent.click(screen.getByRole("button", { name: "Empty" }));
@@ -48,18 +49,18 @@ describe("routing", () => {
     fireEvent.click(screen.getByRole("button", { name: "Error" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("not_found");
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
-    expect(await screen.findByText("Mughal tile panel")).toBeInTheDocument();
+    expect(await screen.findByText(/sample artifacts available/)).toBeInTheDocument();
   });
 
   it("shows the empty state when the API returns an empty list", async () => {
-    mockApi.respond("GET", "/artifacts", []);
-    renderAt("/");
+    mockApi.respond("GET", "/samples", []);
+    renderAt("/lab");
     expect(await screen.findByText("The API returned no data.")).toBeInTheDocument();
   });
 
   it("shows a loading state while the API is slow", async () => {
-    mockApi.respond("GET", "/artifacts", [], { delayMs: 30 });
-    renderAt("/");
+    mockApi.respond("GET", "/samples", [], { delayMs: 30 });
+    renderAt("/lab");
     expect(screen.getByRole("status")).toHaveTextContent("Loading…");
     expect(await screen.findByText("The API returned no data.")).toBeInTheDocument();
   });
@@ -75,12 +76,12 @@ describe("routing", () => {
   });
 
   it("retries a failed request from the error state", async () => {
-    mockApi.fail("GET", "/artifacts", 500, "internal_error", "boom");
-    renderAt("/");
+    mockApi.fail("GET", "/samples", 500, "internal_error", "boom");
+    renderAt("/lab");
     expect(await screen.findByRole("alert")).toHaveTextContent("boom");
-    mockApi.respond("GET", "/artifacts", []);
+    mockApi.respond("GET", "/samples", []);
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
     expect(await screen.findByText("The API returned no data.")).toBeInTheDocument();
-    expect(mockApi.calls("GET", "/artifacts")).toHaveLength(2);
+    expect(mockApi.calls("GET", "/samples")).toHaveLength(2);
   });
 });

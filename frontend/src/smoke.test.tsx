@@ -17,12 +17,12 @@ describe("smoke: whole app in mock mode", () => {
 
     // Projects: both mock artifacts are listed
     expect(await screen.findByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
-    expect(await screen.findByRole("link", { name: "Mughal tile panel" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Pottery band (unmatched)" })).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "Open Mughal tile panel" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Open Pottery band (unmatched)" })).toBeInTheDocument();
     expect(screen.queryByRole("navigation", { name: "Artifact" })).not.toBeInTheDocument();
 
     // into an artifact (Gallery shows its 16 fragments)
-    fireEvent.click(screen.getByRole("link", { name: "Mughal tile panel" }));
+    fireEvent.click(screen.getByRole("link", { name: "Open Mughal tile panel" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Fragment gallery" })).toBeInTheDocument();
     expect(await screen.findByAltText("F01")).toBeInTheDocument();
     const sub = screen.getByRole("navigation", { name: "Artifact" });
