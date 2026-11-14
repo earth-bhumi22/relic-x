@@ -354,6 +354,8 @@ total and does not change the bound. **Space** O(n) for the layout and the unpla
 damaged 3×3…8×8 runs (`validation/results.md`): `score_lookups` grows as n^2.62 (R² 0.9998), wall time as about n^2.3;
 profiling the 8×8 case shows `placement_score` and the lookups it makes take most of the time, the frontier little.
 The cubic bound is a worst case that the grid shape prevents.
+The consolidated multi-seed fit (damaged, n = 4…64, T32 block of `validation/results.md`) gives total operations ∝ n^2.65
+(R² 1.000) for greedy and n^1.77 (R² 0.988) for best-first, both inside the derived bounds.
 
 **Space of the result, determinism.** Everything is deterministic: candidates are iterated in sorted order and ties
 use a strict `>`. A fragment that fits nowhere (grid too small) is reported in `meta["unplaced"]` and a `stop` trace
@@ -438,6 +440,8 @@ relaxations equal 2E exactly (ratio 1.00 at every n) and grow as n^1.58 like E i
 E, the rest of the pushes are never needed), but the number of conflicts grows roughly linearly with n (16 per run at
 n = 25, 49 at n = 64) so `score_lookups` from the fallbacks grow as n^2.06 against n^1.58 for the heap work (wall time about n^2): the fallbacks,
 not the heap, are what grows fastest.
+The consolidated multi-seed fit (damaged, n = 4…64, `validation/results.md`, T32 block) gives total operations ∝ n^1.41 (R² 0.980)
+for Dijkstra, above the n^1 of the heap work alone, because those fallback `score_lookups` are 78% of the operations at n = 64.
 
 **Why a path-sum objective underperforms for assembly.**
 (a) A hop never costs less than 0, so cost accumulates with depth: a fragment with one excellent join to a far-away

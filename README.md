@@ -251,23 +251,28 @@ Errors always have one shape: `{"error": {"code", "message", "details"}}`.
 
 ## 📊 Measured results
 
-Mean neighbour accuracy over the three samples, damaged fragments (noise σ = 4, 30 % edge
-erosion), no rotation. Reproduce with `python validation/run_benchmarks.py`. Full tables,
-including rotation, are in [`validation/results.md`](validation/results.md).
+Neighbour accuracy (mean ± standard deviation over 12 runs: three samples × four seeds), damaged fragments (noise σ = 4,
+30 % edge erosion), no rotation, backtracking with a 50,000-node limit. Reproduce with `python validation/run_benchmarks.py`.
+Full tables (all scenarios, n up to 64, direct accuracy, coverage, operations, the oracle comparison and fitted growth) are in
+[`validation/results.md`](validation/results.md); the per-run data is in `validation/solver_runs.csv`.
 
+<!-- T32:readme-table:begin -->
 | n | Greedy | Best-first | Dijkstra | Backtracking |
 |---|---|---|---|---|
-| 9 | 83 % · 0.4 ms | 81 % · 0.1 ms | 83 % · 0.1 ms | **100 %** · 5.7 ms |
-| 16 | **100 %** · 1.0 ms | **100 %** · 0.2 ms | 75 % · 0.2 ms | **100 %** · 27 ms |
-| 25 | **89 %** · 3.0 ms | 72 % · 0.4 ms | 55 % · 0.6 ms | **89 %** · 206 ms\* |
-| 36 | **91 %** · 7.5 ms | 66 % · 0.9 ms | 45 % · 1.6 ms | **91 %** · 221 ms\* |
+| 9 | 87 ± 21% · 0.2 ms | 92 ± 15% · 0.1 ms | 85 ± 24% · 0.1 ms | 98 ± 7% · 3.2 ms |
+| 16 | 93 ± 15% · 0.8 ms | 93 ± 13% · 0.1 ms | 77 ± 26% · 0.2 ms | 95 ± 12% · 53.4 ms \* |
+| 25 | 90 ± 13% · 2.2 ms | 83 ± 19% · 0.3 ms | 53 ± 22% · 0.5 ms | 91 ± 13% · 169.8 ms \* |
+| 36 | 88 ± 20% · 5.2 ms | 83 ± 19% · 0.5 ms | 66 ± 30% · 0.8 ms | 88 ± 20% · 184.6 ms \* |
 
-\* backtracking hit its node limit and returned its best-so-far.
+Mean ± sd over 12 runs per cell (3 samples × several seeds); bold = the only solver whose 95 % interval lies above all others.
+<!-- T32:readme-table:end -->
 
-- **Backtracking** (starting from the greedy solution) fixes greedy's early mistakes on small grids, but its cost explodes with n.
-- **Greedy** scores each candidate against *all* placed neighbours, so it is the best of the fast solvers.
-- **Best-first (Prim)** is the fastest and is accurate when joins are distinctive.
-- **Dijkstra** is the weakest. Summing costs along paths is the wrong objective for assembly, which makes it a useful comparison point in the report.
+\* backtracking hit its node limit on at least one run and returned its best-so-far.
+
+- **Backtracking** (starting from the greedy solution) can fix greedy's early mistakes on small grids, but its cost explodes with n, and from about n = 25 every run stops at the node limit with its best-so-far.
+- **Greedy** scores each candidate against *all* placed neighbours, so its mean accuracy is the highest of the three fast solvers from n = 25 on, but the spreads overlap at most sizes, so no ranking is claimed there.
+- **Best-first (Prim)** does far fewer operations and takes far less time than greedy; it trusts single strongest joins.
+- **Dijkstra** has the lowest mean accuracy at the larger sizes. Summing costs along paths is the wrong objective for assembly, which makes it a useful comparison point in the report.
 
 ---
 
