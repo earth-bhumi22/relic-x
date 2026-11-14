@@ -1,7 +1,9 @@
 # RELIC-X — Project Contract (T00)
 
-**Version:** 1.0 (signed off by A and B, 2026-11-14) — gate **G0** passed
+**Version:** 1.1 (signed off by A and B, 2026-11-14) — gate **G0** passed
 
+> **1.1 changes:** background jobs implemented (T20): §5 rows no longer *planned*, §5.1 behaviour notes.
+>
 > **1.0 changes:** B signed off every decision D1–D14 and confirmed the §5.1 job-status shape as
 > written (implemented in T20).
 >
@@ -102,8 +104,8 @@ compat[(frag_i, side_a, frag_j, side_b)] -> composite score in [0, 1]   (symmetr
 | GET | `/runs/{id}` | — | `RunDetail` |
 | DELETE | `/runs/{id}` | — | 204 |
 | POST | `/benchmark/scaling` | `{sample, sizes[], algorithms[], rotate, noise, erosion, node_limit}` | `{sample, rotate, points[]}` |
-| *planned* POST | `/artifacts/{id}/jobs` | same as runs | 202 `{job_id, status}` (T20) |
-| *planned* GET | `/jobs/{id}` | — | `{status: queued\|running\|done\|failed, progress, run_id?}` (T20) |
+| POST | `/artifacts/{id}/jobs` | same as runs | 202 `{job_id, status, progress}` (T20) |
+| GET | `/jobs/{id}` | — | `{job_id, status: queued\|running\|done\|failed, progress, run_id, error}` (T20) |
 | *planned* GET | `/runs/{id}/export.csv`, `/artifacts/{id}/benchmark.csv` | — | CSV (T21) |
 
 `algorithm` ∈ `greedy | best_first | dijkstra | backtracking`.
@@ -115,7 +117,7 @@ return letters (`side_source: "N"`, `side_a: "N"`) and `/graph` edges also carry
 The frontend must map between `0=N, 1=E, 2=S, 3=W` and the letters itself. Unifying this is a v0.3
 candidate, not required for G0.
 
-### 5.1 Job status shape (T20, agreed; needed by A's T27)
+### 5.1 Job status shape (T20, implemented; used by A's T27)
 
 ```json
 POST /artifacts/{id}/jobs   -> 202 {"job_id": "…", "status": "queued", "progress": 0.0}
@@ -125,7 +127,16 @@ GET  /jobs/{id}             -> 200 {"job_id": "…", "status": "queued|running|d
 
 `progress` is a float in `[0, 1]`. `run_id` is set only when `status = done`, after which the client
 fetches `GET /runs/{run_id}`. `error` is a string only when `status = failed`. A polls every 1 s and
-stops on `done` or `failed`. **Confirmed by B (v1.0).**
+stops on `done` or `failed`. **Confirmed by B (v1.0), implemented in T20 (v1.1).**
+
+Behaviour (v1.1):
+- Preconditions are checked **before** the 202: unknown artifact → 404, not matched yet → 409
+  `precondition_failed`, bad algorithm → 422. A queued job never fails for these reasons.
+- `progress` moves during **backtracking** only (nodes searched / `node_limit`, updated at most every
+  0.25 s, capped at 0.99 until done). The other solvers finish in milliseconds and jump 0 → 1.
+- A job left `queued`/`running` when the server restarts is marked `failed` with
+  `error: "server restarted before the job finished"` at the next startup.
+- The synchronous `POST /artifacts/{id}/runs` is unchanged; use jobs when a run may take seconds.
 
 ## 6. Example payloads
 

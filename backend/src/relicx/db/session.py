@@ -7,6 +7,7 @@ module global, so tests can build an app against a throwaway database.
 from __future__ import annotations
 
 from collections.abc import Iterator
+from contextlib import contextmanager
 
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
@@ -44,3 +45,14 @@ def session_scope(factory: sessionmaker[Session]) -> Iterator[Session]:
         raise
     finally:
         session.close()
+
+
+@contextmanager
+def transaction(factory: sessionmaker[Session]) -> Iterator[Session]:
+    """``with transaction(factory) as db:`` for code outside a request (jobs, CLI).
+
+    Commits on normal exit, including an early ``return``/``continue`` inside the
+    block, and rolls back on an exception. (Iterating ``session_scope`` with a
+    for-loop and returning from inside it silently skips the commit.)
+    """
+    yield from session_scope(factory)

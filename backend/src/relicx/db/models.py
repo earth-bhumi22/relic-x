@@ -32,6 +32,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base
 
 ALGORITHMS = ("greedy", "best_first", "dijkstra", "backtracking")
+JOB_STATUSES = ("queued", "running", "done", "failed")
 
 
 def _uuid() -> str:
@@ -179,3 +180,30 @@ class TraceStep(Base):
     action: Mapped[str] = mapped_column(String(24))
     message: Mapped[str] = mapped_column(Text)
     data: Mapped[dict] = mapped_column(JSON, default=dict)
+
+
+class Job(Base):
+    """A solver run executed in the background (T20; CONTRACT §5.1).
+
+    queued -> running -> done (run_id set) | failed (error set)
+    """
+
+    __tablename__ = "jobs"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_uuid)
+    artifact_id: Mapped[str] = mapped_column(ForeignKey("artifacts.id", ondelete="CASCADE"), index=True)
+    algorithm: Mapped[str] = mapped_column(String(32))
+    params: Mapped[dict] = mapped_column(JSON, default=dict)
+    status: Mapped[str] = mapped_column(String(16), default="queued")
+    progress: Mapped[float] = mapped_column(Float, default=0.0)
+    run_id: Mapped[str | None] = mapped_column(ForeignKey("reconstruction_runs.id", ondelete="SET NULL"))
+    error: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    __table_args__ = (
+        CheckConstraint("status IN ('queued','running','done','failed')", name="status_enum"),
+        CheckConstraint("progress BETWEEN 0 AND 1", name="progress_range"),
+        CheckConstraint("algorithm IN ('greedy','best_first','dijkstra','backtracking')", name="algorithm_enum"),
+    )

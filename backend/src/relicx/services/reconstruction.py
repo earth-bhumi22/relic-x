@@ -24,7 +24,7 @@ class ReconstructionService:
         self.runs = RunRepository(db)
         self.matching = MatchingService(db, storage)
 
-    def run(self, artifact_id: str, algorithm: str, params: dict) -> ReconstructionRun:
+    def run(self, artifact_id: str, algorithm: str, params: dict, progress=None) -> ReconstructionRun:
         if algorithm not in ALGORITHMS:
             raise InvalidInput(f"algorithm must be one of {ALGORITHMS}")
         art = self.artifacts.get(artifact_id)
@@ -38,7 +38,9 @@ class ReconstructionService:
             top_k=params.get("top_k"),
             node_limit=int(params.get("node_limit", 150_000)),
         )
-        res = run_solver(labels, MatchResult(matches, {}), art.grid_rows, art.grid_cols, cfg.allow_rotation, sp)
+        res = run_solver(
+            labels, MatchResult(matches, {}), art.grid_rows, art.grid_cols, cfg.allow_rotation, sp, progress=progress
+        )
         truth = truth_of(frags)
         metrics = evaluate(res, truth) if truth else {"coverage": round(len(res.placements) / len(labels), 4)}
         run = ReconstructionRun(

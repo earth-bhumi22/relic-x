@@ -5,6 +5,7 @@ image -> fragments -> features -> matches -> graph -> solver -> metrics
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 
 import numpy as np
@@ -34,7 +35,10 @@ def run_solver(
     cols: int,
     allow_rotation: bool,
     params: SolveParams,
+    progress: Callable[[float], None] | None = None,
 ) -> SolverResult:
+    """Run one solver. ``progress`` (optional, 0..1) is reported by backtracking only;
+    the other solvers finish in milliseconds."""
     compat = compat_table(match.matches)
     if params.algorithm == "greedy":
         return solve_greedy(ids, compat, rows, cols, allow_rotation, seed=params.seed)
@@ -47,7 +51,14 @@ def run_solver(
     if params.algorithm == "backtracking":
         greedy = solve_greedy(ids, compat, rows, cols, allow_rotation, seed=params.seed)
         res = solve_backtracking(
-            ids, compat, rows, cols, allow_rotation, node_limit=params.node_limit, incumbent=greedy.placements
+            ids,
+            compat,
+            rows,
+            cols,
+            allow_rotation,
+            node_limit=params.node_limit,
+            incumbent=greedy.placements,
+            progress=progress,
         )
         res.meta["incumbent_score"] = greedy.total_score
         res.meta["improved_on_incumbent"] = res.total_score > greedy.total_score + 1e-9

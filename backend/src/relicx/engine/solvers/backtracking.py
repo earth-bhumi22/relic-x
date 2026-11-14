@@ -34,12 +34,14 @@ from __future__ import annotations
 
 import sys
 import time
+from collections.abc import Callable
 
 from ..counters import OpCounter
 from ..layout import Compat, Layout, Placement, side_facing
 from .common import SolverResult, TraceRecorder
 
 EMPTY = None
+PROGRESS_EVERY = 2048  # nodes between progress callbacks (T20 background jobs)
 
 
 def solve_backtracking(
@@ -51,6 +53,7 @@ def solve_backtracking(
     node_limit: int = 150_000,
     trace_cap: int = 400,
     incumbent: list[Placement] | None = None,
+    progress: Callable[[float], None] | None = None,
 ) -> SolverResult:
     t0 = time.perf_counter()
     counter, trace = OpCounter(), TraceRecorder(cap=trace_cap)
@@ -101,6 +104,8 @@ def solve_backtracking(
             return
         state["nodes"] += 1
         counter.add("search_nodes")
+        if progress is not None and state["nodes"] % PROGRESS_EVERY == 0:
+            progress(min(state["nodes"] / node_limit, 0.99))  # T20: job progress = share of the node budget
         if state["nodes"] > node_limit and state["best_grid"] is not None:
             state["truncated"] = True
             trace.log_important(

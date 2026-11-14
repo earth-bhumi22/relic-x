@@ -19,7 +19,7 @@ from sqlalchemy import select
 from .core.config import Settings
 from .db.base import Base
 from .db.models import Artifact
-from .db.session import make_engine, make_session_factory, session_scope
+from .db.session import make_engine, make_session_factory, transaction
 from .engine import MatchConfig
 from .engine.solvers import ALGORITHMS
 from .services import ArtifactService, FragmentSpec, LocalStorage, MatchingService, ReconstructionService
@@ -66,7 +66,7 @@ def seed(settings: Settings, reset: bool = False, node_limit: int = 20_000, out=
     names = [d.name for d in DEMO]
 
     if reset:
-        for db in session_scope(factory):
+        with transaction(factory) as db:
             svc = ArtifactService(db, storage, settings)
             for art in db.scalars(select(Artifact).where(Artifact.name.in_(names))):
                 svc.delete(art.id)
@@ -75,10 +75,10 @@ def seed(settings: Settings, reset: bool = False, node_limit: int = 20_000, out=
     created: list[str] = []
     for demo in DEMO:
         t0 = time.perf_counter()
-        for db in session_scope(factory):
+        with transaction(factory) as db:
             if db.scalar(select(Artifact.id).where(Artifact.name == demo.name)):
                 print(f"exists   {demo.name}", file=out)
-                break
+                continue
             art = ArtifactService(db, storage, settings).create_from_sample(
                 demo.name, demo.sample, demo.spec, demo.description
             )
