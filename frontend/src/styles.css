@@ -1,2 +1,133 @@
-:root { font-family: system-ui, sans-serif; color-scheme: light dark; }
-.scaffold { max-width: 40rem; margin: 4rem auto; padding: 0 1rem; line-height: 1.6; }
+/* Owner: A (Arvind) — global styles and design tokens.
+   Theme: light by default; dark when the OS prefers it, unless the user chose via the toggle.
+   The toggle sets <html data-theme="light|dark">, which always wins over the OS preference. */
+:root {
+  color-scheme: light;
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #eef0f4;
+  --border: #d5d9e0;
+  --text: #1b2030;
+  --muted: #5b6475;
+  --accent: #3b5bdb;
+  --accent-contrast: #ffffff;
+  /* status */
+  --success: #1f8a4c;
+  --warning: #b36b00;
+  --danger: #c92a2a;
+  /* edge beads: one colour per side, N E S W (also used for graph edge sides) */
+  --bead-n: #3b82f6;
+  --bead-e: #ef8a17;
+  --bead-s: #16a34a;
+  --bead-w: #a855f7;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgb(0 0 0 / 8%);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f1218;
+  --surface: #181c25;
+  --surface-2: #222836;
+  --border: #353c4d;
+  --text: #e7eaf1;
+  --muted: #9aa3b5;
+  --accent: #7c97ff;
+  --accent-contrast: #0f1218;
+  --success: #4cc27f;
+  --warning: #e0a63a;
+  --danger: #ff7b7b;
+  --bead-n: #60a5fa;
+  --bead-e: #fbab42;
+  --bead-s: #4ade80;
+  --bead-w: #c084fc;
+  --shadow: 0 1px 2px rgb(0 0 0 / 40%);
+}
+/* Before the toggle is used (no data-theme attribute) follow the OS. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --bg: #0f1218;
+    --surface: #181c25;
+    --surface-2: #222836;
+    --border: #353c4d;
+    --text: #e7eaf1;
+    --muted: #9aa3b5;
+    --accent: #7c97ff;
+    --accent-contrast: #0f1218;
+    --success: #4cc27f;
+    --warning: #e0a63a;
+    --danger: #ff7b7b;
+    --bead-n: #60a5fa;
+    --bead-e: #fbab42;
+    --bead-s: #4ade80;
+    --bead-w: #c084fc;
+    --shadow: 0 1px 2px rgb(0 0 0 / 40%);
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); line-height: 1.5; }
+a { color: var(--accent); }
+h1 { font-size: 1.5rem; margin: 0; }
+code { background: var(--surface-2); padding: 0 0.3em; border-radius: 4px; }
+.muted { color: var(--muted); }
+
+/* ---- layout ---- */
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.main { flex: 1; width: 100%; max-width: 72rem; margin: 0 auto; padding: 1.25rem 1rem; }
+.footer { padding: 1rem; text-align: center; font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--border); }
+
+.navbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+.navbar-row { display: flex; align-items: center; gap: 0.75rem 1rem; flex-wrap: wrap; padding: 0.6rem 1rem; max-width: 72rem; margin: 0 auto; }
+.brand { font-weight: 800; letter-spacing: 0.05em; text-decoration: none; color: var(--text); }
+.nav { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+.nav-link { padding: 0.3rem 0.7rem; border-radius: 999px; text-decoration: none; color: var(--muted); }
+.nav-link:hover { background: var(--surface-2); color: var(--text); }
+.nav-link.active { background: var(--accent); color: var(--accent-contrast); }
+.nav-sub { padding: 0.35rem 1rem 0.6rem; max-width: 72rem; margin: 0 auto; border-top: 1px dashed var(--border); }
+.navbar-end { margin-left: auto; display: flex; align-items: center; gap: 0.6rem; }
+
+.api-status { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+.api-status .dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--warning); }
+.api-status-ok .dot { background: var(--success); }
+.api-status-down .dot { background: var(--danger); }
+
+/* ---- controls ---- */
+.btn { font: inherit; padding: 0.4rem 0.9rem; border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 8px; cursor: pointer; }
+.btn:hover { background: var(--surface-2); }
+.btn:focus-visible, .seg-btn:focus-visible, .nav-link:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn-icon { padding: 0.3rem 0.6rem; line-height: 1; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 0.75rem 0; }
+.seg-btn { font: inherit; border: 0; background: var(--surface); color: var(--text); padding: 0.35rem 0.8rem; cursor: pointer; }
+.seg-btn + .seg-btn { border-left: 1px solid var(--border); }
+.seg-btn.active { background: var(--accent); color: var(--accent-contrast); }
+
+/* ---- page chrome ---- */
+.page-head { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 0.75rem; margin-bottom: 0.25rem; }
+.badge { font-size: 0.75rem; padding: 0.1rem 0.55rem; border-radius: 999px; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); overflow-wrap: anywhere; }
+.plain-list { margin: 0; padding-left: 1.1rem; }
+.thumbs { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.thumbs img { border-radius: 6px; border: 1px solid var(--border); }
+.demo-body { margin-top: 0.25rem; }
+
+/* ---- shared states ---- */
+.state { background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 1.5rem 1rem; text-align: center; }
+.state p { margin: 0.25rem 0; }
+.state-title { font-weight: 600; }
+.state-loading { display: flex; align-items: center; justify-content: center; gap: 0.6rem; color: var(--muted); }
+.state-error { border-color: var(--danger); border-style: solid; }
+.state-error .state-title { color: var(--danger); }
+.state-error .btn { margin-top: 0.6rem; }
+.spinner { width: 1.1rem; height: 1.1rem; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
+
+@media (max-width: 480px) {
+  .main { padding: 1rem 0.75rem; }
+  .navbar-row { padding: 0.5rem 0.75rem; gap: 0.4rem 0.6rem; }
+  .nav-sub { padding: 0.3rem 0.75rem 0.5rem; }
+  .api-status { font-size: 0.72rem; }
+}
