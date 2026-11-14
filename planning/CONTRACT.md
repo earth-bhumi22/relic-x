@@ -1,7 +1,10 @@
 # RELIC-X — Project Contract (T00)
 
-**Version:** 1.1 (signed off by A and B, 2026-11-14) — gate **G0** passed
+**Version:** 1.2 (signed off by A and B, 2026-11-14) — gate **G0** passed
 
+> **1.2 changes:** CSV exports implemented (T21): four `text/csv` endpoints in §5, UTF-8 with a
+> header row, snake_case columns, `Content-Disposition: attachment; filename="relicx-…csv"`.
+>
 > **1.1 changes:** background jobs implemented (T20): §5 rows no longer *planned*, §5.1 behaviour notes.
 >
 > **1.0 changes:** B signed off every decision D1–D14 and confirmed the §5.1 job-status shape as
@@ -106,7 +109,10 @@ compat[(frag_i, side_a, frag_j, side_b)] -> composite score in [0, 1]   (symmetr
 | POST | `/benchmark/scaling` | `{sample, sizes[], algorithms[], rotate, noise, erosion, node_limit}` | `{sample, rotate, points[]}` |
 | POST | `/artifacts/{id}/jobs` | same as runs | 202 `{job_id, status, progress}` (T20) |
 | GET | `/jobs/{id}` | — | `{job_id, status: queued\|running\|done\|failed, progress, run_id, error}` (T20) |
-| *planned* GET | `/runs/{id}/export.csv`, `/artifacts/{id}/benchmark.csv` | — | CSV (T21) |
+| GET | `/runs/{id}/export.csv` | — | CSV: one row per placement with ground truth (T21) |
+| GET | `/runs/{id}/trace.csv` | — | CSV: every recorded solver decision (T21) |
+| GET | `/artifacts/{id}/benchmark.csv` | — | CSV: latest run per algorithm; 409 if no runs (T21) |
+| POST | `/benchmark/scaling.csv` | same body as `/benchmark/scaling` | CSV: one row per (size, algorithm) (T21) |
 
 `algorithm` ∈ `greedy | best_first | dijkstra | backtracking`.
 

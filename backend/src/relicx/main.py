@@ -19,7 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from . import __version__
-from .api.routes import artifacts, health, jobs, matching, runs
+from .api.routes import artifacts, exports, health, jobs, matching, runs
 from .core.config import Settings, get_settings
 from .core.errors import DomainError
 from .core.logging import configure_logging
@@ -103,7 +103,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         log.exception("unhandled error")
         return _error(500, "internal_error", "unexpected server error")
 
-    for module in (health, artifacts, matching, runs, jobs):
+    for module in (health, artifacts, matching, runs, jobs, exports):
         app.include_router(module.router, prefix="/api/v1")
     return app
 
