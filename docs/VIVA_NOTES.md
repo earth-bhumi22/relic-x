@@ -16,8 +16,60 @@ reconstructed, but no accuracy is reported for them.
 # Part I — Strings & Matching (B)
 
 ## KMP
+
+**Q: What does the prefix function store, and why is it enough to never move back in the text?**
+A: π[i] is the length of the longest proper prefix of P[0..i] that is also its suffix. After a mismatch with k
+characters matched, the last k text characters equal P[0..k−1], so the next candidate alignment that could still match
+starts at the longest border of that prefix, i.e. π[k−1]. Everything shorter was already ruled out, so the text
+pointer never needs to go back.
+
+**Q: Prove KMP is linear.**
+A: Each comparison either matches (k increases by 1) or falls back (k strictly decreases). k ≥ 0, so fall-backs ≤ matches
+≤ n, and each text position has one final comparison: at most 2n − 1 comparisons for the search and 2m − 3 for the
+table. Our code counts every comparison and the tests assert exactly these bounds.
+
+**Q: When does naive matching become quadratic, and what do your numbers show?**
+A: On inputs with many partial matches, like text aⁿ and pattern a^{m−1}b: every shift compares about m characters,
+Θ(n·m). Measured: naive ≈ 10n, KMP ≈ 2n with m = 10, and the gap grows with m.
+
+**Q: How does KMP handle overlapping occurrences?**
+A: After a full match it sets k = π[m−1] instead of 0, so `aaaa` in `aa` gives 0, 1, 2 (tested).
+
 ## Rabin-Karp
+
+**Q: How do you update the hash in O(1)?**
+A: Subtract the outgoing character times B^{m−1} (precomputed mod M), multiply by B, add the incoming character, all mod
+M. The test checks every rolled hash equals the directly computed one.
+
+**Q: What is a spurious hit and why must you verify?**
+A: Two different windows with the same hash (a collision). Without verification the algorithm would report false
+matches. With M = 7 our test produces many collisions and the results are still exactly the brute-force ones.
+
+**Q: Expected vs worst case?**
+A: Expected O(n + m) because a collision has probability ≈ 1/M ≈ 10⁻⁹ per window. Worst case O(n·m) if every window
+collides; the test forces it with M = 1 and counts exactly (n − m + 1)·m comparisons.
+
+**Q: Why keep both KMP and Rabin-Karp?**
+A: KMP has a deterministic linear bound; Rabin-Karp generalises to many patterns via a hash set, which makes the
+motif decision step O(L) instead of O(L²). Same answers (tested), different costs (measured).
+
 ## Longest motif
+
+**Q: Why is binary search over the motif length valid?**
+A: Monotonicity: if a run of length ℓ is shared, so is every shorter run (cut it). The predicate is True…True
+False…False, so binary search finds the boundary in O(log L) checks. Tested on random strings.
+
+**Q: What is the total complexity with each decision procedure?**
+A: O(log L) steps × O(L²) with KMP = O(L² log L); × O(L) expected with Rabin-Karp = O(L log L). Measured exponents:
+2.38 and 1.31.
+
+**Q: Why ignore runs shorter than 3?**
+A: With 64 symbols a 1- or 2-symbol coincidence is common between unrelated edges (especially plain background), so it
+carries little evidence; `min_motif` filters it out.
+
+**Q: Is longest common substring the same as LCS?**
+A: No. A substring is contiguous; a subsequence may skip characters. The motif rewards an unbroken run; LCS (§5)
+tolerates gaps from chipped pixels. We use both because they measure different evidence.
 ## LCS
 ## Edit distance
 ## Hashing pre-filter
