@@ -669,7 +669,7 @@ a:focus-visible {
   overflow-wrap: anywhere;
   text-align: center;
 }
-.preview-list img {
+.preview-list canvas {
   width: 5rem;
   height: 5rem;
   object-fit: cover;

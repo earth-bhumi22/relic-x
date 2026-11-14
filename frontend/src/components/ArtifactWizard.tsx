@@ -5,7 +5,7 @@
 //   fragments  → POST /artifacts/fragments-upload (multipart, repeated `files`; no ground truth)
 // The wizard never runs matching or solving. On success it calls onCreated(artifact); the Projects page navigates
 // to the gallery. On failure it stays open with the user's input intact.
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import {
   ApiError,
@@ -52,24 +52,32 @@ const STEP_OF_FIELD: Record<string, Step> = {
   description: 3,
 };
 
-/** Only `blob:` object URLs may reach an `<img src>`; anything else renders no preview. */
-function previewSrc(url: string | undefined): string | undefined {
-  return url !== undefined && /^blob:/.test(url) ? url : undefined;
-}
-
-/** Object URLs for image previews, revoked when the files change or the component unmounts. */
-function useObjectUrls(files: readonly File[]): string[] {
-  const [urls, setUrls] = useState<string[]>([]);
+/**
+ * Preview of a picked image, drawn onto a canvas from a decoded bitmap. No object URL is created,
+ * so nothing user-controlled is ever written into an `src` attribute and there is nothing to revoke.
+ */
+function FilePreview({ file, label, className }: { file: File; label: string; className?: string }) {
+  const canvas = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    if (typeof URL.createObjectURL !== "function" || typeof URL.revokeObjectURL !== "function") {
-      setUrls([]);
-      return;
-    }
-    const created = files.map((f) => URL.createObjectURL(f));
-    setUrls(created);
-    return () => created.forEach((u) => URL.revokeObjectURL(u));
-  }, [files]);
-  return urls;
+    if (typeof createImageBitmap !== "function") return;
+    let cancelled = false;
+    createImageBitmap(file)
+      .then((bitmap) => {
+        const el = canvas.current;
+        const ctx = el && !cancelled ? el.getContext("2d") : null;
+        if (el && ctx) {
+          el.width = bitmap.width;
+          el.height = bitmap.height;
+          ctx.drawImage(bitmap, 0, 0);
+        }
+        bitmap.close();
+      })
+      .catch(() => undefined); // undecodable image: the empty frame stays, the server validates anyway
+    return () => {
+      cancelled = true;
+    };
+  }, [file]);
+  return <canvas ref={canvas} className={className} role="img" aria-label={label} />;
 }
 
 interface Props {
@@ -95,10 +103,6 @@ export default function ArtifactWizard({ onClose, onCreated }: Props) {
   useEffect(() => {
     if (samples.status === "success" && !sample && samples.data.length) setSample(samples.data[0].name);
   }, [samples.status, samples.data, sample]);
-
-  const imageList = useMemo(() => (image ? [image] : EMPTY), [image]);
-  const imageUrls = useObjectUrls(imageList);
-  const fragmentUrls = useObjectUrls(fragmentFiles.length ? fragmentFiles : EMPTY);
 
   const setField = <K extends keyof ParamDraft>(key: K, value: ParamDraft[K]) => {
     setDraft((d) => ({ ...d, [key]: value }));
@@ -302,8 +306,8 @@ export default function ArtifactWizard({ onClose, onCreated }: Props) {
           (p) => <input {...p} type="file" accept="image/*" onChange={onPickImage} />,
           `One image, up to ${maxUploadMb()} MB.`,
         )}
-      {source === "upload" && image && previewSrc(imageUrls[0]) && (
-        <img className="preview-image" src={previewSrc(imageUrls[0])} alt={`Preview of ${image.name}`} />
+      {source === "upload" && image && (
+        <FilePreview className="preview-image" file={image} label={`Preview of ${image.name}`} />
       )}
 
       {source === "fragments" &&
@@ -317,7 +321,7 @@ export default function ArtifactWizard({ onClose, onCreated }: Props) {
         <ul className="preview-list" aria-label="Selected fragments">
           {fragmentFiles.map((f, i) => (
             <li key={`${f.name}-${i}`}>
-              {previewSrc(fragmentUrls[i]) && <img src={previewSrc(fragmentUrls[i])} alt="" />}
+              <FilePreview file={f} label={`Preview of ${f.name}`} />
               <span>{f.name}</span>
             </li>
           ))}
@@ -520,4 +524,3 @@ export default function ArtifactWizard({ onClose, onCreated }: Props) {
 }
 
 type FieldProps = { id: string; "aria-invalid"?: true; "aria-describedby"?: string };
-const EMPTY: File[] = [];

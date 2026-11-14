@@ -1,7 +1,7 @@
 // Owner: A (Arvind)
 // Create-artifact wizard: the three sources end to end (request shapes asserted), validation, submitting state,
 // API failures with the user's input preserved, and dialog behaviour. Mock API only.
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { AppRoutes } from "../routes";
 import { artifactFixture } from "../test/fixtures";
 import { mockApi, useMockApi } from "../test/mockApi";
@@ -14,15 +14,17 @@ const png = (name = "a.png", size = 10, type = "image/png") => {
   return f;
 };
 
-let createUrl: ReturnType<typeof vi.fn>;
-let revokeUrl: ReturnType<typeof vi.fn>;
+let drawImage: ReturnType<typeof vi.fn>;
+let closeBitmap: ReturnType<typeof vi.fn>;
 let errorSpy: ReturnType<typeof vi.spyOn>;
 beforeEach(() => {
-  let n = 0;
-  createUrl = vi.fn(() => `blob:preview-${++n}`);
-  revokeUrl = vi.fn();
-  Object.defineProperty(URL, "createObjectURL", { value: createUrl, configurable: true, writable: true });
-  Object.defineProperty(URL, "revokeObjectURL", { value: revokeUrl, configurable: true, writable: true });
+  drawImage = vi.fn();
+  closeBitmap = vi.fn();
+  vi.stubGlobal(
+    "createImageBitmap",
+    vi.fn(async () => ({ width: 8, height: 6, close: closeBitmap })),
+  );
+  vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockImplementation((() => ({ drawImage })) as never);
   errorSpy = vi.spyOn(console, "error");
 });
 afterEach(() => {
@@ -98,7 +100,9 @@ describe("ArtifactWizard — sources", () => {
     choose("Upload image");
     const file = png("photo.png");
     pick("Image", [file]);
-    expect(await screen.findByRole("img", { name: "Preview of photo.png" })).toHaveAttribute("src", "blob:preview-1");
+    expect(await screen.findByRole("img", { name: "Preview of photo.png" })).toBeInTheDocument();
+    await waitFor(() => expect(drawImage).toHaveBeenCalledTimes(1));
+    expect(closeBitmap).toHaveBeenCalledTimes(1);
     next();
     type("Rows", "2");
     type("Columns", "3");
@@ -149,28 +153,25 @@ describe("ArtifactWizard — sources", () => {
     expect(form.getAll("files")).toEqual(files);
   });
 
-  it("revokes preview object URLs when files change and on close", async () => {
-    const { onClose } = setup();
+  it("redraws the preview when the file changes and releases each bitmap", async () => {
+    setup();
     await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload image");
     pick("Image", [png("one.png")]);
     await screen.findByRole("img", { name: "Preview of one.png" });
     pick("Image", [png("two.png")]);
     await screen.findByRole("img", { name: "Preview of two.png" });
-    expect(revokeUrl).toHaveBeenCalledWith("blob:preview-1");
-    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
-    expect(onClose).toHaveBeenCalled();
+    await waitFor(() => expect(closeBitmap).toHaveBeenCalledTimes(2));
   });
 
-  it("revokes every URL on unmount", async () => {
-    const { unmount } = render(<ArtifactWizard onClose={() => {}} onCreated={() => {}} />);
+  it("previews every real fragment", async () => {
+    setup();
     await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload real fragments");
     pick("Fragment images", [png("a.png"), png("b.png")]);
-    await screen.findByRole("list", { name: "Selected fragments" });
-    unmount();
-    expect(revokeUrl).toHaveBeenCalledWith("blob:preview-1");
-    expect(revokeUrl).toHaveBeenCalledWith("blob:preview-2");
+    expect(await screen.findByRole("img", { name: "Preview of a.png" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Preview of b.png" })).toBeInTheDocument();
+    await waitFor(() => expect(closeBitmap).toHaveBeenCalledTimes(2));
   });
 
   it("shows loading and an error with retry while the sample list loads", async () => {
