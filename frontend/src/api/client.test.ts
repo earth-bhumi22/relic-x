@@ -3,6 +3,7 @@ import {
   ApiError,
   api,
   createRun,
+  deleteRun,
   createSampleArtifact,
   explainMatch,
   getArtifact,
@@ -181,14 +182,32 @@ describe("mock mode", () => {
     const before = (await listRuns(MOSAIC)).length;
     const run = await createRun(MOSAIC, { algorithm: "backtracking" });
     expect(run.placements).toHaveLength(16);
-    expect(run.trace[0].action).toBe("seed");
+    expect(run.trace[0].action).toBe("incumbent"); // backtracking starts from the heuristic solution
     expect(run.direct_accuracy).toBe(1);
     expect(await listRuns(MOSAIC)).toHaveLength(before + 1);
+    expect((await listRuns(MOSAIC))[0]).toMatchObject({ id: run.id }); // newest first, like the API
     expect((await listRuns(MOSAIC))[0]).not.toHaveProperty("placements");
     expect(await getRun(run.id)).toMatchObject({ id: run.id, algorithm: "backtracking" });
     await expect(getRun(MISSING)).rejects.toMatchObject({ code: "not_found" });
     await expect(createRun(MOSAIC, { algorithm: "magic" as "greedy" })).rejects.toMatchObject({
       code: "validation_error",
+    });
+  });
+
+  it("deletes a run (204), 404s afterwards, validates run parameters, and honours an abort signal", async () => {
+    const run = await createRun(MOSAIC, { algorithm: "greedy" });
+    await expect(deleteRun(run.id)).resolves.toBeUndefined();
+    await expect(getRun(run.id)).rejects.toMatchObject({ code: "not_found" });
+    await expect(deleteRun(run.id)).rejects.toMatchObject({ status: 404 });
+    for (const body of [{ threshold: 2 }, { top_k: 0 }, { top_k: 17 }, { node_limit: 50 }, { node_limit: 3000000 }])
+      await expect(createRun(MOSAIC, { algorithm: "greedy", ...body })).rejects.toMatchObject({
+        status: 422,
+        code: "validation_error",
+      });
+    const controller = new AbortController();
+    controller.abort();
+    await expect(createRun(MOSAIC, { algorithm: "greedy" }, { signal: controller.signal })).rejects.toMatchObject({
+      name: "AbortError",
     });
   });
 

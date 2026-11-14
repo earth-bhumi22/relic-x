@@ -7,7 +7,13 @@ interface State {
   failed: boolean;
 }
 
-export default class WhyBoundary extends Component<{ children: ReactNode }, State> {
+interface Props {
+  children: ReactNode;
+  title?: string;
+  message?: string;
+}
+
+export default class WhyBoundary extends Component<Props, State> {
   state: State = { failed: false };
   static getDerivedStateFromError(): State {
     return { failed: true };
@@ -16,8 +22,11 @@ export default class WhyBoundary extends Component<{ children: ReactNode }, Stat
     if (!this.state.failed) return this.props.children;
     return (
       <div className="state state-error" role="alert">
-        <p className="state-title">The explanation could not be drawn</p>
-        <p>The server answered with data in a shape this page does not understand. Try another edge, or reload.</p>
+        <p className="state-title">{this.props.title ?? "The explanation could not be drawn"}</p>
+        <p>
+          {this.props.message ??
+            "The server answered with data in a shape this page does not understand. Try another edge, or reload."}
+        </p>
       </div>
     );
   }

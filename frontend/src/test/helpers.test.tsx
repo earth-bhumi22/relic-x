@@ -90,7 +90,7 @@ describe("fixtures", () => {
     expect(explanationFixture("F01", 1, "F02", 3)).toMatchObject({ a: "F01", side_a: "E", side_b: "W" });
     const run = runFixture("backtracking");
     expect(run.placements).toHaveLength(16);
-    expect(run.trace[0].action).toBe("seed");
+    expect(run.trace[0].action).toBe("incumbent"); // backtracking starts from the heuristic solution
   });
 
   it("return independent copies", () => {

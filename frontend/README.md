@@ -206,6 +206,40 @@ generic error with retry, and an error boundary for a payload it cannot draw.
 a motif of length 0; the score bar; the 409 prompt, loading skeleton and error states; 360 px sheet and 1280 px panel in
 both themes.
 
+### Reconstruction canvas (`/artifacts/:id/reconstruct`, T27)
+
+Run a solver, replay its trace, see how sure each placement is, and (optionally) compare with the ground truth.
+
+- **Run controls** (`components/run/RunControls.tsx`, rules in `lib/solvers.ts`): algorithm picker with a one-line
+  description and complexity each; `threshold` (0–1), `top_k` (1–16 or empty) and, for backtracking only, `node_limit`
+  (100–2,000,000, default 5000 so a synchronous run stays short). Validated against the API bounds; server 422s are
+  mapped back onto the fields. `createRun` only gets `node_limit` for backtracking.
+- **Swappable solver call** (`lib/runSolver.ts`): the page only calls `runSolver(artifactId, request, {signal,
+  onProgress})`. It is a synchronous `POST /runs` today (indeterminate busy state, Cancel via `AbortController`; the
+  server may still finish the run). When T20's async jobs land (`POST /artifacts/{id}/jobs`, poll `GET /jobs/{id}`
+  about every second, CONTRACT §5.1), replace that one function body.
+- **History** (`RunHistory`): newest first; open a run (`?run=<id>` in the URL, so it can be shared and compared by
+  switching), delete one (`deleteRun`). A 404 run or artifact has its own message.
+- **Canvas** (`components/ReconstructionCanvas.tsx`): a CSS grid sized from the placements (never the artifact grid),
+  tiles rotated `rot × 90°` clockwise (CONTRACT D13). Fragments missing from the layout go to a tray with a count.
+- **Confidence rings** (`lib/confidence.ts`): the mean composite score (from `listMatches`) of a tile's joins with its
+  currently placed neighbours; unscored joins count as 0, a lone tile shows "—". Bands: low < 0.40 (dotted red),
+  medium < 0.70 (dashed amber), high ≥ 0.70 (solid green). The number is on every tile, in the hover / focus text and in the
+  placements table, so colour is never the only signal.
+- **Trace player** (`components/TracePlayer.tsx`, replay in `lib/replay.ts`): play / pause, step, jump, scrubber, 0.5×–4×,
+  keyboard (Space, ←, →, Home, End on the focused player), reduced-motion safe, no timer leaks. Every frame is derived from
+  `stepIndex`; the message is shown with the action as a badge.
+- **Trace coordinates** are solver-internal (the seed is at (0,0); cells can be negative). The shift is derived as
+  `placement − trace` coordinates and must be identical for every fragment. A backtracking trace or a capped trace
+  (`trace_dropped`) cannot rebuild the final layout, so the replay plays the recorded steps and then jumps to the final
+  layout with a notice ("trace truncated: N steps not recorded"). If nothing lines up, only the final layout is drawn.
+- **Ground-truth overlay** (`lib/truth.ts`, off by default, disabled with an explanation without ground truth): tiles are
+  classified by their true neighbours, so a layout shifted or turned as a whole is still correct (symbols ✓ ◐ ✗ as well as
+  colour). Lists the wrongly placed fragments, the best global alignment and a ground-truth picture.
+- **Mock mode** serves all four algorithms with traces shaped like the real ones (negative internal coordinates, a
+  conflict, a fallback, backtrack steps, a capped `node_limit < 1000` run with `trace_dropped` and `truncated`), a history that
+  grows, `DELETE /runs/{id}`, and 409 until the artifact is matched.
+
 ## Layout
 
 ```text
@@ -224,7 +258,7 @@ src/
                         DeleteArtifactDialog, EdgeBeads, FragmentDialog, MatchPanel, layout/
   hooks/useAsync.ts     loading/success/error state for a promise
   test/                 test helpers (renderWithProviders, mockApi, fixtures); not part of the build
-  pages/                ProjectsPage (T23), GalleryPage (T24) and GraphPage (T25) are real, with the T26 drawer mounted on the graph page; the other pages are placeholders until T27–T28
+  pages/                ProjectsPage (T23), GalleryPage (T24), GraphPage (T25) and ReconstructPage (T27) are real, with the T26 drawer mounted on the graph page; ReconstructPage (T27) is real; the Lab page is a placeholder until T28
   lib/artifactForm.ts   wizard parameter defaults, limits, validation, formatting (pure, unit tested)
   lib/beads.ts, shuffle.ts   symbol → colour (mirrors backend quantize), seeded shuffle
 ```

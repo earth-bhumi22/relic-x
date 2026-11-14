@@ -33,7 +33,9 @@ describe("smoke: whole app in mock mode", () => {
 
     fireEvent.click(within(sub).getByRole("link", { name: "Reconstruct" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Reconstruction canvas" })).toBeInTheDocument();
-    expect(await screen.findByText(/greedy/)).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole("button", { name: "Run" }));
+    expect(await screen.findByRole("heading", { name: /greedy · run summary/i })).toBeInTheDocument();
+    expect(screen.getAllByTestId("recon-tile").length).toBeGreaterThan(0);
 
     fireEvent.click(within(screen.getByRole("navigation", { name: "Main" })).getByRole("link", { name: "Lab" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Lab / benchmark" })).toBeInTheDocument();

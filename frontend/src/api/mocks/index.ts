@@ -546,6 +546,17 @@ function createRun(m: MockArtifact, body: Record<string, unknown>): RunDetail {
   if (!ALGORITHMS.includes(algorithm))
     throw validation("algorithm", "input should be 'greedy', 'best_first', 'dijkstra' or 'backtracking'");
   requireMatches(m);
+  // Same bounds as the real RunCreate (checked against the live API): threshold 0–1, top_k 1–16, node_limit 100–2,000,000.
+  const { threshold, top_k: topK, node_limit: nodeLimit } = body as Record<string, unknown>;
+  if (threshold !== undefined && (typeof threshold !== "number" || threshold < 0 || threshold > 1))
+    throw validation("threshold", "Input should be between 0 and 1");
+  if (topK !== undefined && topK !== null && (!Number.isInteger(topK) || (topK as number) < 1 || (topK as number) > 16))
+    throw validation("top_k", "Input should be an integer between 1 and 16");
+  if (
+    nodeLimit !== undefined &&
+    (!Number.isInteger(nodeLimit) || (nodeLimit as number) < 100 || (nodeLimit as number) > 2000000)
+  )
+    throw validation("node_limit", "Input should be an integer between 100 and 2000000");
   const params = {
     threshold: body.threshold as number | undefined,
     top_k: body.top_k as number | null | undefined,
@@ -666,7 +677,7 @@ export async function mockRequest<T>(path: string, init: RequestInit = {}): Prom
     return out(explain(getArtifactOr404(m[1]), q));
   if ((m = p.match(/^\/artifacts\/([^/]+)\/runs$/))) {
     const art = getArtifactOr404(m[1]);
-    if (method === "GET") return out(art.runs.map(toRunOut));
+    if (method === "GET") return out([...art.runs].reverse().map(toRunOut)); // newest first, like the API
     if (method === "POST") return out(createRun(art, body));
   }
   if ((m = p.match(/^\/artifacts\/([^/]+)\/benchmark$/)) && method === "POST") {
@@ -674,6 +685,18 @@ export async function mockRequest<T>(path: string, init: RequestInit = {}): Prom
     const algs = (body.algorithms as Algorithm[] | undefined) ?? [];
     if (!algs.length) throw validation("algorithms", "at least one algorithm is required");
     return out(algs.map((algorithm) => createRun(art, { algorithm, node_limit: body.node_limit })));
+  }
+  if ((m = p.match(/^\/runs\/([^/]+)$/)) && method === "DELETE") {
+    const run = runIndex.get(m[1]);
+    if (!run) throw notFound("run", m[1]);
+    const art = store.get(run.artifact_id);
+    if (art) {
+      art.runs = art.runs.filter((r) => r.id !== run.id);
+      art.artifact.run_count = art.runs.length;
+      art.artifact.best_accuracy = art.runs.length ? Math.max(...art.runs.map((r) => r.direct_accuracy ?? 0)) : null;
+    }
+    runIndex.delete(run.id);
+    return undefined as T;
   }
   if ((m = p.match(/^\/runs\/([^/]+)$/)) && method === "GET") {
     const run = runIndex.get(m[1]);
