@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="380" viewBox="0 0 640 380" font-family="sans-serif" font-size="12">
+<rect width="640" height="380" fill="#ffffff"/>
+<text x="320.0" y="20" text-anchor="middle" font-size="14" font-weight="bold">Neighbour accuracy vs. damage (5×5)</text>
+<line x1="64.0" y1="36" x2="64.0" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="328.0" x2="620" y2="328.0" stroke="#e5e7eb"/>
+<text x="64.0" y="344" text-anchor="middle" fill="#374151">0</text>
+<text x="58" y="332.0" text-anchor="end" fill="#374151">0</text>
+<line x1="175.2" y1="36" x2="175.2" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="269.6" x2="620" y2="269.6" stroke="#e5e7eb"/>
+<text x="175.2" y="344" text-anchor="middle" fill="#374151">1</text>
+<text x="58" y="273.6" text-anchor="end" fill="#374151">19.1</text>
+<line x1="286.4" y1="36" x2="286.4" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="211.2" x2="620" y2="211.2" stroke="#e5e7eb"/>
+<text x="286.4" y="344" text-anchor="middle" fill="#374151">2</text>
+<text x="58" y="215.2" text-anchor="end" fill="#374151">38.3</text>
+<line x1="397.6" y1="36" x2="397.6" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="152.8" x2="620" y2="152.8" stroke="#e5e7eb"/>
+<text x="397.6" y="344" text-anchor="middle" fill="#374151">3</text>
+<text x="58" y="156.8" text-anchor="end" fill="#374151">57.4</text>
+<line x1="508.8" y1="36" x2="508.8" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="94.4" x2="620" y2="94.4" stroke="#e5e7eb"/>
+<text x="508.8" y="344" text-anchor="middle" fill="#374151">4</text>
+<text x="58" y="98.4" text-anchor="end" fill="#374151">76.5</text>
+<line x1="620.0" y1="36" x2="620.0" y2="328" stroke="#e5e7eb"/>
+<line x1="64" y1="36.0" x2="620" y2="36.0" stroke="#e5e7eb"/>
+<text x="620.0" y="344" text-anchor="middle" fill="#374151">5</text>
+<text x="58" y="40.0" text-anchor="end" fill="#374151">95.7</text>
+<rect x="64" y="36" width="556" height="292" fill="none" stroke="#9ca3af"/>
+<text x="342.0" y="370" text-anchor="middle">damage level (table row)</text>
+<text x="14" y="182.0" text-anchor="middle" transform="rotate(-90 14 182.0)">accuracy (%)</text>
+<polyline points="64.0,51.6 175.2,49.9 286.4,60.1 397.6,83.0 508.8,141.5 620.0,155.9" fill="none" stroke="#2563eb" stroke-width="2"/>
+<circle cx="64.0" cy="51.6" r="3.5" fill="#2563eb"/>
+<circle cx="175.2" cy="49.9" r="3.5" fill="#2563eb"/>
+<circle cx="286.4" cy="60.1" r="3.5" fill="#2563eb"/>
+<circle cx="397.6" cy="83.0" r="3.5" fill="#2563eb"/>
+<circle cx="508.8" cy="141.5" r="3.5" fill="#2563eb"/>
+<circle cx="620.0" cy="155.9" r="3.5" fill="#2563eb"/>
+<rect x="74" y="43" width="12" height="12" fill="#2563eb"/>
+<text x="92" y="53">greedy</text>
+<polyline points="64.0,77.9 175.2,71.1 286.4,81.3 397.6,78.7 508.8,159.3 620.0,188.1" fill="none" stroke="#dc2626" stroke-width="2"/>
+<circle cx="64.0" cy="77.9" r="3.5" fill="#dc2626"/>
+<circle cx="175.2" cy="71.1" r="3.5" fill="#dc2626"/>
+<circle cx="286.4" cy="81.3" r="3.5" fill="#dc2626"/>
+<circle cx="397.6" cy="78.7" r="3.5" fill="#dc2626"/>
+<circle cx="508.8" cy="159.3" r="3.5" fill="#dc2626"/>
+<circle cx="620.0" cy="188.1" r="3.5" fill="#dc2626"/>
+<rect x="74" y="59" width="12" height="12" fill="#dc2626"/>
+<text x="92" y="69">best_first</text>
+<polyline points="64.0,98.2 175.2,122.0 286.4,127.9 397.6,159.3 508.8,221.2 620.0,224.6" fill="none" stroke="#16a34a" stroke-width="2"/>
+<circle cx="64.0" cy="98.2" r="3.5" fill="#16a34a"/>
+<circle cx="175.2" cy="122.0" r="3.5" fill="#16a34a"/>
+<circle cx="286.4" cy="127.9" r="3.5" fill="#16a34a"/>
+<circle cx="397.6" cy="159.3" r="3.5" fill="#16a34a"/>
+<circle cx="508.8" cy="221.2" r="3.5" fill="#16a34a"/>
+<circle cx="620.0" cy="224.6" r="3.5" fill="#16a34a"/>
+<rect x="74" y="75" width="12" height="12" fill="#16a34a"/>
+<text x="92" y="85">best_first top-3</text>
+</svg>
