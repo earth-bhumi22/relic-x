@@ -40,7 +40,8 @@ npx vitest run src/routes.test.tsx -t "retries"   # one file / one test
 ```
 
 Isolation is automatic: spies, stubbed globals and stubbed env vars are undone after every test, the mock API
-(data, overrides, call log) and `localStorage` are reset, and mock latency is 0. Tests must not use the real
+(data, overrides, call log) and `localStorage` are reset, and mock latency is 0. Real mode is the default in every test regardless of
+`VITE_USE_MOCKS` in your shell or CI; opt in to mock mode with `mockApi.enable()` / `useMockApi()`. Tests must not use the real
 network or depend on order. Query by role / label / text, not by implementation details.
 
 ### Helpers (`src/test/`)
