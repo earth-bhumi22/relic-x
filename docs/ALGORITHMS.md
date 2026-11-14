@@ -111,7 +111,62 @@ either way (tested).
 ![motif search KMP vs Rabin-Karp](../validation/matcher_motif_ops.svg)
 
 ## 5. LCS (`engine/strings/lcs.py`)
-<!-- T11: recurrence, optimal substructure, two-row O(min(m,n)) space, traceback. -->
+**Problem.** The longest common *subsequence* of edge A and reversed edge B: the longest sequence of symbols that
+appears in both in the same order, not necessarily contiguously. A chipped or noisy pixel deletes or changes one
+symbol; LCS simply skips it, so it measures shared *structure* while tolerating gaps.
+
+**Recurrence.** Let L[i][j] = LCS length of A[0..i) and B[0..j).
+
+    L[i][0] = L[0][j] = 0
+    L[i][j] = L[i−1][j−1] + 1                    if A[i−1] = B[j−1]
+    L[i][j] = max(L[i−1][j], L[i][j−1])          otherwise
+
+**Optimal substructure.** If the last characters match, some LCS ends with that character (exchange argument: any LCS
+not using A[i−1] can swap its last matched character for it), so L[i][j] = L[i−1][j−1] + 1. If they differ, an LCS cannot
+use both, so it is an LCS of the problem with one of them dropped, the larger of the two. The subproblems overlap
+(L[i−1][j−1] is reused by three cells), which is why DP beats plain recursion's exponential time.
+
+**Time / space.** (m + 1)(n + 1) table cells, O(1) each → **Θ(m·n)** time, best = worst case. Row i only reads row
+i − 1, so `lcs_length` keeps **two rows** of length min(m, n) + 1 (it swaps the arguments so the shorter string
+indexes the row) → **O(min(m, n))** space. `lcs_alignment` (one pair at a time, for "Why matched?") keeps the full
+table and traces back from (m, n): diagonal on a match, otherwise towards the larger neighbour. It returns the matched
+index pairs, which are strictly increasing in both strings (tested).
+
+**Score.** `lcs_ratio = LCS / max(m, n)` ∈ [0, 1]. Tests check symmetry, 0 ≤ LCS ≤ min(m, n), LCS(a, a) = |a|, a common
+last character extends the LCS by one, and agreement with a brute force over all subsequences.
+
+## 6. Edit distance (`engine/strings/edit_distance.py`)
+**Problem.** The minimum number of single-symbol insertions, deletions and substitutions turning A into B
+(Levenshtein distance), read as "how much damage separates these two edges".
+
+**Recurrence.** D[i][j] = distance between A[0..i) and B[0..j).
+
+    D[i][0] = i,  D[0][j] = j
+    D[i][j] = D[i−1][j−1]                                     if A[i−1] = B[j−1]
+    D[i][j] = 1 + min(D[i−1][j], D[i][j−1], D[i−1][j−1])      otherwise   (delete, insert, substitute)
+
+On a match the code takes the diagonal directly without the min. That is safe because neighbouring cells differ by
+at most 1 (|D[i][j] − D[i−1][j]| ≤ 1), so D[i−1][j−1] ≤ D[i−1][j] + 1 and D[i−1][j−1] ≤ D[i][j−1] + 1.
+
+**Time / space.** Same shape as LCS: **Θ(m·n)** time, **O(min(m, n))** space with two rows. `edit_alignment` keeps the
+full table and returns the operation script (match / sub / ins / del) for the "Why matched?" panel.
+
+**Properties (tested on random strings).** It is a metric: D(a, a) = 0, D(a, b) = 0 only if a = b, symmetry, and the
+triangle inequality. |m − n| ≤ D ≤ max(m, n). D ≤ m + n − 2·LCS: deleting everything outside an LCS and inserting
+the rest is one valid script, and substitutions can only shorten it. Applying the returned script to A yields exactly
+B, and its cost equals the distance. A plain recursion (no memo) agrees on small inputs.
+
+**Score.** `edit_similarity = 1 − D / max(m, n)` ∈ [0, 1].
+
+**Measured** (`validation/matcher_results.md`, T11). The DP counter shows exactly L² cells; time grows as L^1.89 /
+L^1.90 (constant overheads flatten the smallest sizes). On all three samples (4×4, noise σ = 4) the scores separate the
+72 truly adjacent edge pairs from the 1 368 wrong opposite-side pairs with ROC AUC 0.998 (LCS) and 0.999 (edit) on
+clean edges, still 0.977 and 0.991 at 60 % erosion. The contiguous motif drops to 0.879: one chipped segment
+breaks a run, while the DP scores only lose a few symbols. That is the case for combining them (§8).
+
+![DP time vs L](../validation/matcher_dp_cost.svg)
+
+![separation vs erosion](../validation/matcher_dp_separation.svg)
 
 ## 6. Edit distance (`engine/strings/edit_distance.py`)
 <!-- T11: recurrence, operation script, interpretation as "damage cost". -->

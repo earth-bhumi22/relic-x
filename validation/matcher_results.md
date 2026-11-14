@@ -45,3 +45,43 @@ noise 4, erosion 0.2), strip length L varied. Both methods return the same motif
 
 <!-- /t10 -->
 
+<!-- t11 -->
+## T11 · LCS and edit distance (dynamic programming)
+
+**Cost vs strip length L** (random strings, both length L; best of 5 runs).
+
+| L | DP cells | LCS ms | edit ms |
+|---|---|---|---|
+| 8 | 64 | 0.005 | 0.006 |
+| 16 | 256 | 0.018 | 0.021 |
+| 24 | 576 | 0.037 | 0.044 |
+| 32 | 1,024 | 0.061 | 0.076 |
+| 48 | 2,304 | 0.130 | 0.166 |
+| 64 | 4,096 | 0.235 | 0.292 |
+| 96 | 9,216 | 0.508 | 0.644 |
+| 128 | 16,384 | 0.939 | 1.145 |
+
+- DP cells are exactly L² every time (the counter ticks one per cell); LCS time: grows as L^1.86 (R² 0.9988), edit time: grows as L^1.88 (R² 0.9993).
+- Memory is two rows of L + 1 integers, O(L), for the scores; only the "Why matched?" alignment builds the full (L + 1)² table, for one pair at a time.
+
+![DP time vs L](matcher_dp_cost.svg)
+
+**Do the scores separate true neighbours from wrong pairs?** All three samples, 4×4, noise σ = 4,
+erosion varied. Every truly adjacent E–W / S–N edge pair vs every other opposite-side pair
+(3 samples × 24 = 72 true and 3 × 456 = 1 368 false pairs per erosion level). *Separation* = probability that a random true pair scores
+higher than a random false pair (ROC AUC: 0.5 = useless, 1.0 = perfect).
+
+| erosion | LCS ratio true / false (mean) | edit sim. true / false (mean) | LCS separation | edit separation | motif separation |
+|---|---|---|---|---|---|
+| 0.0 | 0.81 / 0.21 | 0.78 / 0.10 | 0.998 | 0.999 | 0.946 |
+| 0.2 | 0.70 / 0.21 | 0.66 / 0.10 | 0.987 | 0.994 | 0.925 |
+| 0.4 | 0.62 / 0.22 | 0.57 / 0.10 | 0.975 | 0.990 | 0.878 |
+| 0.6 | 0.63 / 0.22 | 0.58 / 0.10 | 0.977 | 0.991 | 0.879 |
+
+- LCS and edit similarity both separate true from false pairs far better than chance, and degrade gracefully as erosion chips more of each edge: gaps cost LCS a little, a substitution costs edit distance 1, neither collapses.
+- The contiguous motif is the most fragile signal: a single chipped segment breaks a run, which is why it is combined with the gap-tolerant DP scores instead of used alone (T13).
+
+![separation vs erosion](matcher_dp_separation.svg)
+
+<!-- /t11 -->
+

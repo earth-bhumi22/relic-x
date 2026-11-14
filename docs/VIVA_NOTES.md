@@ -71,7 +71,45 @@ carries little evidence; `min_motif` filters it out.
 A: No. A substring is contiguous; a subsequence may skip characters. The motif rewards an unbroken run; LCS (§5)
 tolerates gaps from chipped pixels. We use both because they measure different evidence.
 ## LCS
+
+**Q: Write the LCS recurrence and explain why it is correct.**
+A: L[i][j] = L[i−1][j−1] + 1 if the last characters match, else max(L[i−1][j], L[i][j−1]); 0 on an empty prefix. If the
+last characters match, some LCS uses them (exchange argument); if not, at least one of them is unused, so drop it.
+
+**Q: Why dynamic programming and not recursion?**
+A: Overlapping subproblems: plain recursion recomputes L[i−1][j−1] and friends exponentially often. The table computes
+each of the (m+1)(n+1) values once → Θ(mn).
+
+**Q: How do you get O(min(m, n)) space, and what do you lose?**
+A: Row i only needs row i − 1, so keep two rows indexed by the shorter string. You lose the traceback, so the
+"Why matched?" panel uses the full table, for one pair at a time.
+
+**Q: Why LCS for fragment edges?**
+A: Damage deletes or changes a few symbols. LCS skips them and still rewards the shared order of colours. Measured
+separation (AUC) 0.998 clean, 0.977 at 60 % erosion.
+
 ## Edit distance
+
+**Q: Recurrence and the meaning of each term?**
+A: D[i][j] = D[i−1][j−1] on a match, else 1 + min(delete D[i−1][j], insert D[i][j−1], substitute D[i−1][j−1]); borders
+D[i][0] = i, D[0][j] = j.
+
+**Q: On a match you skip the min. Is that safe?**
+A: Yes. Adjacent cells differ by at most 1, so the diagonal is never worse than going around it. The plain recursion
+with the full min agrees (tested).
+
+**Q: Is edit distance a metric? Why does that matter?**
+A: Yes: identity, symmetry, triangle inequality (all tested). Scores then behave consistently: if A is close to B and B to
+C, A cannot be far from C.
+
+**Q: How do LCS and edit distance relate?**
+A: Without substitutions, distance = m + n − 2·LCS. With substitutions it can only be smaller, so D ≤ m + n − 2·LCS
+(tested).
+
+**Q: Why use both?**
+A: LCS rewards what is shared, edit distance charges what differs, and a substitution costs edit distance 1 but LCS a
+whole match. They disagree on some pairs, which is useful in a weighted score. Edit separates slightly better here
+(AUC 0.999 vs 0.998 clean).
 ## Hashing pre-filter
 
 # Part II — Graph & Search (A)
