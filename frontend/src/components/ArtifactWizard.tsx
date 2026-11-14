@@ -52,6 +52,11 @@ const STEP_OF_FIELD: Record<string, Step> = {
   description: 3,
 };
 
+/** Only `blob:` object URLs may reach an `<img src>`; anything else renders no preview. */
+function previewSrc(url: string | undefined): string | undefined {
+  return url !== undefined && /^blob:/.test(url) ? url : undefined;
+}
+
 /** Object URLs for image previews, revoked when the files change or the component unmounts. */
 function useObjectUrls(files: readonly File[]): string[] {
   const [urls, setUrls] = useState<string[]>([]);
@@ -60,10 +65,9 @@ function useObjectUrls(files: readonly File[]): string[] {
       setUrls([]);
       return;
     }
-    // Only blob: URLs ever reach an <img src>; anything else is dropped.
-    const created = files.map((f) => URL.createObjectURL(f)).map((u) => (u.startsWith("blob:") ? u : ""));
+    const created = files.map((f) => URL.createObjectURL(f));
     setUrls(created);
-    return () => created.forEach((u) => u && URL.revokeObjectURL(u));
+    return () => created.forEach((u) => URL.revokeObjectURL(u));
   }, [files]);
   return urls;
 }
@@ -298,8 +302,8 @@ export default function ArtifactWizard({ onClose, onCreated }: Props) {
           (p) => <input {...p} type="file" accept="image/*" onChange={onPickImage} />,
           `One image, up to ${maxUploadMb()} MB.`,
         )}
-      {source === "upload" && image && imageUrls[0] && (
-        <img className="preview-image" src={imageUrls[0]} alt={`Preview of ${image.name}`} />
+      {source === "upload" && image && previewSrc(imageUrls[0]) && (
+        <img className="preview-image" src={previewSrc(imageUrls[0])} alt={`Preview of ${image.name}`} />
       )}
 
       {source === "fragments" &&
@@ -313,7 +317,7 @@ export default function ArtifactWizard({ onClose, onCreated }: Props) {
         <ul className="preview-list" aria-label="Selected fragments">
           {fragmentFiles.map((f, i) => (
             <li key={`${f.name}-${i}`}>
-              {fragmentUrls[i] && <img src={fragmentUrls[i]} alt="" />}
+              {previewSrc(fragmentUrls[i]) && <img src={previewSrc(fragmentUrls[i])} alt="" />}
               <span>{f.name}</span>
             </li>
           ))}
