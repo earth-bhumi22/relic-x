@@ -299,7 +299,7 @@ Layering: **routes** (HTTP + validation) → **services** (logic) → **reposito
 | `src/pages/GraphPage.tsx`, `components/graph/*`, `hooks/useGraphData.ts`, `lib/graphView.ts` | A | Similarity graph, Cytoscape, lazy-loaded (T25, done) |
 | `components/WhyMatchedDrawer.tsx`, `components/why/*`, `lib/signals.ts` | A | "Why matched?" drawer + shared signal order/colours (T26, done) |
 | `pages/ReconstructPage.tsx`, `components/ReconstructionCanvas.tsx`, `components/TracePlayer.tsx`, `components/run/*`, `lib/replay.ts`, `lib/confidence.ts`, `lib/truth.ts`, `lib/solvers.ts`, `lib/runSolver.ts` | A | Reconstruction canvas, trace player, confidence rings, ground-truth overlay (T27, done) |
-| *planned* `src/pages/LabPage.tsx`, `components/charts/*` | A | T28 |
+| `pages/LabPage.tsx`, `components/lab/*`, `components/charts/*`, `lib/labData.ts`, `lib/labForms.ts`, `lib/csv.ts` | A | Lab dashboard: benchmark table + charts, scaling experiment, client CSV export, Recharts lazy-loaded (T28, done) |
 
 ### validation, datasets, docs
 

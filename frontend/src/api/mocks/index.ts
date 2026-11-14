@@ -567,48 +567,59 @@ function createRun(m: MockArtifact, body: Record<string, unknown>): RunDetail {
   return run;
 }
 
-function scaling(body: ScalingRequest): ScalingOut {
+/** Bounds of the real `ScalingRequest` (checked against the running API): 1–7 sizes, each 2–8. */
+async function scaling(body: ScalingRequest): Promise<ScalingOut> {
   const sample = body.sample ?? "mosaic-tile";
   if (!SAMPLES.some((s) => s.name === sample)) throw invalid(`unknown sample '${sample}'`);
-  const sizes = body.sizes ?? [2, 3, 4, 5];
-  if (sizes.some((s) => !Number.isInteger(s) || s < 1 || s > 8))
-    throw validation("sizes", "each size must be an integer between 1 and 8");
+  const sizes = body.sizes ?? [3, 4, 5, 6];
+  if (sizes.length < 1 || sizes.length > 7) throw validation("sizes", "list should have between 1 and 7 items");
+  if (sizes.some((s) => !Number.isInteger(s) || s < 2 || s > 8)) throw invalid("sizes must be in 2..8");
+  const noise = body.noise ?? 4;
+  if (noise < 0 || noise > 30) throw validation("noise", "input should be between 0 and 30");
+  const erosion = body.erosion ?? 0.2;
+  if (erosion < 0 || erosion > 1) throw validation("erosion", "input should be between 0 and 1");
+  const nodeLimit = body.node_limit ?? 50000;
+  if (nodeLimit < 100 || nodeLimit > 500000) throw validation("node_limit", "input should be between 100 and 500000");
   const algorithms = body.algorithms ?? [...ALGORITHMS];
+  // A slow call, so the busy state and Cancel can be tried by hand (zero when latency is zero, as in tests).
+  await wait(mockConfig.latencyMs * 8 * sizes.length);
   return {
     sample,
     rotate: body.rotate ?? false,
-    points: sizes.map((size) => {
-      const n = size * size;
-      const pairs = n * 4 * (n - 1);
-      const runs: ScalingOut["points"][number]["runs"] = {};
-      for (const alg of algorithms) {
-        const t = scalingModel(alg, n);
-        runs[alg] = {
-          elapsed_ms: t.ms,
-          operations: t.ops,
-          total_score: r4(n * 1.25),
-          truncated: t.truncated,
-          neighbour_accuracy: alg === "dijkstra" ? 0.83 : 1,
-          direct_accuracy: alg === "dijkstra" ? 0.5 : 1,
-          coverage: 1,
+    points: [...new Set(sizes)]
+      .sort((a, b) => a - b)
+      .map((size) => {
+        const n = size * size;
+        const pairs = n * 4 * (n - 1);
+        const runs: ScalingOut["points"][number]["runs"] = {};
+        for (const alg of algorithms) {
+          const t = scalingModel(alg, n, nodeLimit);
+          runs[alg] = {
+            elapsed_ms: t.ms,
+            operations: t.ops,
+            total_score: r4(n * 1.25),
+            truncated: t.truncated,
+            neighbour_accuracy: alg === "dijkstra" ? 0.83 : 1,
+            direct_accuracy: alg === "dijkstra" ? 0.5 : 1,
+            coverage: 1,
+          };
+        }
+        return {
+          size,
+          n,
+          match: {
+            fragments: n,
+            side_pairs_total: pairs,
+            side_pairs_scored: Math.round(pairs * 0.5),
+            side_pairs_skipped: Math.round(pairs * 0.5),
+            cache_hits: 0,
+            elapsed_ms: Number((n * 4.1).toFixed(2)),
+            operations: { prefilter_checks: pairs, dp_cells: n * 9504, char_comparisons: n * 2513 },
+            match_accuracy: 1,
+          },
+          runs,
         };
-      }
-      return {
-        size,
-        n,
-        match: {
-          fragments: n,
-          side_pairs_total: pairs,
-          side_pairs_scored: Math.round(pairs * 0.5),
-          side_pairs_skipped: Math.round(pairs * 0.5),
-          cache_hits: 0,
-          elapsed_ms: Number((n * 4.1).toFixed(2)),
-          operations: { prefilter_checks: pairs, dp_cells: n * 9504, char_comparisons: n * 2513 },
-          match_accuracy: 1,
-        },
-        runs,
-      };
-    }),
+      }),
   };
 }
 
@@ -646,7 +657,7 @@ export async function mockRequest<T>(path: string, init: RequestInit = {}): Prom
   if (method === "POST" && p === "/artifacts/sample") return out(createSample(body));
   if (method === "POST" && p === "/artifacts/upload") return out(createUpload(form ?? new FormData()));
   if (method === "POST" && p === "/artifacts/fragments-upload") return out(createFragments(form ?? new FormData()));
-  if (method === "POST" && p === "/benchmark/scaling") return out(scaling(body as ScalingRequest));
+  if (method === "POST" && p === "/benchmark/scaling") return out(await scaling(body as ScalingRequest));
 
   if ((m = p.match(/^\/artifacts\/([^/]+)$/)) && method === "GET") return out(getArtifactOr404(m[1]).artifact);
   if ((m = p.match(/^\/artifacts\/([^/]+)$/)) && method === "DELETE") {

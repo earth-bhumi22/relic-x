@@ -68,6 +68,27 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   return (res.status === 204 ? undefined : await res.json()) as T;
 }
 
+/**
+ * Raw text download (CSV endpoints of T21). Real API only: mock mode has no CSV endpoints, so callers build the CSV
+ * on the client (see lib/csv.ts, which does that by default).
+ */
+export async function fetchCsv(
+  path: string,
+  init: RequestInit = {},
+): Promise<{ text: string; fileName: string | null }> {
+  if (isMockMode()) throw new ApiError(501, "not_implemented", "CSV endpoints are not available in mock mode");
+  const headers = new Headers(init.headers);
+  if (init.body) headers.set("Content-Type", "application/json");
+  const res = await fetch(BASE + path, { ...init, headers });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    const err = body?.error ?? {};
+    throw new ApiError(res.status, err.code ?? "http_error", err.message ?? res.statusText, err.details);
+  }
+  const disposition = res.headers.get("Content-Disposition") ?? "";
+  return { text: await res.text(), fileName: /filename="?([^";]+)"?/.exec(disposition)?.[1] ?? null };
+}
+
 type Query = Record<string, string | number | boolean | null | undefined>;
 
 /** Builds "?a=1&b=2", skipping null/undefined values. */
@@ -144,6 +165,10 @@ export const listRuns = (artifactId: string) => api<RunOut[]>(`/artifacts/${arti
 export const getRun = (runId: string) => api<RunDetail>(`/runs/${runId}`);
 /** `DELETE /runs/{id}` answers 204 with no body. */
 export const deleteRun = (runId: string) => api<void>(`/runs/${runId}`, { method: "DELETE" });
-export const runBenchmark = (artifactId: string, body: { algorithms: Algorithm[]; node_limit?: number }) =>
-  api<RunDetail[]>(`/artifacts/${artifactId}/benchmark`, post(body));
-export const runScalingBenchmark = (body: ScalingRequest = {}) => api<ScalingOut>("/benchmark/scaling", post(body));
+export const runBenchmark = (
+  artifactId: string,
+  body: { algorithms: Algorithm[]; node_limit?: number },
+  options: { signal?: AbortSignal } = {},
+) => api<RunDetail[]>(`/artifacts/${artifactId}/benchmark`, { ...post(body), signal: options.signal });
+export const runScalingBenchmark = (body: ScalingRequest = {}, options: { signal?: AbortSignal } = {}) =>
+  api<ScalingOut>("/benchmark/scaling", { ...post(body), signal: options.signal });

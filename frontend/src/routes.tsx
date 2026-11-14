@@ -7,13 +7,14 @@ import type { RouteObject } from "react-router-dom";
 import AppLayout from "./components/layout/AppLayout";
 import GalleryPage from "./pages/GalleryPage";
 import Loading from "./components/Loading";
-import LabPage from "./pages/LabPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import ReconstructPage from "./pages/ReconstructPage";
 
 // Route-level code splitting: Cytoscape (T25) only loads when the graph page is opened.
 const GraphPage = lazy(() => import("./pages/GraphPage"));
+// Recharts (T28) only loads when the Lab is opened.
+const LabPage = lazy(() => import("./pages/LabPage"));
 
 export const routes: RouteObject[] = [
   {
@@ -30,7 +31,14 @@ export const routes: RouteObject[] = [
         ),
       },
       { path: "/artifacts/:id/reconstruct", element: <ReconstructPage /> },
-      { path: "/lab", element: <LabPage /> },
+      {
+        path: "/lab",
+        element: (
+          <Suspense fallback={<Loading label="Loading lab…" />}>
+            <LabPage />
+          </Suspense>
+        ),
+      },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

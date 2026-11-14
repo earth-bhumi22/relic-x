@@ -240,11 +240,58 @@ Run a solver, replay its trace, see how sure each placement is, and (optionally)
   conflict, a fallback, backtrack steps, a capped `node_limit < 1000` run with `trace_dropped` and `truncated`), a history that
   grows, `DELETE /runs/{id}`, and 409 until the artifact is matched.
 
+### Lab / benchmark (`/lab`, T28)
+
+Two tabs (`?tab=benchmark|scaling`, accessible tabs with ←/→/Home/End; both stay mounted so a form is not lost). The page
+is lazy-loaded, so **Recharts 2.15.4 (pinned, the only chart library) ships only in the Lab chunk** (about 434 kB, 121 kB gzip;
+the main bundle is unchanged).
+
+- **Benchmark an artifact** (`components/lab/BenchmarkPanel.tsx`): artifact picker (`?artifact=<id>` in the URL; an empty
+  state links to Projects; an unknown id says "not found"), algorithm checkboxes (all four, at least one), `node_limit`
+  (100–2,000,000, default 5000, only used for backtracking; warns above 100,000). It sends **one `POST /benchmark` per
+  algorithm** in order, because the real endpoint is all-or-nothing and this gives a genuine partial failure (the other
+  results still show, the failed one is listed), plus a progress line. Cancel aborts the waiting (the server may still
+  finish). A 409 shows the match prompt and re-runs after matching; 422s are mapped onto the fields.
+  The sortable table (`BenchmarkTable.tsx`) shows time, total operations (the per-counter breakdown expands), score,
+  accuracies and `truncated`; `null` reads "—"; the best value per column carries a ★ and "best" for screen readers.
+  Four grouped-bar charts follow (time, operations with a log toggle, score, accuracy). A truncated backtracking run is
+  dashed, marked with `*` and explained: "node limit reached: best found, optimality not guaranteed". A plain-language
+  reading is computed from the numbers (`readResult` in `lib/labData.ts`).
+- **Scaling: time vs n** (`ScalingPanel.tsx`): sample (default `mosaic-tile`), sizes (1–7 values, each 2–8, default
+  3, 4, 5, 6), algorithms, rotate, noise (0–30), erosion (0–1), `node_limit` (100–500,000, default 50,000). The call is
+  long: the busy state shows elapsed seconds, Cancel stops waiting, sizes of 7+ warn, and any error shows with a retry (never
+  a blank chart; a 429 from the server's rate limit shows its message). Charts: time, operations and direct accuracy against n,
+  with **log-y / log-x toggles**, gaps (not zeros) for missing points, hollow markers for truncated points, and an optional
+  least-squares fit on log-log (`y ≈ c·n^k`, with R²) computed from the displayed non-truncated points and labelled as a
+  fit. The match stage is a table.
+- **The two `operations` shapes**: a `RunDetail.operations` is an object of counters; a scaling point's `operations` is
+  already one number. `totalOperations()` in `lib/labData.ts` is the single place that converts.
+- **Charts** (`components/charts/`): one palette and label set (`--alg-*` tokens, read with `getComputedStyle` and passed to
+  Recharts, re-read on a theme change); colour is never alone (marker shape, dash and a text legend); every chart has a
+  collapsed data table as its text alternative and sits in an error boundary. Tests render charts at a fixed size
+  (`chartSize` / `fixedSize`) because jsdom cannot measure a responsive container.
+- **CSV export** (`lib/csv.ts`): generated **in the browser** from exactly what is on screen. `toCsv(rows, columns)` is
+  RFC 4180 (CRLF, quoting of `,` `"` newlines), writes `null` as an empty cell and prefixes a leading `= + - @` (or tab / CR)
+  with `'`. File names: `relicx-benchmark-<artifact>-<YYYY-MM-DD>.csv`, `relicx-scaling-<sample>[-rotated]-<date>.csv`.
+  The download is a Blob + object URL, revoked afterwards. **One-line switch to the server's T21 endpoints:** change
+  `CSV_SOURCE` in `lib/csv.ts` (`benchmark: "server"`, `scaling: "server"`); `downloadCsv(req, source)` is the only
+  function the panels call. Columns (identical to the server CSVs):
+  - benchmark: `algorithm, run_id, created_at, elapsed_ms, operations_total, total_score, neighbour_accuracy, direct_accuracy, coverage, truncated, search_nodes, conflicts, node_limit, threshold, top_k`
+  - scaling: `size, n, algorithm, elapsed_ms, operations, total_score, neighbour_accuracy, direct_accuracy, coverage, truncated, match_accuracy, match_elapsed_ms`
+- **Mock mode**: all four algorithms; backtracking truncated at a small `node_limit`; a scaling response whose time grows with n
+  (backtracking steeply, truncated at larger sizes) with the real bounds and defaults; `null` accuracies for an artifact
+  without ground truth; 409 until matched; and a deliberately slow scaling call (latency × 8 × sizes) so the busy state and
+  Cancel can be exercised.
+
+**States worth capturing (T44):** the benchmark table with a truncated backtracking run and the best-value stars; the scaling
+chart in log-y with the fit shown; the scaling busy state with Cancel; the 409 prompt; a partial failure; the empty states;
+360 px and 1280 px in both themes.
+
 ## Layout
 
 ```text
 src/
-  routes.tsx            route table (/, /artifacts/:id/{gallery,graph,reconstruct}, /lab, *)
+  routes.tsx            route table (/, /artifacts/:id/{gallery,graph,reconstruct}, /lab (lazy), *)
   theme.tsx             light/dark provider (data-theme on <html>, persisted in localStorage)
   styles.css            design tokens (bead colours, status colours, surface, border) + base styles
   api/
@@ -258,7 +305,7 @@ src/
                         DeleteArtifactDialog, EdgeBeads, FragmentDialog, MatchPanel, layout/
   hooks/useAsync.ts     loading/success/error state for a promise
   test/                 test helpers (renderWithProviders, mockApi, fixtures); not part of the build
-  pages/                ProjectsPage (T23), GalleryPage (T24), GraphPage (T25) and ReconstructPage (T27) are real, with the T26 drawer mounted on the graph page; ReconstructPage (T27) is real; the Lab page is a placeholder until T28
+  pages/                ProjectsPage (T23), GalleryPage (T24), GraphPage (T25) and ReconstructPage (T27) and LabPage (T28, lazy-loaded with Recharts) are real, with the T26 drawer mounted on the graph page
   lib/artifactForm.ts   wizard parameter defaults, limits, validation, formatting (pure, unit tested)
   lib/beads.ts, shuffle.ts   symbol → colour (mirrors backend quantize), seeded shuffle
 ```
