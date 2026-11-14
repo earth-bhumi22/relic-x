@@ -29,13 +29,86 @@ arrangements; with rotation it is n! · 4ⁿ.
 <!-- T13: clockwise reading convention and why it makes "compare with reversed" rotation-proof; resampling; quantisation into 64 symbols. -->
 
 ## 2. KMP (`engine/strings/kmp.py`)
-<!-- T10: prefix function, amortised O(n + m) proof, measured char comparisons vs n. -->
+**Problem.** Find every occurrence of a pattern P (length m) in a text T (length n). In RELIC-X both are edge strings
+over a 64-symbol alphabet; KMP is the decision step of the longest-motif search (§4).
+
+**Prefix function.** π[i] = length of the longest *proper* prefix of P[0..i] that is also a suffix of P[0..i]
+(its longest "border"). Example: `ababaca` → `[0, 0, 1, 2, 3, 0, 1]`. Computed incrementally: with k = π[i−1],
+compare P[i] with P[k]; on a match π[i] = k + 1, on a mismatch fall back k ← π[k−1] (the next-longest border) and
+compare again, until k = 0. Correctness: every border of P[0..i] is a border of P[0..i−1] extended by one character,
+and the borders of P[0..i−1] are exactly k, π[k−1], π[π[k−1]−1], …, so trying them longest-first finds the longest one.
+
+**Search.** Keep k = number of pattern characters matched so far. For each text character: compare T[i] with P[k];
+on a match k ← k + 1 (if k = m, report i − m + 1 and set k ← π[m−1] so overlapping occurrences are found); on a
+mismatch with k > 0 fall back k ← π[k−1] and compare T[i] again. **The text index never moves backwards**, which is
+the whole difference from the naive matcher.
+
+**Time (amortised, exact bound).** Every comparison either *advances* (a match: k grows by 1) or *falls back* (a
+mismatch with k > 0: k strictly shrinks). k starts at 0 and never goes below 0, so the number of fall-backs is at
+most the number of earlier matches. Each text position ends with exactly one final comparison. Hence
+
+- search: ≤ n final comparisons + ≤ n − 1 fall-backs = **≤ 2n − 1** comparisons → O(n);
+- prefix function: ≤ (m − 1) + (m − 2) = **≤ 2m − 3** (m ≥ 2) → O(m);
+- total **O(n + m)** time, **O(m)** space (the table). Worst *and* best case are linear; there is no bad input.
+
+The implementation counts every comparison exactly once (`char_comparisons`), and the tests assert these exact
+bounds on adversarial inputs (`aⁿ` vs `a⁹b`, Fibonacci words, all-hit texts) in
+`tests/engine/test_kmp_rabin_karp_motif.py`.
+
+**Measured** (`validation/matcher_results.md`, T10): on `aⁿ` with `a⁹b` KMP uses 2n + 8 comparisons, within 8 of the
+bound, and grows as n^0.99 (R² 1.0000). The naive matcher also grows linearly here but does ≈ m·n = 10n comparisons
+(5× KMP at n = 3200); its gap grows with m, and its true worst case is Θ(n·m).
+
+![naive vs KMP vs Rabin-Karp](../validation/matcher_kmp_adversarial.svg)
 
 ## 3. Rabin-Karp (`engine/strings/rabin_karp.py`)
-<!-- T10: rolling hash, spurious hits, expected O(n + m), worst O(nm); KMP vs RK chart. -->
+**Idea.** Compare *fingerprints* instead of strings. The polynomial hash of a window w₀…w_{m−1} is
+h = (w₀·B^{m−1} + w₁·B^{m−2} + … + w_{m−1}) mod M with B = 257, M = 10⁹ + 7. Sliding the window one step is O(1):
+
+    h' = ((h − w_out · B^{m−1}) · B + w_in) mod M        (B^{m−1} mod M precomputed once)
+
+**Algorithm.** Hash P once; roll over every window of T; when a window hash equals P's hash, **verify** character by
+character (a hash match may be a *collision*, counted as `spurious_hits`).
+
+**Time.** Hashing P and the first window O(m); n − m rolling steps O(1) each; each verification O(m).
+- *Expected* (few collisions): **O(n + m)**. For a fixed window that does not match, the chance of a collision is
+  about 1/M ≈ 10⁻⁹, so over n windows the expected number of spurious verifications is ≈ n/M ≈ 0.
+- *Worst case*: every window collides → (n − m + 1) verifications of m characters → **O(n·m)**. The test sets
+  M = 1 to force this and checks exactly (n − m + 1)·m comparisons; with M = 7 it checks that results stay correct
+  despite many spurious hits, which shows why the verification step cannot be skipped.
+
+**Space** O(1) beyond the input. **In RELIC-X** the same rolling hash also builds the n-gram signatures of §7 and the
+decision step of the motif search (§4), where hashing all windows of one string into a set turns "does any length-L
+window of A occur in B?" into one O(n + m) pass.
+
+**KMP vs Rabin-Karp.** Both are linear in practice. KMP's bound is deterministic and needs no arithmetic;
+Rabin-Karp's is expected-case, but it generalises: one pass can test *many* patterns against a hash set, which is
+exactly what the motif search needs.
 
 ## 4. Longest shared motif (`engine/strings/motif.py`)
-<!-- T10: monotonicity → binary search over length; total complexity with each decision procedure. -->
+**Problem.** Given edge A and reversed edge B (each of length L), find the longest contiguous run of A that occurs
+somewhere in B (the longest common *substring*). A long shared run is strong evidence that two edges continue the same
+painted band or motif. Runs shorter than `min_motif` (default 3) are treated as noise.
+
+**Monotonicity → binary search.** Let S(ℓ) = "some length-ℓ window of A occurs in B". If S(ℓ) holds, then S(ℓ − 1)
+holds too (drop the last character of the shared run). So S is `True…True False…False` over ℓ = 1…L, and the
+largest ℓ with S(ℓ) can be found by **binary search** with O(log L) evaluations of S instead of L. The test
+`test_shared_runs_are_monotone` checks this property on random strings, and `test_motif_length_matches_brute_force`
+compares the result with an O(L³) brute force.
+
+**Decision step S(ℓ), two implementations:**
+- **KMP:** for each of the L − ℓ + 1 windows of A, run KMP over B: O(L · (L + ℓ)) = O(L²) per step →
+  **O(L² log L)** total.
+- **Rabin-Karp:** hash every length-ℓ window of B into a set (O(L)), then probe with A's windows (O(L)), verifying
+  hash hits → **O(L log L)** expected total.
+
+**Measured** (12 truly adjacent edge pairs of the pottery sample, L = 12…96): KMP grows as L^2.38, Rabin-Karp as
+L^1.31; both always return the same motif. At the default L = 24 Rabin-Karp needs ≈ 12× fewer operations, at
+L = 96 ≈ 52× fewer. KMP stays the default for its deterministic worst case, and the motif step is a small part of
+matching at L = 24. `MatchParams.motif_method = "rabin_karp"` switches the method; matching scores are identical
+either way (tested).
+
+![motif search KMP vs Rabin-Karp](../validation/matcher_motif_ops.svg)
 
 ## 5. LCS (`engine/strings/lcs.py`)
 <!-- T11: recurrence, optimal substructure, two-row O(min(m,n)) space, traceback. -->

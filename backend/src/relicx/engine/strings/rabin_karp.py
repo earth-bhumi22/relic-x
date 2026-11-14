@@ -5,6 +5,11 @@ Space : O(1) beyond the input
 
 Same job as KMP (motif search). Implemented separately so the two can be
 benchmarked against each other on identical inputs.
+
+Counters (T10): ``hash_checks`` (one per window), ``char_comparisons`` (only
+when hashes agree), ``spurious_hits`` (hashes agreed but the strings did not:
+a collision). With MOD = 1e9+7 and short edge strings, collisions are rare;
+tests force them with a tiny modulus to show the verification step matters.
 """
 
 from __future__ import annotations
@@ -52,6 +57,8 @@ def rabin_karp_search(text: str, pattern: str, counter: OpCounter | None = None)
             tick(counter, "char_comparisons", m)
             if text[i : i + m] == pattern:
                 hits.append(i)
+            else:
+                tick(counter, "spurious_hits")
     return hits
 
 

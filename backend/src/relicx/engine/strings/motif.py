@@ -42,6 +42,7 @@ def _shared_window_rk(a: str, b: str, length: int, counter: OpCounter | None):
             tick(counter, "char_comparisons", length)
             if a[i : i + length] == b[j : j + length]:  # collision check
                 return i, j
+            tick(counter, "spurious_hits")
     return None
 
 
