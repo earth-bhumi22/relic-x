@@ -39,7 +39,8 @@ describe("smoke: whole app in mock mode", () => {
 
     fireEvent.click(within(screen.getByRole("navigation", { name: "Main" })).getByRole("link", { name: "Lab" }));
     expect(await screen.findByRole("heading", { level: 1, name: "Lab / benchmark" })).toBeInTheDocument();
-    expect(await screen.findByText(/sample artifacts available/)).toBeInTheDocument();
+    expect(await screen.findByRole("combobox", { name: "Artifact" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Run benchmark" })).toBeDisabled(); // nothing chosen yet
     expect(screen.queryByRole("navigation", { name: "Artifact" })).not.toBeInTheDocument();
 
     expect(consoleError).not.toHaveBeenCalled();

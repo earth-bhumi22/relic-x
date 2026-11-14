@@ -1650,3 +1650,131 @@ a:focus-visible {
   font-weight: 700;
   margin-right: 0.4rem;
 }
+
+/* ---- Lab / benchmark (T28). One colour + one marker shape per algorithm, used app-wide (Okabe–Ito based). ---- */
+:root {
+  --alg-greedy: #0072b2;
+  --alg-best_first: #d55e00;
+  --alg-dijkstra: #009e73;
+  --alg-backtracking: #cc79a7;
+  --chart-grid: var(--border);
+}
+:root[data-theme="dark"] {
+  --alg-greedy: #4aa3df;
+  --alg-best_first: #f08a4b;
+  --alg-dijkstra: #2fc79a;
+  --alg-backtracking: #e08fbd;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --alg-greedy: #4aa3df;
+    --alg-best_first: #f08a4b;
+    --alg-dijkstra: #2fc79a;
+    --alg-backtracking: #e08fbd;
+  }
+}
+
+.tabs {
+  margin-top: 1rem;
+}
+.tab-list {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+.tab {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tab.selected {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+  font-weight: 600;
+}
+.tab:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -2px;
+}
+.tab-panel {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1rem;
+  min-width: 0;
+}
+.tab-panel[hidden] {
+  display: none;
+}
+.lab-section {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.lab-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.lab-field {
+  display: grid;
+  gap: 0.2rem;
+}
+.lab-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.75rem;
+}
+.lab-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+.reading {
+  margin: 0.25rem 0 0.75rem;
+  padding-left: 1.2rem;
+}
+.sort-button {
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+}
+.bench-table td.best {
+  font-weight: 700;
+  background: var(--surface-2);
+}
+.chart-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr));
+  margin-top: 1rem;
+}
+.chart-frame {
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  min-width: 0;
+}
+.chart-box {
+  width: 100%;
+  min-width: 0;
+  color: var(--text);
+}
+.chart-note {
+  font-size: 0.85rem;
+}
+.chart-data summary {
+  cursor: pointer;
+  color: var(--accent);
+}

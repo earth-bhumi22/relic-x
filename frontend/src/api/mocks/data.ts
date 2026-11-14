@@ -366,8 +366,9 @@ export function buildRun(
     elapsed_ms: TIMING[algorithm].ms,
     operations: TIMING[algorithm].ops(frags.length),
     total_score: round(total),
-    neighbour_accuracy: placedPairs ? round(goodPairs / placedPairs) : null,
-    direct_accuracy: frags.length ? round(direct / frags.length) : null,
+    // No ground truth (uploaded fragments): the API reports null accuracies, never 0.
+    neighbour_accuracy: m.artifact.has_ground_truth && placedPairs ? round(goodPairs / placedPairs) : null,
+    direct_accuracy: m.artifact.has_ground_truth && frags.length ? round(direct / frags.length) : null,
     coverage: 1.0,
     truncated,
     meta: built.meta,
@@ -545,7 +546,11 @@ function buildTrace(
   return { trace, truncated: false, dropped: {}, meta };
 }
 
-export function scalingModel(algorithm: Algorithm, n: number): { ms: number; ops: number; truncated: boolean } {
+export function scalingModel(
+  algorithm: Algorithm,
+  n: number,
+  nodeLimit = 50000,
+): { ms: number; ops: number; truncated: boolean } {
   const f = {
     greedy: 0.09 * n ** 1.3,
     best_first: 0.16 * n ** 1.5,
@@ -555,6 +560,7 @@ export function scalingModel(algorithm: Algorithm, n: number): { ms: number; ops
   const opsF = { greedy: 20 * n ** 2, best_first: 30 * n ** 2, dijkstra: 60 * n ** 2, backtracking: 90 * 1.6 ** n }[
     algorithm
   ];
-  const truncated = algorithm === "backtracking" && n > 25;
+  // Backtracking is exponential: past the node limit it is cut off (marked truncated).
+  const truncated = algorithm === "backtracking" && opsF > nodeLimit * 3;
   return { ms: round(f, 2), ops: Math.round(opsF), truncated };
 }
