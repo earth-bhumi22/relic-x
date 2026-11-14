@@ -29,3 +29,13 @@ def artifact(client):
     )
     assert r.status_code == 201, r.text
     return r.json()
+
+
+@pytest.fixture(scope="session")
+def smooth_image_api():
+    import numpy as np
+    from PIL import Image
+
+    rng = np.random.default_rng(1)
+    small = (rng.random((24, 24, 3)) * 255).astype(np.uint8)
+    return np.asarray(Image.fromarray(small).resize((360, 360), Image.BICUBIC))

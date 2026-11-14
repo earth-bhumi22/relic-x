@@ -11,6 +11,7 @@ from __future__ import annotations
 import logging
 import time
 import uuid
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -18,13 +19,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from . import __version__
-from .api.routes import artifacts, health, matching, runs
+from .api.routes import artifacts, health, jobs, matching, runs
 from .core.config import Settings, get_settings
 from .core.errors import DomainError
 from .core.logging import configure_logging
 from .db.base import Base
 from .db.session import make_engine, make_session_factory
-from .services import LocalStorage
+from .services import JobRunner, LocalStorage
 
 log = logging.getLogger("relicx")
 
@@ -39,7 +40,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(settings.log_level)
 
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        recovered = app.state.jobs.recover_orphans()
+        if recovered:
+            log.warning("marked %d unfinished background job(s) as failed after restart", recovered)
+        yield
+        app.state.jobs.shutdown()
+
     app = FastAPI(
+        lifespan=lifespan,
         title="RELIC-X API",
         version=__version__,
         description="Interactive reconstruction of fragmented cultural artifacts — a DSA-first algorithm lab.",
@@ -52,6 +62,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.storage = LocalStorage(settings.storage_dir)
     if settings.auto_create_schema:
         Base.metadata.create_all(app.state.engine)
+    app.state.jobs = JobRunner(app.state.session_factory, app.state.storage, workers=settings.job_workers)
 
     app.add_middleware(
         CORSMiddleware,
@@ -92,7 +103,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         log.exception("unhandled error")
         return _error(500, "internal_error", "unexpected server error")
 
-    for module in (health, artifacts, matching, runs):
+    for module in (health, artifacts, matching, runs, jobs):
         app.include_router(module.router, prefix="/api/v1")
     return app
 

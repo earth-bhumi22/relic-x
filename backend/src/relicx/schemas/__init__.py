@@ -190,3 +190,18 @@ class ScalingRequest(BaseModel):
     noise: float = Field(4.0, ge=0, le=30)
     erosion: float = Field(0.2, ge=0, le=1)
     node_limit: int = Field(50_000, ge=100, le=500_000)
+
+
+# -- background jobs (T20, CONTRACT §5.1) -------------------------------------------
+JobStatus = Literal["queued", "running", "done", "failed"]
+
+
+class JobCreated(BaseModel):
+    job_id: str
+    status: JobStatus
+    progress: float
+
+
+class JobOut(JobCreated):
+    run_id: str | None
+    error: str | None

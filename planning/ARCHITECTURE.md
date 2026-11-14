@@ -84,6 +84,8 @@ erDiagram
     fragments ||--o{ pair_matches : "frag_a / frag_b"
     reconstruction_runs ||--o{ placements : "places"
     reconstruction_runs ||--o{ trace_steps : "explains"
+    artifacts ||--o{ jobs : "queues"
+    reconstruction_runs |o--o| jobs : "result of"
     fragments ||--o{ placements : "placed as"
 
     artifacts {
@@ -140,6 +142,15 @@ erDiagram
         int cell_row "UNIQUE (run, row, col)"
         int cell_col
         int rot "CHECK 0..3"
+    }
+    jobs {
+        string id PK
+        string artifact_id FK
+        string algorithm "CHECK enum"
+        string status "CHECK queued|running|done|failed"
+        float progress "CHECK 0..1"
+        string run_id FK "SET NULL"
+        string error
     }
     trace_steps {
         int id PK
@@ -233,7 +244,7 @@ Layering: **routes** (HTTP + validation) → **services** (logic) → **reposito
 | `src/relicx/api/deps.py`, `presenters.py` | B | Dependency injection; ORM → response mapping |
 | `src/relicx/api/routes/{health,artifacts,matching,runs}.py` | B | Endpoints |
 | `src/relicx/samples.py` | B | Procedural sample artifacts |
-| *planned* `src/relicx/services/jobs.py` | B | Background run jobs (T20) |
+| `src/relicx/services/jobs.py`, `api/routes/jobs.py` | B | Background run jobs: thread pool, progress, restart recovery (T20) |
 | *planned* `src/relicx/api/routes/exports.py` | B | CSV exports (T21) |
 | `src/relicx/cli.py` | B | `relicx seed` demo data (T05) |
 

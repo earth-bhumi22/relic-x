@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from ..core.config import Settings
 from ..db.session import session_scope
-from ..services import ArtifactService, LocalStorage, MatchingService, ReconstructionService
+from ..services import ArtifactService, JobService, LocalStorage, MatchingService, ReconstructionService
 
 
 def get_db(request: Request) -> Iterator[Session]:
@@ -45,3 +45,7 @@ def matching_service(db: Session = DB, storage: LocalStorage = Depends(get_stora
 
 def reconstruction_service(db: Session = DB, storage: LocalStorage = Depends(get_storage)) -> ReconstructionService:
     return ReconstructionService(db, storage)
+
+
+def job_service(db: Session = DB, storage: LocalStorage = Depends(get_storage)) -> JobService:
+    return JobService(db, storage)

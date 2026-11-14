@@ -34,6 +34,7 @@ class Settings:
     max_upload_mb: int = field(default_factory=lambda: int(os.getenv("RELICX_MAX_UPLOAD_MB", "15")))
     max_fragments: int = field(default_factory=lambda: int(os.getenv("RELICX_MAX_FRAGMENTS", "64")))
     log_level: str = field(default_factory=lambda: os.getenv("RELICX_LOG_LEVEL", "INFO"))
+    job_workers: int = field(default_factory=lambda: int(os.getenv("RELICX_JOB_WORKERS", "2")))
 
     @property
     def max_upload_bytes(self) -> int:
