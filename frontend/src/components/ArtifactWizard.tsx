@@ -60,9 +60,10 @@ function useObjectUrls(files: readonly File[]): string[] {
       setUrls([]);
       return;
     }
-    const created = files.map((f) => URL.createObjectURL(f));
+    // Only blob: URLs ever reach an <img src>; anything else is dropped.
+    const created = files.map((f) => URL.createObjectURL(f)).map((u) => (u.startsWith("blob:") ? u : ""));
     setUrls(created);
-    return () => created.forEach((u) => URL.revokeObjectURL(u));
+    return () => created.forEach((u) => u && URL.revokeObjectURL(u));
   }, [files]);
   return urls;
 }
