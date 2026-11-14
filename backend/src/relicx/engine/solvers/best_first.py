@@ -12,8 +12,10 @@ fragment graph, with a max-heap priority queue.
         if v's target cell is invalid  : record conflict, skip
         else place v, push v's edges
 
-Fragments never attached (pruned edges / all conflicts) are placed at the
-end in their best free slot.
+A conflicting join is dropped for good (it is never retried, because the cell it wants only gets more crowded as
+the layout grows; the fragment may still be attached by another, weaker join). Fragments never attached (pruned
+edges / all joins conflicted) are placed at the end in their best free slot. Only graph edges are used, so
+threshold / top-k pruning changes this solver's result; greedy reads the full compat table and ignores the graph.
 
 Time: O(E log E) heap work + O(V * F * R) fallbacks.
 """
@@ -71,7 +73,16 @@ def solve_best_first(
         rot = ((d + 2) - e.side_v) % 4
         if not (allow_rotation or rot == 0) or not layout.fits(cell):
             conflicts += 1
-            trace.log("conflict", f"Join {u}->{v} ({-negw:.3f}) wants {cell}: occupied/out of bounds, skip", fragment=v)
+            trace.log(
+                "conflict",
+                f"Join {u}->{v} ({-negw:.3f}) wants {cell}: occupied, out of bounds or needs rotation; skip",
+                fragment=v,
+                row=cell[0],
+                col=cell[1],
+                rot=rot,
+                parent=u,
+                score=round(-negw, 4),
+            )
             continue
         layout.place(Placement(v, cell[0], cell[1], rot))
         trace.log(
