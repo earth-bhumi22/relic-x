@@ -241,7 +241,105 @@ def _timed(fn, a, b) -> float:
     return time.perf_counter() - t0
 
 
-SECTIONS = {"t10": section_t10, "t11": section_t11}
+# --------------------------------------------------------------------------- T12
+def sample_features(sample: str, size: int, rotate: bool, noise: float = 4.0, erosion: float = 0.2, seed: int = 7):
+    from relicx.engine import Truth, extract_features, fragment_image
+    from relicx.samples import sample_array
+
+    fr = fragment_image(sample_array(sample), size, size, rotate=rotate, noise=noise, erosion=erosion, seed=seed)
+    feats = {f"F{k:02d}": extract_features(f.pixels) for k, f in enumerate(fr.fragments)}
+    truth = {f"F{k:02d}": Truth(f.true_row, f.true_col, f.scramble_rot) for k, f in enumerate(fr.fragments)}
+    return feats, truth
+
+
+def true_pair_recall(matches, truth) -> float:
+    kept = {(m.a, m.b) for m in matches} | {(m.b, m.a) for m in matches}
+    by_cell = {(t.row, t.col): f for f, t in truth.items()}
+    pairs = [(f, by_cell[(t.row + dr, t.col + dc)]) for f, t in truth.items()
+             for dr, dc in ((0, 1), (1, 0)) if (t.row + dr, t.col + dc) in by_cell]
+    return sum(p in kept for p in pairs) / len(pairs)
+
+
+def section_t12() -> str:
+    import time
+
+    from relicx.engine import MatchConfig, match_accuracy, match_all
+
+    out = ["## T12 · Hashing pre-filter (n-gram signatures + colour) and memo cache\n"]
+    out.append("Stage 1 scores **every** allowed side pair cheaply (n-gram Jaccard + colour continuity, O(L)); each side\n"
+               "keeps its `top_k` best partners; stage 2 runs LCS, edit distance and the motif search (O(L²)) only on the\n"
+               "union of those lists. Mean over the three samples, noise σ = 4, erosion 0.2. *Recall* = share of truly\n"
+               "adjacent fragment pairs that survive the filter; *match acc.* = share of true neighbours ranked first.\n")
+    for size, rotate in ((5, False), (4, True)):
+        label = f"{size}×{size}{' with rotation (16 side combinations per pair)' if rotate else ''}"
+        out.append(f"**{label}**\n")
+        out.append("| top_k | pairs scored | DP cells | recall | match acc. | matching ms |")
+        out.append("|---|---|---|---|---|---|")
+        data = {}
+        for k in (1, 2, 3, 4, 6, 8, 12, 10_000):
+            sc, cells, rec, acc, ms, tot = [], [], [], [], [], []
+            for sample in ("mosaic-tile", "pottery-band", "manuscript"):
+                feats, truth = sample_features(sample, size, rotate)
+                c = OpCounter()
+                t0 = time.perf_counter()
+                res = match_all(feats, MatchConfig(top_k=k, allow_rotation=rotate), c)
+                ms.append((time.perf_counter() - t0) * 1000)
+                sc.append(res.stats["side_pairs_scored"])
+                tot.append(res.stats["side_pairs_total"])
+                cells.append(c.get("dp_cells"))
+                rec.append(true_pair_recall(res.matches, truth))
+                acc.append(match_accuracy(res.matches, truth, rotate))
+            data[k] = (np.mean(sc), np.mean(tot), np.mean(cells), np.mean(rec), np.mean(acc), np.mean(ms))
+            kk = "all (no filter)" if k == 10_000 else str(k)
+            out.append(f"| {kk} | {np.mean(sc):,.0f} / {np.mean(tot):,.0f} ({np.mean(sc) / np.mean(tot):.0%}) |"
+                       f" {np.mean(cells):,.0f} | {np.mean(rec):.0%} | {np.mean(acc):.0%} | {np.mean(ms):.0f} |")
+        out.append("")
+        nofilter, default = data[10_000], data[6]
+        out.append(f"- Default `top_k = 6` scores {default[0] / nofilter[0]:.0%} of the pairs, does"
+                   f" {default[2] / nofilter[2]:.0%} of the DP work and runs {nofilter[5] / default[5]:.1f}× faster than no"
+                   f" filter, with recall {default[3]:.0%} and match accuracy {default[4]:.0%}"
+                   f" (no filter: {nofilter[4]:.0%}).\n")
+        if rotate:
+            pts = [(k, data[k][2]) for k in (1, 2, 3, 4, 6, 8, 12)]
+            rec_pts = [(k, data[k][3] * 100) for k in (1, 2, 3, 4, 6, 8, 12)]
+            (HERE / "matcher_prefilter.svg").write_text(svg_chart(
+                f"Pre-filter on {size}×{size} with rotation", "top_k", "true-pair recall (%)",
+                [{"name": "recall %", "points": rec_pts, "line": True},
+                 {"name": "match accuracy %", "points": [(k, data[k][4] * 100) for k in (1, 2, 3, 4, 6, 8, 12)],
+                  "line": True}]))
+            (HERE / "matcher_prefilter_cost.svg").write_text(svg_chart(
+                f"DP work vs top_k ({size}×{size}, rotation)", "top_k", "DP cells",
+                [{"name": "with filter", "points": pts, "line": True},
+                 {"name": "no filter", "points": [(1, data[10_000][2]), (12, data[10_000][2])], "line": True}]))
+    out.append("![recall vs top_k](matcher_prefilter.svg)\n")
+    out.append("![DP work vs top_k](matcher_prefilter_cost.svg)\n")
+
+    # Cache: identical edge strings (plain regions) are scored once.
+    from relicx.engine import extract_features, fragment_image
+
+    rows = []
+    for name, img in (("flat colour (worst case for duplicates)", np.full((480, 480, 3), (150, 110, 70), np.uint8)),):
+        fr = fragment_image(img, 4, 4, seed=1)
+        feats = {f"F{k}": extract_features(f.pixels) for k, f in enumerate(fr.fragments)}
+        r = match_all(feats, MatchConfig(top_k=10_000)).stats
+        rows.append(f"| {name} | {r['side_pairs_scored']} | {r['cache_hits']} | {r['cache_hits'] / r['side_pairs_scored']:.0%} |")
+    for sample in ("mosaic-tile", "pottery-band", "manuscript"):
+        feats, _ = sample_features(sample, 5, False, noise=0.0, erosion=0.0)
+        r = match_all(feats, MatchConfig(top_k=10_000)).stats
+        rows.append(f"| {sample} 5×5, clean | {r['side_pairs_scored']} | {r['cache_hits']} | {r['cache_hits'] / r['side_pairs_scored']:.0%} |")
+    out.append("**Memo cache.** String scores are keyed by the (edge, reversed edge) pair, so identical pairs are computed\n"
+               "once. No filter, so every pair is a candidate.\n")
+    out.append("| artifact | pairs scored | cache hits | hit rate |")
+    out.append("|---|---|---|---|")
+    out += rows
+    out.append("")
+    out.append("- The cache fires exactly where edges repeat: every pair of a flat artifact, about one pair in eight on the"
+               " pottery sample (its plain clay bands give identical edge strings), never on the busy mosaic and"
+               " manuscript. It costs one dict lookup per pair, so plain regions cannot blow up matching time.\n")
+    return "\n".join(out)
+
+
+SECTIONS = {"t10": section_t10, "t11": section_t11, "t12": section_t12}
 
 
 def main() -> None:

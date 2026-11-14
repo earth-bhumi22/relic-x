@@ -112,6 +112,30 @@ whole match. They disagree on some pairs, which is useful in a weighted score. E
 (AUC 0.999 vs 0.998 clean).
 ## Hashing pre-filter
 
+**Q: What exactly is hashed?**
+A: Every length-3 window of an edge string, with the Rabin-Karp rolling hash, giving a set of integers (the n-gram
+signature). It is built once per edge and per reversed edge in O(L).
+
+**Q: Why Jaccard of signatures and not LCS for the first pass?**
+A: Jaccard is two hash-set operations, O(L) expected; LCS is O(L²). The cheap score only has to put true neighbours
+into each side's top-k, not rank them perfectly. Recall at top_k = 6 is 100 %.
+
+**Q: What is the complexity with and without the filter?**
+A: Without: O(P·L²) for P side pairs. With: O(P·L) for stage 1 plus O(|K|·L²) for the survivors, where
+|K| ≤ k·4n. P grows as n² and |K| as n, so the saving grows with n: 2.9× on 5×5, 6.4× on a rotated 4×4.
+
+**Q: Can the filter change a match score?**
+A: No. It only chooses which pairs are scored; a kept pair gets exactly the score it would get without the filter
+(tested). It can only *miss* a pair, so we measure recall: 100 % at the default.
+
+**Q: Why heapq.nlargest instead of sorting?**
+A: Selecting k of c candidates with a size-k heap is O(c log k); sorting is O(c log c). Python documents that
+nlargest returns exactly sorted(…, reverse=True)[:k], so the results are identical.
+
+**Q: When does the memo cache help?**
+A: When edge strings repeat exactly: plain regions. 100 % of pairs on a flat image, 13 % on the pottery sample, 0 % on
+the busy ones. It is a dict lookup, so it costs almost nothing when it misses.
+
 # Part II — Graph & Search (A)
 
 ## Fragment graph, BFS / DFS

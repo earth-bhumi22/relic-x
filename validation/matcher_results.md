@@ -85,3 +85,59 @@ higher than a random false pair (ROC AUC: 0.5 = useless, 1.0 = perfect).
 
 <!-- /t11 -->
 
+<!-- t12 -->
+## T12 · Hashing pre-filter (n-gram signatures + colour) and memo cache
+
+Stage 1 scores **every** allowed side pair cheaply (n-gram Jaccard + colour continuity, O(L)); each side
+keeps its `top_k` best partners; stage 2 runs LCS, edit distance and the motif search (O(L²)) only on the
+union of those lists. Mean over the three samples, noise σ = 4, erosion 0.2. *Recall* = share of truly
+adjacent fragment pairs that survive the filter; *match acc.* = share of true neighbours ranked first.
+
+**5×5**
+
+| top_k | pairs scored | DP cells | recall | match acc. | matching ms |
+|---|---|---|---|---|---|
+| 1 | 62 / 1,200 (5%) | 69,504 | 95% | 92% | 30 |
+| 2 | 134 / 1,200 (11%) | 149,760 | 97% | 91% | 54 |
+| 3 | 198 / 1,200 (16%) | 221,568 | 98% | 91% | 81 |
+| 4 | 264 / 1,200 (22%) | 296,832 | 99% | 91% | 114 |
+| 6 | 386 / 1,200 (32%) | 433,920 | 100% | 90% | 140 |
+| 8 | 505 / 1,200 (42%) | 566,016 | 100% | 90% | 179 |
+| 12 | 737 / 1,200 (61%) | 822,912 | 100% | 90% | 266 |
+| all (no filter) | 1,200 / 1,200 (100%) | 1,335,552 | 100% | 90% | 456 |
+
+- Default `top_k = 6` scores 32% of the pairs, does 32% of the DP work and runs 3.3× faster than no filter, with recall 100% and match accuracy 90% (no filter: 90%).
+
+**4×4 with rotation (16 side combinations per pair)**
+
+| top_k | pairs scored | DP cells | recall | match acc. | matching ms |
+|---|---|---|---|---|---|
+| 1 | 41 / 1,920 (2%) | 47,616 | 96% | 90% | 31 |
+| 2 | 90 / 1,920 (5%) | 103,296 | 97% | 92% | 48 |
+| 3 | 135 / 1,920 (7%) | 155,520 | 99% | 92% | 63 |
+| 4 | 180 / 1,920 (9%) | 206,976 | 99% | 92% | 84 |
+| 6 | 269 / 1,920 (14%) | 309,504 | 100% | 92% | 115 |
+| 8 | 353 / 1,920 (18%) | 406,656 | 100% | 92% | 152 |
+| 12 | 516 / 1,920 (27%) | 594,048 | 100% | 92% | 198 |
+| all (no filter) | 1,920 / 1,920 (100%) | 2,211,840 | 100% | 92% | 730 |
+
+- Default `top_k = 6` scores 14% of the pairs, does 14% of the DP work and runs 6.3× faster than no filter, with recall 100% and match accuracy 92% (no filter: 92%).
+
+![recall vs top_k](matcher_prefilter.svg)
+
+![DP work vs top_k](matcher_prefilter_cost.svg)
+
+**Memo cache.** String scores are keyed by the (edge, reversed edge) pair, so identical pairs are computed
+once. No filter, so every pair is a candidate.
+
+| artifact | pairs scored | cache hits | hit rate |
+|---|---|---|---|
+| flat colour (worst case for duplicates) | 480 | 479 | 100% |
+| mosaic-tile 5×5, clean | 1200 | 0 | 0% |
+| pottery-band 5×5, clean | 1200 | 151 | 13% |
+| manuscript 5×5, clean | 1200 | 0 | 0% |
+
+- The cache fires exactly where edges repeat: every pair of a flat artifact, about one pair in eight on the pottery sample (its plain clay bands give identical edge strings), never on the busy mosaic and manuscript. It costs one dict lookup per pair, so plain regions cannot blow up matching time.
+
+<!-- /t12 -->
+
