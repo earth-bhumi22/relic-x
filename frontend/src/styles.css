@@ -1121,3 +1121,267 @@ a:focus-visible {
 .edge-table .selected-row {
   background: var(--surface-2);
 }
+
+/* ---- "Why matched?" drawer (T26) ---- */
+/* The five matcher signals, one colour each (Okabe–Ito based) plus a fill pattern; order lives in lib/signals.ts. */
+:root {
+  --sig-color: #0072b2;
+  --sig-lcs: #e69f00;
+  --sig-edit: #009e73;
+  --sig-motif: #cc79a7;
+  --sig-hash: #56b4e9;
+}
+:root[data-theme="dark"] {
+  --sig-color: #4aa3df;
+  --sig-lcs: #f0b429;
+  --sig-edit: #2fc79a;
+  --sig-motif: #e08fbd;
+  --sig-hash: #7cc8f2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --sig-color: #4aa3df;
+    --sig-lcs: #f0b429;
+    --sig-edit: #2fc79a;
+    --sig-motif: #e08fbd;
+    --sig-hash: #7cc8f2;
+  }
+}
+.sig-pattern-stripes {
+  background-image: repeating-linear-gradient(90deg, rgb(0 0 0 / 28%) 0 2px, transparent 2px 6px);
+}
+.sig-pattern-dots {
+  background-image: radial-gradient(rgb(0 0 0 / 35%) 1.5px, transparent 1.6px);
+  background-size: 6px 6px;
+}
+.sig-pattern-cross {
+  background-image:
+    repeating-linear-gradient(0deg, rgb(0 0 0 / 28%) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 28%) 0 2px, transparent 2px 6px);
+}
+.sig-pattern-diagonal {
+  background-image: repeating-linear-gradient(45deg, rgb(0 0 0 / 30%) 0 2px, transparent 2px 6px);
+}
+.drawer-backdrop {
+  justify-content: flex-end;
+  align-items: stretch;
+  padding: 0;
+}
+.modal.drawer {
+  position: relative;
+  width: min(100%, 38rem);
+  max-height: none;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+  border-width: 0 0 0 1px;
+}
+.drawer-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}
+.drawer .modal-title {
+  padding-right: 5rem;
+}
+.why-header {
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+.why-header p {
+  margin: 0;
+}
+.why-sides {
+  font-weight: 600;
+}
+.why-score {
+  font-size: 2.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.truth-true {
+  border-color: var(--success);
+  color: var(--success);
+}
+.truth-false {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.truth-unknown {
+  color: var(--muted);
+}
+.why-section {
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+}
+.why-section h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.why-numbers {
+  margin: 0.25rem 0 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+.legend-swatch {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  margin-right: 0.35rem;
+  vertical-align: middle;
+}
+.why-pair {
+  display: grid;
+  gap: 0;
+}
+.why-pair .beads {
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  gap: 0;
+}
+.why-pair .bead {
+  width: calc(100% - 2px);
+  height: auto;
+  aspect-ratio: 1;
+  justify-self: center;
+  font-size: 0.6rem;
+}
+.why-links {
+  display: block;
+  width: calc(100% - 10px);
+  height: 2rem;
+  margin: 0 5px;
+}
+.why-links line {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  opacity: 0.7;
+}
+.bead-hl-lcs {
+  outline-color: var(--sig-lcs);
+}
+.bead-hl-motif {
+  outline-color: var(--sig-motif);
+}
+.score-bar {
+  display: flex;
+  height: 1.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.score-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  overflow: hidden;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-shadow: 0 0 2px rgb(0 0 0 / 70%);
+  border-right: 1px solid var(--surface);
+}
+.score-legend {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+.score-legend th,
+.score-legend td {
+  text-align: left;
+  padding: 0.2rem 0.4rem 0.2rem 0;
+  font-weight: 400;
+}
+.score-legend thead th,
+.score-legend tfoot th {
+  font-weight: 600;
+  color: var(--muted);
+}
+.edit-ops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0;
+}
+.edit-op {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  box-sizing: border-box;
+}
+.edit-op-match {
+  border-color: var(--success);
+  border-radius: 50%;
+}
+.edit-op-sub {
+  border-color: var(--danger);
+  border-radius: 2px;
+}
+.edit-op-ins {
+  border-color: var(--accent);
+  border-radius: 2px 2px 50% 50%;
+}
+.edit-op-del {
+  border-color: var(--warning);
+  border-radius: 50% 50% 2px 2px;
+}
+.edit-key .edit-op {
+  width: 1rem;
+  height: 1rem;
+  vertical-align: middle;
+}
+.ops-compare {
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+.ops-compare caption {
+  text-align: left;
+  color: var(--muted);
+}
+.ops-compare th,
+.ops-compare td {
+  text-align: left;
+  padding: 0.2rem 1rem 0.2rem 0;
+}
+.ratio-bar {
+  height: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.ratio-bar span {
+  display: block;
+  height: 100%;
+  background-color: var(--sig-hash);
+}
+.why-skeleton div {
+  height: 3rem;
+  margin: 0.75rem 0;
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+@media (max-width: 40rem) {
+  .modal.drawer {
+    width: 100%;
+    border-width: 0;
+  }
+}

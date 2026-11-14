@@ -6,7 +6,7 @@
 // Selection contract for T26 ("Why matched?"): choosing an edge writes `?why=F03:E:F11:W` to the URL
 // (see parseWhy / formatWhy in lib/graphView.ts) and calls `onSelectMatch({a, sideA, b, sideB})` with fragment
 // labels and INTEGER sides (0–3), exactly what explainMatch() takes.
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import type { GraphEdge, Traversal } from "../api/types";
 import EmptyState from "../components/EmptyState";
@@ -23,6 +23,7 @@ import {
   TraversalPanel,
 } from "../components/graph/GraphPanels";
 import Loading from "../components/Loading";
+import WhyMatchedDrawer from "../components/WhyMatchedDrawer";
 import { MatchRequired } from "../components/MatchPanel";
 import { useDebounced, useGraphData } from "../hooks/useGraphData";
 import { isPreconditionFailed } from "../hooks/useMatchStatus";
@@ -79,6 +80,15 @@ export default function GraphPage({ onSelectMatch }: { onSelectMatch?: (m: Match
     },
     [params, setParams, onSelectMatch],
   );
+
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const closeWhy = useCallback(() => {
+    selectEdge(null);
+    // The canvas has nothing focusable to return to, so fall back to the page heading rather than <body>.
+    setTimeout(() => {
+      if (document.activeElement === document.body || document.activeElement === null) headingRef.current?.focus();
+    }, 0);
+  }, [selectEdge]);
 
   const retry = () => {
     main.reload();
@@ -189,7 +199,7 @@ export default function GraphPage({ onSelectMatch }: { onSelectMatch?: (m: Match
             </section>
           )}
           {selectedNode && <NodePanel graph={graph} label={selectedNode} onSelectEdge={selectEdge} />}
-          {selectedEdge && <SelectedMatchCard edge={selectedEdge} />}
+          {selectedEdge && <SelectedMatchCard edge={selectedEdge} drawerOpen={selection !== null} />}
         </div>
         <EdgeTable graph={graph} selection={selection} onSelect={selectEdge} />
       </>
@@ -201,12 +211,15 @@ export default function GraphPage({ onSelectMatch }: { onSelectMatch?: (m: Match
       <Link to={`/artifacts/${id}/gallery`} className="back-link">
         ← Gallery
       </Link>
-      <h1>Similarity graph</h1>
+      <h1 ref={headingRef} tabIndex={-1}>
+        Similarity graph
+      </h1>
       <p className="muted">
         Fragments are nodes, matched sides are edges. Raise the threshold or tighten top-k to prune edges and watch the
         components split.
       </p>
       <div className="demo-body">{body}</div>
+      <WhyMatchedDrawer artifactId={id} match={selection} onClose={closeWhy} />
     </section>
   );
 }

@@ -14,12 +14,21 @@ interface Props {
   busy?: boolean;
   /** Extra class on the dialog box (e.g. "modal-wide"). */
   className?: string;
+  /** Extra class on the backdrop (the drawer docks to the right edge). */
+  backdropClassName?: string;
 }
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export default function Modal({ title, onClose, children, busy = false, className = "" }: Props) {
+export default function Modal({
+  title,
+  onClose,
+  children,
+  busy = false,
+  className = "",
+  backdropClassName = "",
+}: Props) {
   const titleId = useId();
   const boxRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
@@ -29,6 +38,12 @@ export default function Modal({ title, onClose, children, busy = false, classNam
 
   useEffect(() => {
     const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    // Lock page scroll while open, compensating for the scrollbar so the page behind does not shift.
+    const bodyStyle = document.body.style;
+    const before = { overflow: bodyStyle.overflow, paddingRight: bodyStyle.paddingRight };
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+    bodyStyle.overflow = "hidden";
+    if (scrollbar > 0) bodyStyle.paddingRight = `${scrollbar}px`;
     const box = boxRef.current;
     const first = box?.querySelector<HTMLElement>("[data-autofocus]") ?? box?.querySelector<HTMLElement>(FOCUSABLE);
     (first ?? box)?.focus();
@@ -62,13 +77,15 @@ export default function Modal({ title, onClose, children, busy = false, classNam
     document.addEventListener("keydown", onKey, true);
     return () => {
       document.removeEventListener("keydown", onKey, true);
+      bodyStyle.overflow = before.overflow;
+      bodyStyle.paddingRight = before.paddingRight;
       if (opener && opener.isConnected) opener.focus();
     };
   }, []);
 
   return createPortal(
     <div
-      className="modal-backdrop"
+      className={`modal-backdrop ${backdropClassName}`.trim()}
       data-testid="modal-backdrop"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget && !busy) onClose();

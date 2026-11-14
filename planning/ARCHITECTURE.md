@@ -297,7 +297,7 @@ Layering: **routes** (HTTP + validation) → **services** (logic) → **reposito
 | `src/pages/ProjectsPage.tsx`, `components/ArtifactWizard.tsx`, `ArtifactCard.tsx`, `DeleteArtifactDialog.tsx`, `Modal.tsx`, `lib/artifactForm.ts` | A | Projects page + create wizard (T23, done) |
 | `src/pages/GalleryPage.tsx`, `components/EdgeBeads.tsx`, `FragmentDialog.tsx`, `MatchPanel.tsx`, `hooks/useMatchStatus.ts`, `lib/beads.ts`, `lib/shuffle.ts` | A | Fragment gallery + edge beads + matching panel (T24, done) |
 | `src/pages/GraphPage.tsx`, `components/graph/*`, `hooks/useGraphData.ts`, `lib/graphView.ts` | A | Similarity graph, Cytoscape, lazy-loaded (T25, done) |
-| *planned* `src/components/WhyMatchedDrawer.tsx` | A | T26 |
+| `components/WhyMatchedDrawer.tsx`, `components/why/*`, `lib/signals.ts` | A | "Why matched?" drawer + shared signal order/colours (T26, done) |
 | *planned* `src/pages/ReconstructionPage.tsx`, `components/TracePlayer.tsx` | A | T27 |
 | *planned* `src/pages/LabPage.tsx`, `components/charts/*` | A | T28 |
 
