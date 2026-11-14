@@ -235,7 +235,7 @@ Layering: **routes** (HTTP + validation) → **services** (logic) → **reposito
 | `src/relicx/samples.py` | B | Procedural sample artifacts |
 | *planned* `src/relicx/services/jobs.py` | B | Background run jobs (T20) |
 | *planned* `src/relicx/api/routes/exports.py` | B | CSV exports (T21) |
-| *planned* `src/relicx/cli.py` | B | `relicx seed` demo data (T05) |
+| `src/relicx/cli.py` | B | `relicx seed` demo data (T05) |
 
 ### backend — algorithm engine (split by slice)
 
