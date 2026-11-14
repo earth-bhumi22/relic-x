@@ -172,7 +172,48 @@ breaks a run, while the DP scores only lose a few symbols. That is the case for 
 <!-- T11: recurrence, operation script, interpretation as "damage cost". -->
 
 ## 7. Hashing pre-filter and memo cache (`engine/strings/hashing.py`, `matcher.py`)
-<!-- T12: n-gram signatures, Jaccard, top-k survivors; P·L + P'·L² instead of P·L²; cache hit rate. -->
+**Why a filter.** With n fragments there are P = C(n, 2)·4 candidate side pairs without rotation (C(n, 2)·16 with
+rotation): 1 200 for 5×5, 1 920 for a rotated 4×4. Each full comparison costs O(L²) (two DP tables plus the motif
+search), so scoring everything is O(P·L²). Most pairs are obviously wrong, so the matcher works in two stages.
+
+**Stage 1 — cheap score for every pair, O(L) each.**
+- *n-gram signature (hashing):* the set of rolling hashes of every length-3 window of an edge string
+  (`ngram_signature`, the same rolling hash as Rabin-Karp, §3), built **once** per edge and per reversed edge:
+  O(L) each, O(n·L) in total.
+- *Jaccard similarity* |S_A ∩ S_B| / |S_A ∪ S_B| of two signatures: two hash-set operations, O(L) expected.
+- *Colour continuity:* mean absolute RGB difference of the two numeric strips, O(L).
+- cheap = ½·Jaccard + ½·colour. Each side keeps its **top_k** partners by cheap score. Selection uses a size-k heap
+  (`heapq.nlargest`), O(c log k) for c candidates instead of sorting all of them (O(c log c)); Python documents it to
+  return exactly what the sort would, ties included.
+
+**Stage 2 — full score only for survivors.** The kept set K is the union of every side's top-k list, so
+|K| ≤ k·(4n) side pairs. Total cost O(P·L + |K|·L²) instead of O(P·L²). Because |K| grows linearly in n while P grows
+quadratically, the filter matters more as artifacts get bigger.
+
+**The filter must never change a score** (it only decides *which* pairs get scored). Tests check that every kept
+pair has exactly the score it gets without the filter, that "no filter" scores every pair, that every scored pair is
+in at least one side's top-k list, that the true neighbours survive the default `top_k = 6` (with and without
+rotation), and that the filter at least halves the DP work on a 5×5.
+
+**Memo cache.** Stage-2 string scores are memoised in a hash map keyed by the (edge, reversed edge) string pair
+(`MemoCache`). Identical pairs, typically plain regions, are scored once; colour is still computed per pair because the
+numeric strips differ slightly.
+
+**Measured** (`validation/matcher_results.md`, T12; three samples, noise σ = 4, erosion 0.2):
+
+| | pairs scored | DP work | speed-up | true-pair recall | match accuracy |
+|---|---|---|---|---|---|
+| 5×5, `top_k = 6` | 32 % | 32 % | 2.9× | 100 % | 90 % (no filter 90 %) |
+| 4×4 rotated, `top_k = 6` | 14 % | 14 % | 6.4× | 100 % | 92 % (no filter 92 %) |
+
+Even `top_k = 1` keeps 95–96 % of the true pairs. Match accuracy does not drop, because a true neighbour that survives
+is ranked against fewer distractors. `top_k = 6` is the default because it is the smallest value with 100 % recall in
+both settings. The cache hits every pair of a flat artifact, 13 % of pairs on the pottery sample (plain clay bands),
+and none on the busy mosaic and manuscript.
+
+![recall vs top_k](../validation/matcher_prefilter.svg)
+
+![DP work vs top_k](../validation/matcher_prefilter_cost.svg)
 
 ## 8. Composite matcher (`engine/matcher.py`)
 <!-- T13: weights, weight-sweep experiment, accuracy vs noise/erosion (from T31). -->

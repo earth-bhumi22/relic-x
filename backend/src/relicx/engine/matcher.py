@@ -17,6 +17,7 @@ where P = number of side pairs, P' << P after filtering, L = strip length.
 
 from __future__ import annotations
 
+import heapq
 import time
 from dataclasses import asdict, dataclass, field
 
@@ -163,10 +164,12 @@ def match_all(
                 )
                 candidates.setdefault((i, a), []).append((cheap, j, b))
                 candidates.setdefault((j, b), []).append((cheap, i, a))
+    # Top-k selection with a size-k heap: O(c log k) per side instead of sorting
+    # all c candidates (O(c log c)). heapq.nlargest is documented to equal
+    # sorted(..., reverse=True)[:k], ties included, so results are unchanged.
     keep: set[tuple[str, int, str, int]] = set()
     for (i, a), lst in candidates.items():
-        lst.sort(key=lambda t: -t[0])
-        for _, j, b in lst[: cfg.top_k]:
+        for _, j, b in heapq.nlargest(cfg.top_k, lst, key=lambda t: t[0]):
             keep.add((i, a, j, b) if i < j else (j, b, i, a))
 
     # ---- Stage 2: full scoring on survivors ---------------------------------
