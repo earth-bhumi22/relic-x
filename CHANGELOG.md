@@ -11,6 +11,7 @@
   statement (`passive_deletes=True`) instead of the ORM deleting them row by row.
 
 ### Added
+- API hardening (T22): `X-Total-Count` (+ `offset` on `/matches`), optional `RELICX_API_KEY` write protection (401), token-bucket rate limit on the scaling experiment (429 + `Retry-After`).
 - CSV exports (T21): `/runs/{id}/export.csv`, `/runs/{id}/trace.csv`, `/artifacts/{id}/benchmark.csv`, `POST /benchmark/scaling.csv`.
 - Background solver jobs (T20): `POST /artifacts/{id}/jobs` → 202, `GET /jobs/{id}` with live backtracking progress; `jobs` table (migration 0002); unfinished jobs marked failed on restart; `RELICX_JOB_WORKERS` (default 2).
 - `relicx seed [--reset]` (T05): three demo artifacts (plain 4×4, rotated 4×4, 5×5 with a missing piece), each matched and solved by all four algorithms. Idempotent; `--reset` only touches demo artifacts.

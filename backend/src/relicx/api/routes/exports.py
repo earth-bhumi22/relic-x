@@ -5,13 +5,13 @@ from __future__ import annotations
 import csv
 import io
 
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
 from starlette.concurrency import run_in_threadpool
 
 from ...schemas import ScalingRequest
 from ...services.exports import ExportService, Table, scaling_table
-from ..deps import DB
+from ..deps import DB, scaling_rate_limit
 
 router = APIRouter(tags=["exports"])
 CSV = {200: {"content": {"text/csv": {}}, "description": "CSV file (UTF-8, header row)"}}
@@ -48,7 +48,9 @@ def benchmark_csv(artifact_id: str, db: Session = DB):
     return csv_response(ExportService(db).benchmark(artifact_id))
 
 
-@router.post("/benchmark/scaling.csv", response_class=Response, responses=CSV)
+@router.post(
+    "/benchmark/scaling.csv", response_class=Response, responses=CSV, dependencies=[Depends(scaling_rate_limit)]
+)
 async def scaling_csv(body: ScalingRequest):
     """Same experiment as POST /benchmark/scaling, one row per (size, algorithm)."""
     return csv_response(await run_in_threadpool(scaling_table, body))

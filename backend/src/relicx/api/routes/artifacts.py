@@ -36,8 +36,12 @@ def sample_image(name: str):
 
 @router.get("/artifacts", response_model=list[ArtifactOut])
 def list_artifacts(
-    limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0), svc: ArtifactService = Depends(artifact_service)
+    response: Response,
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    svc: ArtifactService = Depends(artifact_service),
 ):
+    response.headers["X-Total-Count"] = str(svc.count())  # T22: total before limit/offset
     return [artifact_out(a) for a in svc.list(limit, offset)]
 
 

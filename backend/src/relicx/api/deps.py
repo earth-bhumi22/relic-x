@@ -49,3 +49,9 @@ def reconstruction_service(db: Session = DB, storage: LocalStorage = Depends(get
 
 def job_service(db: Session = DB, storage: LocalStorage = Depends(get_storage)) -> JobService:
     return JobService(db, storage)
+
+
+def scaling_rate_limit(request: Request) -> None:
+    """T22: token bucket per client for the expensive scaling experiment (429 + Retry-After)."""
+    client = request.client.host if request.client else "unknown"
+    request.app.state.scaling_limiter.take(client)

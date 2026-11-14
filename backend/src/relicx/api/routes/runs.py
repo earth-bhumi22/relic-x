@@ -7,7 +7,7 @@ from starlette.concurrency import run_in_threadpool
 
 from ...schemas import BenchmarkCreate, RunCreate, RunDetail, RunOut, ScalingRequest
 from ...services import ReconstructionService, scaling_experiment
-from ..deps import reconstruction_service
+from ..deps import reconstruction_service, scaling_rate_limit
 from ..presenters import run_detail, run_out
 
 router = APIRouter(tags=["reconstruction"])
@@ -47,7 +47,7 @@ def delete_run(run_id: str, svc: ReconstructionService = Depends(reconstruction_
     return Response(status_code=204)
 
 
-@router.post("/benchmark/scaling")
+@router.post("/benchmark/scaling", dependencies=[Depends(scaling_rate_limit)])
 async def scaling(body: ScalingRequest):
     # CPU-bound and stateless: run off the event loop.
     return await run_in_threadpool(

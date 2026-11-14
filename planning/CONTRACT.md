@@ -1,7 +1,10 @@
 # RELIC-X — Project Contract (T00)
 
-**Version:** 1.2 (signed off by A and B, 2026-11-14) — gate **G0** passed
+**Version:** 1.3 (signed off by A and B, 2026-11-14) — gate **G0** passed
 
+> **1.3 changes:** T22 hardening: `X-Total-Count` + `offset` on `/matches`, optional `X-API-Key` (401),
+> rate limit on the scaling experiment (429 + `Retry-After`). No existing response body changed.
+>
 > **1.2 changes:** CSV exports implemented (T21): four `text/csv` endpoints in §5, UTF-8 with a
 > header row, snake_case columns, `Content-Disposition: attachment; filename="relicx-…csv"`.
 >
@@ -43,13 +46,17 @@ Related: [ARCHITECTURE](ARCHITECTURE.md) · [TEAM_ROLES](TEAM_ROLES.md) · [WORK
 | D11 | IDs | 32-char hex UUID strings; fragment *labels* `F01`, `F02` … are used inside the engine and trace | [x] A · [x] B |
 | D12 | Side numbering | `0=N, 1=E, 2=S, 3=W`, clockwise | [x] A · [x] B |
 | D13 | Rotation | `rot` = number of 90° **clockwise** turns applied to a fragment image | [x] A · [x] B |
-| D14 | Auth | None in v0.1; optional `X-API-Key` on write endpoints added in T22 | [x] A · [x] B |
+| D14 | Auth | None in v0.1; optional `X-API-Key` on write endpoints (implemented in T22, off by default) | [x] A · [x] B |
 
 ## 2. Conventions
 
 - Base path: `/api/v1`. All bodies are JSON except uploads (`multipart/form-data`) and images (`image/png`).
 - Successful responses return the resource directly (no envelope).
 - Every response carries `X-Request-ID` and `X-Response-Time-ms` headers.
+- List endpoints (`/artifacts`, `/artifacts/{id}/matches`) take `limit`/`offset` and return the total before paging in
+  `X-Total-Count` (T22). CORS exposes `X-Total-Count`, `Retry-After` and `Content-Disposition` to the browser.
+- Optional write protection (T22): when the server sets `RELICX_API_KEY`, every POST/DELETE under `/api` must send
+  `X-API-Key: <key>`. GETs stay open. Off by default.
 - Times are ISO-8601 UTC strings.
 - Scores are floats in `[0, 1]`, rounded to 4 decimals.
 
@@ -74,9 +81,11 @@ compat[(frag_i, side_a, frag_j, side_b)] -> composite score in [0, 1]   (symmetr
 |---|---|---|
 | 404 | `not_found` | Unknown artifact, fragment or run |
 | 409 | `precondition_failed` | A pipeline step is missing (e.g. solving before matching) |
+| 401 | `unauthorized` | `RELICX_API_KEY` is set and a POST/DELETE has no or a wrong `X-API-Key` header (T22) |
 | 413 | `payload_too_large` | Upload over `RELICX_MAX_UPLOAD_MB` |
 | 422 | `invalid_input` | Semantically invalid input (bad image, unknown sample) |
 | 422 | `validation_error` | Schema validation failed; `details.errors` lists fields |
+| 429 | `rate_limited` | More than `RELICX_SCALING_RATE_PER_MIN` (default 10) calls per minute to `/benchmark/scaling[.csv]`; `Retry-After` header gives the seconds to wait (T22) |
 | 500 | `internal_error` | Unexpected; logged with the request ID |
 
 ## 5. Endpoints
