@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="402" viewBox="0 0 640 402" font-family="sans-serif" font-size="12">
+<title>Operations vs. n (damaged, log-log)</title>
+<rect width="640" height="402" fill="#ffffff"/>
+<text x="320.0" y="20" text-anchor="middle" font-size="14" font-weight="bold">Operations vs. n (damaged, log-log)</text>
+<line x1="253.8" y1="36" x2="253.8" y2="328" stroke="#e5e7eb"/>
+<text x="253.8" y="344" text-anchor="middle" fill="#374151">10</text>
+<line x1="64" y1="328.0" x2="620" y2="328.0" stroke="#e5e7eb"/>
+<text x="58" y="332.0" text-anchor="end" fill="#374151">1</text>
+<line x1="64" y1="279.3" x2="620" y2="279.3" stroke="#e5e7eb"/>
+<text x="58" y="283.3" text-anchor="end" fill="#374151">10</text>
+<line x1="64" y1="230.7" x2="620" y2="230.7" stroke="#e5e7eb"/>
+<text x="58" y="234.7" text-anchor="end" fill="#374151">100</text>
+<line x1="64" y1="182.0" x2="620" y2="182.0" stroke="#e5e7eb"/>
+<text x="58" y="186.0" text-anchor="end" fill="#374151">1,000</text>
+<line x1="64" y1="133.3" x2="620" y2="133.3" stroke="#e5e7eb"/>
+<text x="58" y="137.3" text-anchor="end" fill="#374151">10,000</text>
+<line x1="64" y1="84.7" x2="620" y2="84.7" stroke="#e5e7eb"/>
+<text x="58" y="88.7" text-anchor="end" fill="#374151">100,000</text>
+<line x1="64" y1="36.0" x2="620" y2="36.0" stroke="#e5e7eb"/>
+<text x="58" y="40.0" text-anchor="end" fill="#374151">1,000,000</text>
+<rect x="64" y="36" width="556" height="292" fill="none" stroke="#9ca3af"/>
+<text x="342.0" y="366" text-anchor="middle">fragments n (log scale)</text>
+<text x="14" y="182.0" text-anchor="middle" transform="rotate(-90 14 182.0)">operations (log scale)</text>
+<polyline points="81.9,262.7 234.0,215.2 342.0,182.8 425.7,158.0 494.2,138.8 552.0,121.6 602.1,106.4" fill="none" stroke="#2563eb" stroke-width="2"/>
+<circle cx="81.9" cy="262.7" r="3.5" fill="#2563eb" stroke="#2563eb" stroke-width="1.5"/>
+<circle cx="234.0" cy="215.2" r="3.5" fill="#2563eb" stroke="#2563eb" stroke-width="1.5"/>
+<circle cx="342.0" cy="182.8" r="3.5" fill="#2563eb" stroke="#2563eb" stroke-width="1.5"/>
+<circle cx="425.7" cy="158.0" r="3.5" fill="#2563eb" stroke="#2563eb" stroke-width="1.5"/>
+<circle cx="494.2" cy="138.8" r="3.5" fill="#2563eb" stroke="#2563eb" stroke-width="1.5"/>
+<circle cx="552.0" cy="121.6" r="3.5" fill="#2563eb" stroke="#2563eb" stroke-width="1.5"/>
+<circle cx="602.1" cy="106.4" r="3.5" fill="#2563eb" stroke="#2563eb" stroke-width="1.5"/>
+<circle cx="80.0" cy="49.0" r="3.5" fill="#2563eb" stroke="#2563eb" stroke-width="1.5"/>
+<text x="92" y="53">greedy</text>
+<polyline points="81.9,275.5 234.0,237.7 342.0,213.6 425.7,198.0 494.2,187.4 552.0,178.3 602.1,171.4" fill="none" stroke="#dc2626" stroke-width="2"/>
+<rect x="78.4" y="272.0" width="7" height="7" fill="#dc2626" stroke="#dc2626" stroke-width="1.5"/>
+<rect x="230.5" y="234.2" width="7" height="7" fill="#dc2626" stroke="#dc2626" stroke-width="1.5"/>
+<rect x="338.5" y="210.1" width="7" height="7" fill="#dc2626" stroke="#dc2626" stroke-width="1.5"/>
+<rect x="422.2" y="194.5" width="7" height="7" fill="#dc2626" stroke="#dc2626" stroke-width="1.5"/>
+<rect x="490.7" y="183.9" width="7" height="7" fill="#dc2626" stroke="#dc2626" stroke-width="1.5"/>
+<rect x="548.5" y="174.8" width="7" height="7" fill="#dc2626" stroke="#dc2626" stroke-width="1.5"/>
+<rect x="598.6" y="167.9" width="7" height="7" fill="#dc2626" stroke="#dc2626" stroke-width="1.5"/>
+<rect x="76.5" y="61.5" width="7" height="7" fill="#dc2626" stroke="#dc2626" stroke-width="1.5"/>
+<text x="92" y="69">best-first</text>
+<polyline points="81.9,267.5 234.0,251.6 342.0,236.7 425.7,217.9 494.2,211.2 552.0,196.5 602.1,185.1" fill="none" stroke="#16a34a" stroke-width="2"/>
+<polygon points="81.9,263.0 77.9,271.0 85.9,271.0" fill="#16a34a" stroke="#16a34a" stroke-width="1.5"/>
+<polygon points="234.0,247.1 230.0,255.1 238.0,255.1" fill="#16a34a" stroke="#16a34a" stroke-width="1.5"/>
+<polygon points="342.0,232.2 338.0,240.2 346.0,240.2" fill="#16a34a" stroke="#16a34a" stroke-width="1.5"/>
+<polygon points="425.7,213.4 421.7,221.4 429.7,221.4" fill="#16a34a" stroke="#16a34a" stroke-width="1.5"/>
+<polygon points="494.2,206.7 490.2,214.7 498.2,214.7" fill="#16a34a" stroke="#16a34a" stroke-width="1.5"/>
+<polygon points="552.0,192.0 548.0,200.0 556.0,200.0" fill="#16a34a" stroke="#16a34a" stroke-width="1.5"/>
+<polygon points="602.1,180.6 598.1,188.6 606.1,188.6" fill="#16a34a" stroke="#16a34a" stroke-width="1.5"/>
+<polygon points="80.0,76.5 76.0,84.5 84.0,84.5" fill="#16a34a" stroke="#16a34a" stroke-width="1.5"/>
+<text x="92" y="85">Dijkstra</text>
+<polyline points="81.9,253.0 234.0,156.9 342.0,98.9 425.7,76.1 494.2,76.0 552.0,75.9 602.1,75.7" fill="none" stroke="#9333ea" stroke-width="2"/>
+<polygon points="81.9,248.5 86.4,253.0 81.9,257.5 77.4,253.0" fill="#9333ea" stroke="#9333ea" stroke-width="1.5"/>
+<polygon points="234.0,152.4 238.5,156.9 234.0,161.4 229.5,156.9" fill="#9333ea" stroke="#9333ea" stroke-width="1.5"/>
+<polygon points="342.0,94.4 346.5,98.9 342.0,103.4 337.5,98.9" fill="#ffffff" stroke="#9333ea" stroke-width="1.5"/>
+<polygon points="425.7,71.6 430.2,76.1 425.7,80.6 421.2,76.1" fill="#ffffff" stroke="#9333ea" stroke-width="1.5"/>
+<polygon points="494.2,71.5 498.7,76.0 494.2,80.5 489.7,76.0" fill="#ffffff" stroke="#9333ea" stroke-width="1.5"/>
+<polygon points="552.0,71.4 556.5,75.9 552.0,80.4 547.5,75.9" fill="#ffffff" stroke="#9333ea" stroke-width="1.5"/>
+<polygon points="602.1,71.2 606.6,75.7 602.1,80.2 597.6,75.7" fill="#ffffff" stroke="#9333ea" stroke-width="1.5"/>
+<polygon points="80.0,92.5 84.5,97.0 80.0,101.5 75.5,97.0" fill="#9333ea" stroke="#9333ea" stroke-width="1.5"/>
+<text x="92" y="101">backtracking</text>
+<text x="320.0" y="394" text-anchor="middle" font-size="11" fill="#374151">mean of 12 runs (3 samples × 4 seeds)</text>
+</svg>
