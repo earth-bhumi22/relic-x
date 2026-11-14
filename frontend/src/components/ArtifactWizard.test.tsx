@@ -78,7 +78,7 @@ describe("ArtifactWizard — sources", () => {
   it("omits an empty description and uses the defaults", async () => {
     mockApi.respond("POST", "/artifacts/sample", created);
     const { onCreated } = setup();
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     next();
     next();
     type("Name", "Plain");
@@ -94,7 +94,7 @@ describe("ArtifactWizard — sources", () => {
   it("creates from an uploaded image: multipart with params as a JSON string, after a preview", async () => {
     mockApi.respond("POST", "/artifacts/upload", { ...created, source_kind: "upload" });
     const { onCreated } = setup();
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload image");
     const file = png("photo.png");
     pick("Image", [file]);
@@ -127,7 +127,7 @@ describe("ArtifactWizard — sources", () => {
   it("creates from real fragments: repeated files, rows and cols, no parameters", async () => {
     mockApi.respond("POST", "/artifacts/fragments-upload", { ...created, source_kind: "fragments" });
     const { onCreated } = setup();
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload real fragments");
     const files = [png("f1.png"), png("f2.png"), png("f3.png"), png("f4.png")];
     pick("Fragment images", files);
@@ -151,7 +151,7 @@ describe("ArtifactWizard — sources", () => {
 
   it("revokes preview object URLs when files change and on close", async () => {
     const { onClose } = setup();
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload image");
     pick("Image", [png("one.png")]);
     await screen.findByRole("img", { name: "Preview of one.png" });
@@ -164,7 +164,7 @@ describe("ArtifactWizard — sources", () => {
 
   it("revokes every URL on unmount", async () => {
     const { unmount } = render(<ArtifactWizard onClose={() => {}} onCreated={() => {}} />);
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload real fragments");
     pick("Fragment images", [png("a.png"), png("b.png")]);
     await screen.findByRole("list", { name: "Selected fragments" });
@@ -188,7 +188,7 @@ describe("ArtifactWizard — validation", () => {
 
   it("requires an image, and rejects non-images and oversize files, next to the field", async () => {
     setup();
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload image");
     next();
     expect(screen.getByLabelText("Image")).toHaveAccessibleDescription("Choose an image to upload.");
@@ -203,7 +203,7 @@ describe("ArtifactWizard — validation", () => {
 
   it("shows messages next to invalid parameters and blocks Next", async () => {
     setup();
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     next();
     type("Rows", "9");
     type("Columns", "");
@@ -222,7 +222,7 @@ describe("ArtifactWizard — validation", () => {
 
   it("enforces missing < rows × columns", async () => {
     setup();
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     next();
     type("Rows", "2");
     type("Columns", "2");
@@ -233,7 +233,7 @@ describe("ArtifactWizard — validation", () => {
 
   it("explains a rows × columns mismatch for real fragments", async () => {
     setup();
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload real fragments");
     next();
     expect(screen.getByLabelText("Fragment images")).toHaveAccessibleDescription(/at least one fragment image/);
@@ -245,7 +245,7 @@ describe("ArtifactWizard — validation", () => {
 
   it("requires a name on the last step and can go back with input kept", async () => {
     setup();
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     next();
     type("Rows", "5");
     next();
@@ -263,7 +263,8 @@ describe("ArtifactWizard — submitting and failures", () => {
   useMockApi();
 
   async function toReview(name = "Tile") {
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    const radio = await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(radio).toBeChecked());
     next();
     next();
     type("Name", name);
@@ -321,7 +322,7 @@ describe("ArtifactWizard — submitting and failures", () => {
   it("shows payload_too_large (413) with the limit hint and keeps files and input", async () => {
     mockApi.fail("POST", "/artifacts/upload", 413, "payload_too_large", "image larger than 15 MB", { limit_mb: 15 });
     setup();
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload image");
     pick("Image", [png("big.png")]);
     next();
@@ -422,7 +423,7 @@ describe("New artifact flow from the Projects page (mock API, no overrides)", ()
     expect(await screen.findByRole("heading", { level: 2, name: "Sample one" })).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 2 })[0]).toHaveTextContent("Sample one");
     fireEvent.click(screen.getByRole("button", { name: "New artifact" }));
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload image");
     pick("Image", [png("p.png")]);
     next();
@@ -437,7 +438,7 @@ describe("New artifact flow from the Projects page (mock API, no overrides)", ()
     fireEvent.click(screen.getByRole("link", { name: "Projects" }));
     await screen.findByRole("heading", { level: 2, name: "Upload one" });
     fireEvent.click(screen.getByRole("button", { name: "New artifact" }));
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     choose("Upload real fragments");
     pick("Fragment images", [png("a.png"), png("b.png")]);
     next();
@@ -458,7 +459,7 @@ describe("New artifact flow from the Projects page (mock API, no overrides)", ()
     renderWithProviders(<AppRoutes />, { route: "/" });
     await screen.findByText("Mughal tile panel");
     fireEvent.click(screen.getByRole("button", { name: "New artifact" }));
-    await screen.findByRole("radio", { name: /mosaic-tile/ });
+    await waitFor(() => expect(screen.getByRole("radio", { name: /mosaic-tile/ })).toBeChecked());
     next();
     next();
     type("Name", "fail-422");
