@@ -6,9 +6,9 @@ from relicx.main import create_app
 
 
 @pytest.fixture()
-def client(tmp_path):
+def client(tmp_path, db_url):
     settings = Settings(
-        database_url=f"sqlite:///{tmp_path}/test.db",
+        database_url=db_url,
         storage_dir=str(tmp_path / "storage"),
         auto_create_schema=True,
         max_upload_mb=2,

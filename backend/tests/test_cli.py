@@ -2,6 +2,7 @@
 
 import io
 
+import pytest
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 
@@ -11,8 +12,9 @@ from relicx.db.models import Artifact, ReconstructionRun
 from relicx.engine.solvers import ALGORITHMS
 
 
-def _settings(tmp_path):
-    return Settings(database_url=f"sqlite:///{tmp_path}/seed.db", storage_dir=str(tmp_path / "storage"))
+@pytest.fixture()
+def settings(tmp_path, db_url):
+    return Settings(database_url=db_url, storage_dir=str(tmp_path / "storage"))
 
 
 def _artifacts(settings):
@@ -27,8 +29,8 @@ def _artifacts(settings):
         return {a.name: a for a in arts}, runs
 
 
-def test_seed_creates_demo_set_with_matches_and_runs(tmp_path):
-    s = _settings(tmp_path)
+def test_seed_creates_demo_set_with_matches_and_runs(settings):
+    s = settings
     created = seed(s, node_limit=2_000, out=io.StringIO())
     assert created == [d.name for d in DEMO]
     arts, runs = _artifacts(s)
@@ -41,8 +43,8 @@ def test_seed_creates_demo_set_with_matches_and_runs(tmp_path):
     assert arts["Demo · Manuscript leaf, one piece lost (5×5)"].fragment_params["missing"] == 1
 
 
-def test_seed_is_idempotent_and_reset_recreates(tmp_path):
-    s = _settings(tmp_path)
+def test_seed_is_idempotent_and_reset_recreates(settings):
+    s = settings
     seed(s, node_limit=2_000, out=io.StringIO())
     first, _ = _artifacts(s)
 
@@ -58,8 +60,8 @@ def test_seed_is_idempotent_and_reset_recreates(tmp_path):
     assert not {a.id for a in fresh.values()} & {a.id for a in first.values()}
 
 
-def test_seed_keeps_user_artifacts(tmp_path):
-    s = _settings(tmp_path)
+def test_seed_keeps_user_artifacts(settings):
+    s = settings
     seed(s, node_limit=2_000, out=io.StringIO())
     with Session(create_engine(s.database_url)) as db:
         db.add(Artifact(name="My own artifact", source_kind="sample", grid_rows=2, grid_cols=2))
@@ -69,8 +71,8 @@ def test_seed_keeps_user_artifacts(tmp_path):
     assert "My own artifact" in arts  # --reset only touches the demo artifacts
 
 
-def test_cli_entrypoint(tmp_path, monkeypatch, capsys):
-    monkeypatch.setenv("RELICX_DATABASE_URL", f"sqlite:///{tmp_path}/cli.db")
+def test_cli_entrypoint(tmp_path, db_url, monkeypatch, capsys):
+    monkeypatch.setenv("RELICX_DATABASE_URL", db_url)
     monkeypatch.setenv("RELICX_STORAGE_DIR", str(tmp_path / "st"))
     assert main(["seed", "--node-limit", "1000"]) == 0
     assert capsys.readouterr().out.count("created") == len(DEMO)
