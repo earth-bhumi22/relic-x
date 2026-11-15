@@ -32,6 +32,7 @@ from relicx.engine import OpCounter  # noqa: E402
 from relicx.engine.strings import kmp_search, longest_common_motif, rabin_karp_search  # noqa: E402
 
 OUT = HERE / "matcher_results.md"
+SUMMARY: dict = {}  # key numbers recorded by each section, used for the headline block (T31)
 ALPHA64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
 
@@ -83,6 +84,7 @@ def section_t10() -> str:
     out.append("")
     out.append(f"- {fit_line('KMP', ns, [y for _, y in kmp_pts])}; never above the bound.")
     ratio = naive_pts[-1][1] / kmp_pts[-1][1]
+    SUMMARY["t10_kmp"] = (ns[-1], kmp_pts[-1][1], naive_pts[-1][1])
     out.append(f"- {fit_line('naive', ns, [y for _, y in naive_pts])} too, but it does ≈ m·n = 10n comparisons against"
                f" KMP's ≈ 2n: {ratio:.1f}× more here, and the gap grows linearly with the pattern length m.")
     out.append(f"- {fit_line('Rabin-Karp', ns, [y for _, y in rk_pts])}: one hash per window, no collisions with MOD = 10⁹+7.\n")
@@ -121,6 +123,7 @@ def section_t10() -> str:
                "noise 4, erosion 0.2), strip length L varied. Both methods return the same motif every time.\n")
     out.append("| L | KMP ops (mean) | Rabin-Karp ops (mean) | ratio | motif length / L |")
     out.append("|---|---|---|---|---|")
+    SUMMARY["t10_motif"] = {L: k / r for (L, k), (_, r) in zip(kmp_m, rk_m, strict=True)}
     for (L, k), (_, r), m in zip(kmp_m, rk_m, lens, strict=True):
         out.append(f"| {L} | {k:,.0f} | {r:,.0f} | {k / r:.1f}× | {m:.2f} |")
     out.append("")
@@ -209,6 +212,7 @@ def section_t11() -> str:
         auc_lcs.append((e, a1))
         auc_edit.append((e, a2))
         auc_motif.append((e, a3))
+        SUMMARY.setdefault("t11", {})[e] = (a1, a2, a3)
         rows.append(f"| {e:.1f} | {np.mean(tl):.2f} / {np.mean(fl):.2f} | {np.mean(te):.2f} / {np.mean(fe):.2f} |"
                     f" {a1:.3f} | {a2:.3f} | {a3:.3f} |")
     out.append("**Do the scores separate true neighbours from wrong pairs?** All three samples, 4×4, noise σ = 4,\n"
@@ -295,6 +299,8 @@ def section_t12() -> str:
                        f" {np.mean(cells):,.0f} | {np.mean(rec):.0%} | {np.mean(acc):.0%} | {np.mean(ms):.0f} |")
         out.append("")
         nofilter, default = data[10_000], data[6]
+        SUMMARY.setdefault("t12", {})[label.split(" with")[0] + (" rotated" if rotate else "")] = (
+            default[0] / nofilter[0], default[2] / nofilter[2], nofilter[5] / default[5], default[3], default[4], nofilter[4])
         out.append(f"- Default `top_k = 6` scores {default[0] / nofilter[0]:.0%} of the pairs, does"
                    f" {default[2] / nofilter[2]:.0%} of the DP work and runs {nofilter[5] / default[5]:.1f}× faster than no"
                    f" filter, with recall {default[3]:.0%} and match accuracy {default[4]:.0%}"
@@ -447,6 +453,8 @@ def section_t13() -> str:
     out.append("")
     n_held = sum(len(d.queries) for d in held)
     gain_held = held_best - mean_acc(held, default)
+    SUMMARY["t13"] = dict(default=mean_acc(held, default), gain=gain_held, n=n_held, color=alone["color"],
+                          motif=alone["motif"], no_motif=mean_acc(held, default[:3] + [0.0] + default[4:]))
     out.append(f"- Held-out set: {n_held} ranking decisions, so one decision is {1 / n_held:.1%}. The best tuned weights"
                f" gain {gain_held:+.1%} ({round(gain_held * n_held)} decisions); the top-10 grid points average"
                f" {np.mean(held_top):.1%} vs {mean_acc(held, default):.1%} for the default. All within 1 point: a plateau,"
@@ -472,6 +480,7 @@ def section_t13() -> str:
         for e in erosions:
             acc = mean_acc(datasets(seed=21, noise=nz, erosion=e), default)
             curves[e].append((nz, acc * 100))
+            SUMMARY.setdefault("t13_grid", {})[(nz, e)] = acc
             cells.append(f"{acc:.0%}")
         out.append(f"| {nz:g} | " + " | ".join(cells) + " |")
     out.append("")
@@ -505,6 +514,45 @@ _T13_RESULT: dict = {}
 SECTIONS = {"t10": section_t10, "t11": section_t11, "t12": section_t12, "t13": section_t13}
 
 
+def summary_block() -> str:
+    """Headline numbers (T31). Built only after a full run, from the values the sections recorded."""
+    S = SUMMARY
+    n, kmp, naive = S["t10_kmp"]
+    t11, t12, t13, grid = S["t11"], S["t12"], S["t13"], S["t13_grid"]
+    worst = min(grid.items(), key=lambda kv: kv[1])
+    lines = [
+        "## Headline results (T31)\n",
+        "| Question | Answer | Section |",
+        "|---|---|---|",
+        f"| Is KMP really linear? | Yes: {kmp:,} comparisons for n = {n:,} (bound 2n − 1 + table), naive {naive:,} | T10 |",
+        f"| KMP or Rabin-Karp for the motif search? | Same motif always; Rabin-Karp needs {S['t10_motif'][24]:.0f}× fewer ops at L = 24,"
+        f" {S['t10_motif'][96]:.0f}× at L = 96 | T10 |",
+        f"| Do LCS / edit distance tell true neighbours from wrong pairs? | AUC {t11[0.0][0]:.3f} / {t11[0.0][1]:.3f} on clean edges,"
+        f" {t11[0.6][0]:.3f} / {t11[0.6][1]:.3f} at 60 % erosion (motif: {t11[0.6][2]:.3f}) | T11 |",
+    ]
+    for k, (pairs, work, speed, rec, acc, acc_all) in t12.items():
+        lines.append(f"| What does the pre-filter cost and save ({k})? | top_k = 6 keeps {rec:.0%} of true pairs with {work:.0%}"
+                     f" of the DP work (≈ {speed:.0f}× faster); match accuracy {acc:.0%} vs {acc_all:.0%} without it | T12 |")
+    lines += [
+        f"| Are the default weights justified? | Yes: tuned weights gain {t13['gain']:+.1%} on {t13['n']} unseen decisions,"
+        f" a plateau; default {t13['default']:.1%} | T13 |",
+        f"| Which signal matters most? | Colour (alone {t13['color']:.1%}); the string scores add"
+        f" {t13['default'] - t13['color']:+.1%} on top | T13 |",
+        f"| Does the motif help ranking? | No: alone {t13['motif']:.1%}; without it {t13['no_motif']:.1%} vs {t13['default']:.1%}"
+        " with it. Kept for explainability | T13 |",
+        f"| What breaks matching first? | Erosion more than noise: worst cell {worst[1]:.0%} at σ = {worst[0][0]:g},"
+        f" erosion {worst[0][1]:.1f} | T13 |",
+        "",
+        "**Where the accuracy goes.** Arvind's oracle experiment ([results.md](results.md), Finding 4) reruns every solver"
+        " with perfect adjacency: all four solvers then reach 100 %. The remaining errors on large damaged artifacts come"
+        " from the matcher ranking a wrong partner first (it is right for 83 % of true adjacencies at n = 64), so"
+        " **better matching is the most effective next improvement**, e.g. a learned colour-gradient predictor at the"
+        " border or using more than one pixel row for the strings.",
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--only", choices=sorted(SECTIONS))
@@ -518,13 +566,19 @@ def main() -> None:
     for key in [args.only] if args.only else SECTIONS:
         print(f"running {key} …", flush=True)
         blocks[key] = SECTIONS[key]() + "\n"
+    if not args.only:
+        blocks["summary"] = summary_block() + "\n"
     header = (
         "# RELIC-X — Strings & Matching results\n\n"
         "Generated by `validation/matcher_experiments.py` (owner: B). Fixed seeds: counts and accuracies are identical on\n"
         "every run; wall-clock times (ms, speed-ups) vary by a few percent.\n"
         "Solver results are in [results.md](results.md).\n\n"
     )
-    body = header + "".join(f"<!-- {k} -->\n{blocks[k]}<!-- /{k} -->\n\n" for k in SECTIONS if k in blocks)
+    m = re.search(r"<!-- summary -->\n(.*?)<!-- /summary -->", existing, re.S)
+    if "summary" not in blocks and m:
+        blocks["summary"] = m.group(1)
+    order = ["summary", *SECTIONS]
+    body = header + "".join(f"<!-- {k} -->\n{blocks[k]}<!-- /{k} -->\n\n" for k in order if k in blocks)
     OUT.write_text(body)
     print(body)
 

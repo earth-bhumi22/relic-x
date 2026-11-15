@@ -5,7 +5,7 @@ Reproducible experiments with fixed seeds. Run from the repo root after `pip ins
 | Script | Owner | Output |
 |---|---|---|
 | `run_benchmarks.py` | A | Solver evaluation (accuracy, time, operations vs n; T32) and the T14–T17 sections → `results.md`, `solver_*.svg`, `solver_runs.csv`, `solver_summary.csv` |
-| `matcher_experiments.py` | B | Strings & Matching experiments (T10–T13, consolidated in T31) → `matcher_results.md` + `matcher_*.svg` |
+| `matcher_experiments.py` | B | Strings & Matching experiments → [`matcher_results.md`](matcher_results.md) (headline table + T10–T13 sections) + `matcher_*.svg`. About 40 s; `--only t12` reruns one section. Counts and accuracies are identical on every run; wall-clock times vary |
 
 ## Solver evaluation (T32)
 
