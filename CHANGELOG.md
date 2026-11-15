@@ -12,6 +12,7 @@
   statement (`passive_deletes=True`) instead of the ORM deleting them row by row.
 
 ### Added
+- `docs/API.md` (T41): full endpoint reference generated from real requests (`backend/scripts/gen_api_docs.py`), with `tests/test_api_docs.py` failing if an operation is undocumented. CONTRACT v2.0 (final).
 - PostgreSQL integration tests (T30): CI's PostgreSQL job also runs the API, CLI and constraint tests against PostgreSQL 16; `tests/test_constraints.py` checks all 16 CHECK/UNIQUE/FK rules (bad row rejected, good twin accepted) and both cascade paths; coverage gate `--cov-fail-under=85` (currently 97 %).
 - API hardening (T22): `X-Total-Count` (+ `offset` on `/matches`), optional `RELICX_API_KEY` write protection (401), token-bucket rate limit on the scaling experiment (429 + `Retry-After`).
 - CSV exports (T21): `/runs/{id}/export.csv`, `/runs/{id}/trace.csv`, `/artifacts/{id}/benchmark.csv`, `POST /benchmark/scaling.csv`.
