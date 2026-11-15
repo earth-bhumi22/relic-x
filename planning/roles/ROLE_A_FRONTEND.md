@@ -73,7 +73,8 @@ Task IDs match [WORKFLOW.md](../WORKFLOW.md); each one is a GitHub issue assigne
 5. Pages, against mocks first and then the real API: **T23** projects + wizard → **T24** gallery → **T25** graph view → **T26** "Why matched?" → **T27** reconstruction canvas → **T28** lab dashboard.
 6. **T32** Solver benchmarks and results tables.
 7. **T43** Your algorithm docs and viva notes; **T44** user guide, demo script, slides.
-8. **T50 – T51** End-to-end check and demo rehearsal (both).
+8. Added in the 2026-11-15 re-plan: **T06** Dependabot npm update (with B) · **T07** regenerate API types · **T39** cross-review (both) · **T45** report chapter · **T47** final report (both) · **T48** demo video. Nice to have: **T33** Playwright E2E, **T35** solver property tests, **T37** performance/accessibility audit. Stretch: **T19** best-buddies seeding.
+9. **T50 – T51** End-to-end check and demo rehearsal (both).
 
 Branches: `a/<task-id>-<short-name>` (for example `a/t25-graph-view`). One pull request per issue,
 reviewed and approved by B.

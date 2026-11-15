@@ -51,6 +51,9 @@ can start from the contract or mocks before the prerequisite is finished, and fi
 | T03 | Frontend app shell: routing, layout, theme, API client with mock mode, generated types | A | T00 (draft before) |
 | T04 | Frontend tests (Vitest + RTL) and frontend CI job | A | T03; T02 for the CI job |
 | T05 | Demo seed command: three sample artifacts with matches and runs | B | T01 |
+| T06 | Triage the open Dependabot updates (#49 actions, #57 npm); monthly cadence | A + B | — |
+| T07 | Regenerate frontend API types for contract v2.0 (jobs, CSV exports) | A | T41 |
+| T08 | Real artifact photos: open-licence (CC0) sample set + matcher accuracy on them *(nice to have)* | B | T05, T31 |
 
 ### Phase 2 — Algorithms (milestone G2)
 
@@ -67,6 +70,8 @@ tests → complexity derivation → measured experiment → viva notes.
 | T15 | Greedy + Best-first (Prim) | A | T14 |
 | T16 | Dijkstra (shortest-path tree assembly) | A | T14 |
 | T17 | Backtracking + branch & bound + DP extension | A | T15 |
+| T18 | *Stretch:* gradient-prediction edge compatibility (closes part of the matcher gap found by the oracle) | B | T13, T31 |
+| T19 | *Stretch:* best-buddies seeding for greedy and best-first | A | T15, T32 |
 
 ### Phase 3 — API and UI (milestone G3)
 
@@ -90,6 +95,13 @@ tests → complexity derivation → measured experiment → viva notes.
 | T30 | PostgreSQL integration tests in CI + coverage ≥ 85 % | B | T02 |
 | T31 | Matcher experiments (KMP vs RK, weight sweep, noise/erosion) | B | T13 |
 | T32 | Solver benchmarks (accuracy, time, ops vs n) + results tables | A | T17 |
+| T33 | End-to-end UI tests (Playwright) *(nice to have)* | A | T28 |
+| T34 | Property-based tests for the string algorithms (Hypothesis) *(nice to have)* | B | T10, T11 |
+| T35 | Property-based tests for the solvers and metrics (Hypothesis) *(nice to have)* | A | T17 |
+| T36 | Profile and speed up the matcher, scores unchanged *(nice to have)* | B | T13 |
+| T37 | Frontend performance and accessibility audit *(nice to have)* | A | T28 |
+| T38 | API load test: concurrent users and the job queue *(nice to have)* | B | T20, T22 |
+| T39 | Cross-review of each other's slice, incl. the PRs merged without review | A + B | T32, T40 |
 
 ### Phase 5 — Documentation (milestone G4, drafted continuously)
 
@@ -100,6 +112,11 @@ tests → complexity derivation → measured experiment → viva notes.
 | T42 | `docs/DATABASE.md`: ER diagram, constraints, migration guide | B | T01 |
 | T43 | Graph & Search sections of ALGORITHMS.md + VIVA_NOTES.md | A | T14 – T17 |
 | T44 | User guide with screenshots, demo script, slides | A | T23 – T28 |
+| T45 | Report chapter: Graph & Search results | A | T32, T43 |
+| T46 | Report chapter: Strings & Matching results | B | T31, T40 |
+| T47 | Final project report: compile and submit | A + B | T45, T46 |
+| T48 | Demo video (fallback for the live demo) | A | T44, T50 |
+| T49 | Deploy a public demo instance *(nice to have)* | B | T22 |
 
 ### Phase 6 — Integration and demo (milestone G4)
 
@@ -163,13 +180,19 @@ flowchart TD
     T28 --> T44[T44 Guide + demo, A]
     T28 & T22 --> T50([T50 End-to-end, A+B])
     T50 & T44 --> T51([T51 Rehearsal, A+B])
+    T41 --> T07[T07 Gen. types, A]
+    T32 & T40 --> T39([T39 Cross-review, A+B]) --> T51
+    T32 & T43 --> T45[T45 Report ch., A]
+    T31 & T40 --> T46[T46 Report ch., B]
+    T45 & T46 --> T47([T47 Final report, A+B])
+    T44 & T50 --> T48[T48 Demo video, A]
 
     classDef a fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a
     classDef b fill:#fce7f3,stroke:#be185d,color:#831843
     classDef both fill:#ede9fe,stroke:#6d28d9,color:#4c1d95
-    class T03,T04,T14,T15,T16,T17,T23,T24,T25,T26,T27,T28,T29,T32,T43,T44 a
-    class T01,T02,T05,T10,T11,T12,T13,T20,T21,T22,T30,T31,T40,T41,T42 b
-    class T00,T50,T51 both
+    class T03,T04,T07,T14,T15,T16,T17,T23,T24,T25,T26,T27,T28,T29,T32,T43,T44,T45,T48 a
+    class T01,T02,T05,T10,T11,T12,T13,T20,T21,T22,T30,T31,T40,T41,T42,T46 b
+    class T00,T39,T47,T50,T51 both
 ```
 
 ---
@@ -212,9 +235,14 @@ fixtures, mock data) whenever A is blocked.
 ## 8. Numbering new tasks
 
 New tasks take the **next free ID inside their phase** instead of a number at the end, so every existing ID,
-issue title and branch name stays valid. Free IDs: T06–T09 (foundations), T18–T19 (algorithms),
-T33–T39 (testing), T45–T49 (docs). T29 was used for the flaky wizard test (#59). Alternate owners so the
-split stays even.
+issue title and branch name stays valid. Alternate owners so the split stays even.
+
+**Re-plan, 2026-11-15** (after T00–T42 were merged). The gaps were filled with work that is still worth doing:
+T06–T08 (#78–#80), T18–T19 (#81–#82, stretch), T33–T39 (#83–#89), T45–T49 (#90–#94); T29 is the flaky wizard
+test (#59). Each issue says whether it is a **must-have**, **nice to have** or **stretch**. The old draft of T38
+lost its `EXPLAIN ANALYZE` part, which T42 already did. **Free IDs left:** T09 (for bugs found in T50).
+
+Must-haves still open: T02, T06, T07, T39, T43, T44, T45–T48, T50, T51.
 
 ## 9. Progress tracker
 
