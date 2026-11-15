@@ -12,6 +12,8 @@
   statement (`passive_deletes=True`) instead of the ORM deleting them row by row.
 
 ### Added
+- `docs/DATABASE.md` (T42): ER diagram, every CHECK / UNIQUE / FK with the bug it prevents, indexes measured with PostgreSQL `EXPLAIN ANALYZE`, how to add a migration.
+- Migration `0003`: indexes on the four unindexed foreign-key columns; deleting or re-fragmenting an artifact drops from ~330 ms to ~5 ms at 300 artifacts. `tests/test_schema_indexes.py` keeps every FK indexed.
 - `docs/API.md` (T41): full endpoint reference generated from real requests (`backend/scripts/gen_api_docs.py`), with `tests/test_api_docs.py` failing if an operation is undocumented. CONTRACT v2.0 (final).
 - PostgreSQL integration tests (T30): CI's PostgreSQL job also runs the API, CLI and constraint tests against PostgreSQL 16; `tests/test_constraints.py` checks all 16 CHECK/UNIQUE/FK rules (bad row rejected, good twin accepted) and both cascade paths; coverage gate `--cov-fail-under=85` (currently 97 %).
 - API hardening (T22): `X-Total-Count` (+ `offset` on `/matches`), optional `RELICX_API_KEY` write protection (401), token-bucket rate limit on the scaling experiment (429 + `Retry-After`).

@@ -103,9 +103,11 @@ class PairMatch(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     artifact_id: Mapped[str] = mapped_column(ForeignKey("artifacts.id", ondelete="CASCADE"))
-    frag_a: Mapped[str] = mapped_column(ForeignKey("fragments.id", ondelete="CASCADE"))
+    # index=True on frag_a / frag_b / placements.fragment_id / jobs.run_id (T42): PostgreSQL does not index
+    # the referencing side of a foreign key, so every fragment delete scanned these tables in full.
+    frag_a: Mapped[str] = mapped_column(ForeignKey("fragments.id", ondelete="CASCADE"), index=True)
     side_a: Mapped[int] = mapped_column(Integer)
-    frag_b: Mapped[str] = mapped_column(ForeignKey("fragments.id", ondelete="CASCADE"))
+    frag_b: Mapped[str] = mapped_column(ForeignKey("fragments.id", ondelete="CASCADE"), index=True)
     side_b: Mapped[int] = mapped_column(Integer)
     color: Mapped[float] = mapped_column(Float)
     lcs: Mapped[float] = mapped_column(Float)
@@ -159,7 +161,7 @@ class RunPlacement(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     run_id: Mapped[str] = mapped_column(ForeignKey("reconstruction_runs.id", ondelete="CASCADE"), index=True)
-    fragment_id: Mapped[str] = mapped_column(ForeignKey("fragments.id", ondelete="CASCADE"))
+    fragment_id: Mapped[str] = mapped_column(ForeignKey("fragments.id", ondelete="CASCADE"), index=True)
     cell_row: Mapped[int] = mapped_column(Integer)
     cell_col: Mapped[int] = mapped_column(Integer)
     rot: Mapped[int] = mapped_column(Integer)
@@ -196,7 +198,7 @@ class Job(Base):
     params: Mapped[dict] = mapped_column(JSON, default=dict)
     status: Mapped[str] = mapped_column(String(16), default="queued")
     progress: Mapped[float] = mapped_column(Float, default=0.0)
-    run_id: Mapped[str | None] = mapped_column(ForeignKey("reconstruction_runs.id", ondelete="SET NULL"))
+    run_id: Mapped[str | None] = mapped_column(ForeignKey("reconstruction_runs.id", ondelete="SET NULL"), index=True)
     error: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
