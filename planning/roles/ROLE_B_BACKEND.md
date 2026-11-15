@@ -72,7 +72,8 @@ Task IDs match [WORKFLOW.md](../WORKFLOW.md); each one is a GitHub issue assigne
 4. Features: **T20** background jobs → **T21** CSV exports → **T22** hardening.
 5. **T30** PostgreSQL integration tests + coverage; **T31** matcher experiments.
 6. **T40** your algorithm docs and viva notes; **T41** API docs; **T42** database docs.
-7. **T50 – T51** End-to-end check and demo rehearsal (both).
+7. Added in the 2026-11-15 re-plan: **T06** Dependabot Actions update (with A) · **T39** cross-review (both) · **T46** report chapter · **T47** final report (both). Nice to have: **T08** real-photo samples, **T34** string property tests, **T36** matcher profiling, **T38** load test, **T49** public demo deploy. Stretch: **T18** gradient-prediction matching.
+8. **T50 – T51** End-to-end check and demo rehearsal (both).
 
 Branches: `b/<task-id>-<short-name>` (for example `b/t20-async-jobs`). One pull request per issue,
 reviewed and approved by A.
