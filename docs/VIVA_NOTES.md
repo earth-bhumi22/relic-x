@@ -161,6 +161,12 @@ A: Measured honestly: the best weights set it to 0, and removing it changes accu
 small weight because it is the clearest explanation for a person ("these symbols continue across the break"), and
 it can be switched off per request.
 
+**Q: If reconstruction is wrong, is it the matcher's fault or the solver's?**
+A: Mostly the matcher's. Arvind's oracle run gives every solver the true adjacency instead of our scores: all four then
+reach 100 %. On large damaged artifacts the matcher ranks the true partner first for about 83 % of adjacencies, and
+those mistakes are what the solvers inherit. So the most effective next step is better matching (e.g. using more
+than one pixel row, or predicting the colour gradient across the break).
+
 **Q: What breaks the matcher first?**
 A: Edge erosion more than pixel noise: σ = 20 noise costs 1–8 points, 60 % erosion 16–23, because a chip replaces a
 whole run of symbols.
