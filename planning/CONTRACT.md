@@ -1,7 +1,12 @@
 # RELIC-X — Project Contract (T00)
 
-**Version:** 1.3 (signed off by A and B, 2026-11-14) — gate **G0** passed
+**Version:** 2.0 — final (signed off by A and B, 2026-11-14) — gate **G0** passed
 
+> **2.0 (final, T41):** no shape changes since 1.3. This is the agreed final contract for the submission.
+> The complete endpoint reference with real example responses is [`docs/API.md`](../docs/API.md), generated from
+> the running code by `backend/scripts/gen_api_docs.py`; a test fails if an endpoint is missing from it.
+> A: regenerate `frontend/src/api/schema.d.ts` with `npm run gen:types` to pick up the job and export endpoints.
+>
 > **1.3 changes:** T22 hardening: `X-Total-Count` + `offset` on `/matches`, optional `X-API-Key` (401),
 > rate limit on the scaling experiment (429 + `Retry-After`). No existing response body changed.
 >

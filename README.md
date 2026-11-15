@@ -229,7 +229,7 @@ cd ../frontend && npm test && npm run build
 
 ## 🔌 API at a glance
 
-Base path `/api/v1`. The full contract is in [`planning/CONTRACT.md`](planning/CONTRACT.md); live docs are at `/docs`.
+Base path `/api/v1`. Full reference with real example responses: [`docs/API.md`](docs/API.md); contract: [`planning/CONTRACT.md`](planning/CONTRACT.md); live docs at `/docs`.
 
 | Method | Endpoint | Purpose |
 |---|---|---|
