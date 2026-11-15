@@ -11,10 +11,8 @@ API = "/api/v1"
 SCALING = {"sizes": [2], "algorithms": ["greedy"], "node_limit": 200}
 
 
-def make(tmp_path, **kw):
-    return TestClient(
-        create_app(Settings(database_url=f"sqlite:///{tmp_path}/h.db", storage_dir=str(tmp_path / "s"), **kw))
-    )
+def make(tmp_path, db_url, **kw):
+    return TestClient(create_app(Settings(database_url=db_url, storage_dir=str(tmp_path / "s"), **kw)))
 
 
 # ------------------------------------------------------------------ pagination
@@ -36,8 +34,8 @@ def test_x_total_count_and_offset_on_matches(client):
     assert int(high.headers["X-Total-Count"]) == sum(m["composite"] >= 0.6 for m in full)
 
 
-def test_cors_exposes_the_new_headers(tmp_path):
-    with make(tmp_path, cors_origins=["http://localhost:5173"]) as c:
+def test_cors_exposes_the_new_headers(tmp_path, db_url):
+    with make(tmp_path, db_url, cors_origins=["http://localhost:5173"]) as c:
         r = c.get(f"{API}/artifacts", headers={"Origin": "http://localhost:5173"})
         exposed = r.headers["access-control-expose-headers"]
         for h in ("X-Total-Count", "Retry-After", "Content-Disposition"):
@@ -52,8 +50,8 @@ def test_api_key_off_by_default(client):
     )
 
 
-def test_api_key_guards_writes_only(tmp_path):
-    with make(tmp_path, api_key="s3cret") as c:
+def test_api_key_guards_writes_only(tmp_path, db_url):
+    with make(tmp_path, db_url, api_key="s3cret") as c:
         body = {"name": "x", "fragment": {"rows": 2, "cols": 2}}
         r = c.post(f"{API}/artifacts/sample", json=body)
         assert r.status_code == 401 and r.json()["error"]["code"] == "unauthorized"
@@ -70,8 +68,8 @@ def test_api_key_guards_writes_only(tmp_path):
 
 
 # ------------------------------------------------------------------ rate limit
-def test_scaling_is_rate_limited_with_retry_after(tmp_path):
-    with make(tmp_path, scaling_rate_per_min=2) as c:
+def test_scaling_is_rate_limited_with_retry_after(tmp_path, db_url):
+    with make(tmp_path, db_url, scaling_rate_per_min=2) as c:
         assert c.post(f"{API}/benchmark/scaling", json=SCALING).status_code == 200
         assert c.post(f"{API}/benchmark/scaling.csv", json=SCALING).status_code == 200  # same bucket
         r = c.post(f"{API}/benchmark/scaling", json=SCALING)

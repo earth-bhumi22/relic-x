@@ -9,8 +9,8 @@ from relicx.core.config import Settings
 from relicx.main import create_app
 
 
-def test_commit_happens_before_response_is_sent(tmp_path):
-    app = create_app(Settings(database_url=f"sqlite:///{tmp_path}/t.db", storage_dir=str(tmp_path / "s")))
+def test_commit_happens_before_response_is_sent(tmp_path, db_url):
+    app = create_app(Settings(database_url=db_url, storage_dir=str(tmp_path / "s")))
     state = {"committed": 0, "late": []}
 
     @event.listens_for(app.state.session_factory, "after_commit")

@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Fixed
+- The API now disposes its database engine on shutdown (no more unclosed-connection warnings).
 - `transaction()` context manager for work outside requests (jobs, CLI): an early `return` inside the old `for db in session_scope()` loop silently skipped the commit.
 - Database writes are now committed **before** the HTTP response is sent
   (`Depends(get_db, scope="function")`). Previously a client re-reading immediately after a
@@ -11,6 +12,7 @@
   statement (`passive_deletes=True`) instead of the ORM deleting them row by row.
 
 ### Added
+- PostgreSQL integration tests (T30): CI's PostgreSQL job also runs the API, CLI and constraint tests against PostgreSQL 16; `tests/test_constraints.py` checks all 16 CHECK/UNIQUE/FK rules (bad row rejected, good twin accepted) and both cascade paths; coverage gate `--cov-fail-under=85` (currently 97 %).
 - API hardening (T22): `X-Total-Count` (+ `offset` on `/matches`), optional `RELICX_API_KEY` write protection (401), token-bucket rate limit on the scaling experiment (429 + `Retry-After`).
 - CSV exports (T21): `/runs/{id}/export.csv`, `/runs/{id}/trace.csv`, `/artifacts/{id}/benchmark.csv`, `POST /benchmark/scaling.csv`.
 - Background solver jobs (T20): `POST /artifacts/{id}/jobs` → 202, `GET /jobs/{id}` with live backtracking progress; `jobs` table (migration 0002); unfinished jobs marked failed on restart; `RELICX_JOB_WORKERS` (default 2).

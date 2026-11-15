@@ -49,6 +49,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             log.warning("marked %d unfinished background job(s) as failed after restart", recovered)
         yield
         app.state.jobs.shutdown()
+        app.state.engine.dispose()  # close pooled connections on shutdown
 
     app = FastAPI(
         lifespan=lifespan,

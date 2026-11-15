@@ -202,7 +202,8 @@ It ends with `ALL CHECKS PASSED`. CI runs the same script against PostgreSQL 16 
 ### Run the tests
 
 ```bash
-cd backend && pytest            # engine + API + migration tests
+cd backend && pytest            # engine + API + migration tests (SQLite)
+RELICX_TEST_DATABASE_URL=postgresql+psycopg://user:pass@localhost/relicx_test pytest tests/api tests/test_constraints.py   # same, on PostgreSQL
 ruff check . && black --check .
 cd ../frontend && npm test && npm run build
 ```

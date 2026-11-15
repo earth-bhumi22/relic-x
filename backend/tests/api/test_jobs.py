@@ -87,8 +87,8 @@ def test_a_crashing_solver_marks_the_job_failed(client, monkeypatch):
     assert failed["status"] == "failed" and failed["error"] == "solver exploded" and failed["run_id"] is None
 
 
-def test_unfinished_jobs_are_failed_after_a_restart(tmp_path):
-    settings = Settings(database_url=f"sqlite:///{tmp_path}/r.db", storage_dir=str(tmp_path / "s"))
+def test_unfinished_jobs_are_failed_after_a_restart(tmp_path, db_url):
+    settings = Settings(database_url=db_url, storage_dir=str(tmp_path / "s"))
     with TestClient(create_app(settings)) as c:
         aid = matched_artifact(c, 2, 2)
     app = create_app(settings)  # "server restarts": a job was left running by the old process
