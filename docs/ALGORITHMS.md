@@ -51,6 +51,8 @@ one grey level of noise changes fewer than 10 % of symbols (tested). Coarse bins
 which the motif search looks for. The cost: near a bin boundary two almost-equal colours get different symbols, which
 the gap- and substitution-tolerant LCS and edit distance absorb.
 
+**In the app.** Gallery → click a fragment: the fragment dialog draws its four edge strings as colour beads (`EdgeBeads`), one bead per symbol, coloured from the symbol's bin. The same beads appear in the graph view and the "Why matched?" drawer.
+
 ## 2. KMP (`engine/strings/kmp.py`)
 **Problem.** Find every occurrence of a pattern P (length m) in a text T (length n). In RELIC-X both are edge strings
 over a 64-symbol alphabet; KMP is the decision step of the longest-motif search (§4).
@@ -84,6 +86,8 @@ bound, and grows as n^0.99 (R² 1.0000). The naive matcher also grows linearly h
 
 ![naive vs KMP vs Rabin-Karp](../validation/matcher_kmp_adversarial.svg)
 
+**In the app.** "Why matched?" drawer → *shared motif*: the motif KMP found is highlighted on both edge strips, with the operation counts of the KMP and Rabin-Karp decision steps side by side.
+
 ## 3. Rabin-Karp (`engine/strings/rabin_karp.py`)
 **Idea.** Compare *fingerprints* instead of strings. The polynomial hash of a window w₀…w_{m−1} is
 h = (w₀·B^{m−1} + w₁·B^{m−2} + … + w_{m−1}) mod M with B = 257, M = 10⁹ + 7. Sliding the window one step is O(1):
@@ -108,6 +112,8 @@ window of A occur in B?" into one O(n + m) pass.
 Rabin-Karp's is expected-case, but it generalises: one pass can test *many* patterns against a hash set, which is
 exactly what the motif search needs.
 
+**In the app.** The same *shared motif* section shows Rabin-Karp's operation count next to KMP's for the selected pair; the hash section (§7) shows the n-gram overlap built from the same rolling hash.
+
 ## 4. Longest shared motif (`engine/strings/motif.py`)
 **Problem.** Given edge A and reversed edge B (each of length L), find the longest contiguous run of A that occurs
 somewhere in B (the longest common *substring*). A long shared run is strong evidence that two edges continue the same
@@ -126,12 +132,14 @@ compares the result with an O(L³) brute force.
   hash hits → **O(L log L)** expected total.
 
 **Measured** (12 truly adjacent edge pairs of the pottery sample, L = 12…96): KMP grows as L^2.38, Rabin-Karp as
-L^1.31; both always return the same motif. At the default L = 24 Rabin-Karp needs ≈ 12× fewer operations, at
-L = 96 ≈ 52× fewer. KMP stays the default for its deterministic worst case, and the motif step is a small part of
+L^1.31; both always return the same motif. At the default L = 24 Rabin-Karp needs 12.6× fewer operations, at
+L = 96 52× fewer. KMP stays the default for its deterministic worst case, and the motif step is a small part of
 matching at L = 24. `MatchParams.motif_method = "rabin_karp"` switches the method; matching scores are identical
 either way (tested).
 
 ![motif search KMP vs Rabin-Karp](../validation/matcher_motif_ops.svg)
+
+**In the app.** "Why matched?" drawer: motif length, position on each edge, and the highlighted run; its weighted contribution is one segment of the score bar (§8).
 
 ## 5. LCS (`engine/strings/lcs.py`)
 **Problem.** The longest common *subsequence* of edge A and reversed edge B: the longest sequence of symbols that
@@ -157,6 +165,8 @@ index pairs, which are strictly increasing in both strings (tested).
 
 **Score.** `lcs_ratio = LCS / max(m, n)` ∈ [0, 1]. Tests check symmetry, 0 ≤ LCS ≤ min(m, n), LCS(a, a) = |a|, a common
 last character extends the LCS by one, and agreement with a brute force over all subsequences.
+
+**In the app.** "Why matched?" drawer → *LCS*: the two edge strips with connector lines between the matched symbol pairs returned by `lcs_alignment`.
 
 ## 6. Edit distance (`engine/strings/edit_distance.py`)
 **Problem.** The minimum number of single-symbol insertions, deletions and substitutions turning A into B
@@ -191,6 +201,7 @@ breaks a run, while the DP scores only lose a few symbols. That is the case for 
 
 ![separation vs erosion](../validation/matcher_dp_separation.svg)
 
+**In the app.** "Why matched?" drawer → *edit alignment*: a coloured strip of match / substitute / insert / delete operations from `edit_alignment`, with the counts of each.
 
 ## 7. Hashing pre-filter and memo cache (`engine/strings/hashing.py`, `matcher.py`)
 **Why a filter.** With n fragments there are P = C(n, 2)·4 candidate side pairs without rotation (C(n, 2)·16 with
@@ -236,6 +247,8 @@ and none on the busy mosaic and manuscript.
 
 ![DP work vs top_k](../validation/matcher_prefilter_cost.svg)
 
+**In the app.** Matching panel: after "Run matching" it reports pairs scored, pairs skipped by the pre-filter, and cache hits; `top_k` is an advanced parameter. "Why matched?" drawer → *hash overlap*: shared vs total n-grams (the Jaccard score).
+
 ## 8. Composite matcher (`engine/matcher.py`)
 **Score.** For a candidate join (side a of i, reversed side b of j):
 
@@ -265,6 +278,8 @@ noise only flips a few bins. **Feature resolution:** levels 3/4 × L 16/24/32 ar
 grows with L². `levels = 4, L = 24` stays the default (middle cost, readable strings).
 
 ![robustness](../validation/matcher_robustness.svg)
+
+**In the app.** "Why matched?" drawer → score bar: the five weighted contributions stacked to the composite on a 0–1 track; the edge with the highest composite is what the graph view draws thickest.
 
 ---
 
@@ -602,10 +617,14 @@ fragment). Both are in [0, 1].
 
 | Algorithm | Time | Space | Owner |
 |---|---|---|---|
+| Edge features (strip → string) | O(tile pixels) + O(L) per side | O(L) | B |
 | KMP | O(n + m) | O(m) | B |
 | Rabin-Karp | O(n + m) expected, O(nm) worst | O(1) | B |
 | LCS / Edit distance | O(mn) | O(min(m, n)) | B |
-| n-gram pre-filter | O(L) per edge, O(P·L) total | O(L) | B |
+| Longest motif (binary search) | O(L² log L) with KMP, O(L log L) expected with Rabin-Karp | O(L) | B |
+| n-gram pre-filter | O(L) per edge, O(P·L) total; top-k by heap O(c log k) | O(L) | B |
+| Memo cache | O(1) expected per lookup | O(distinct edge pairs) | B |
+| Whole matcher (2 stages) | O(P·L + K·L²), K = kept pairs ≤ k·4n | O(P) | B |
 | BFS / DFS | O(V + E) | O(V) | A |
 | Greedy | O(n³) | O(n) | A |
 | Best-first (Prim) | O(E log E) | O(E) | A |

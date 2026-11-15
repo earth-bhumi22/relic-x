@@ -10,7 +10,7 @@ Solver results are in [results.md](results.md).
 | Question | Answer | Section |
 |---|---|---|
 | Is KMP really linear? | Yes: 6,408 comparisons for n = 3,200 (bound 2n − 1 + table), naive 31,910 | T10 |
-| KMP or Rabin-Karp for the motif search? | Same motif always; Rabin-Karp needs 13× fewer ops at L = 24, 52× at L = 96 | T10 |
+| KMP or Rabin-Karp for the motif search? | Same motif always; Rabin-Karp needs 12.6× fewer ops at L = 24, 52.1× at L = 96 | T10 |
 | Do LCS / edit distance tell true neighbours from wrong pairs? | AUC 0.998 / 0.999 on clean edges, 0.977 / 0.991 at 60 % erosion (motif: 0.879) | T11 |
 | What does the pre-filter cost and save (5×5)? | top_k = 6 keeps 100% of true pairs with 32% of the DP work (≈ 3× faster); match accuracy 90% vs 90% without it | T12 |
 | What does the pre-filter cost and save (4×4 rotated)? | top_k = 6 keeps 100% of true pairs with 14% of the DP work (≈ 6× faster); match accuracy 92% vs 92% without it | T12 |
@@ -72,16 +72,16 @@ noise 4, erosion 0.2), strip length L varied. Both methods return the same motif
 
 | L | DP cells | LCS ms | edit ms |
 |---|---|---|---|
-| 8 | 64 | 0.005 | 0.006 |
-| 16 | 256 | 0.017 | 0.020 |
-| 24 | 576 | 0.035 | 0.042 |
-| 32 | 1,024 | 0.056 | 0.071 |
-| 48 | 2,304 | 0.123 | 0.160 |
-| 64 | 4,096 | 0.217 | 0.286 |
-| 96 | 9,216 | 0.526 | 0.630 |
-| 128 | 16,384 | 0.935 | 1.148 |
+| 8 | 64 | 0.004 | 0.006 |
+| 16 | 256 | 0.015 | 0.019 |
+| 24 | 576 | 0.032 | 0.041 |
+| 32 | 1,024 | 0.060 | 0.073 |
+| 48 | 2,304 | 0.125 | 0.159 |
+| 64 | 4,096 | 0.223 | 0.279 |
+| 96 | 9,216 | 0.494 | 0.621 |
+| 128 | 16,384 | 0.902 | 1.098 |
 
-- DP cells are exactly L² every time (the counter ticks one per cell); LCS time: grows as L^1.88 (R² 0.9977), edit time: grows as L^1.90 (R² 0.9989).
+- DP cells are exactly L² every time (the counter ticks one per cell); LCS time: grows as L^1.92 (R² 0.9993), edit time: grows as L^1.91 (R² 0.9994).
 - Memory is two rows of L + 1 integers, O(L), for the scores; only the "Why matched?" alignment builds the full (L + 1)² table, for one pair at a time.
 
 ![DP time vs L](matcher_dp_cost.svg)
@@ -119,12 +119,12 @@ adjacent fragment pairs that survive the filter; *match acc.* = share of true ne
 |---|---|---|---|---|---|
 | 1 | 62 / 1,200 (5%) | 69,504 | 95% | 92% | 29 |
 | 2 | 134 / 1,200 (11%) | 149,760 | 97% | 91% | 51 |
-| 3 | 198 / 1,200 (16%) | 221,568 | 98% | 91% | 72 |
-| 4 | 264 / 1,200 (22%) | 296,832 | 99% | 91% | 94 |
-| 6 | 386 / 1,200 (32%) | 433,920 | 100% | 90% | 133 |
-| 8 | 505 / 1,200 (42%) | 566,016 | 100% | 90% | 172 |
-| 12 | 737 / 1,200 (61%) | 822,912 | 100% | 90% | 247 |
-| all (no filter) | 1,200 / 1,200 (100%) | 1,335,552 | 100% | 90% | 410 |
+| 3 | 198 / 1,200 (16%) | 221,568 | 98% | 91% | 85 |
+| 4 | 264 / 1,200 (22%) | 296,832 | 99% | 91% | 93 |
+| 6 | 386 / 1,200 (32%) | 433,920 | 100% | 90% | 132 |
+| 8 | 505 / 1,200 (42%) | 566,016 | 100% | 90% | 169 |
+| 12 | 737 / 1,200 (61%) | 822,912 | 100% | 90% | 249 |
+| all (no filter) | 1,200 / 1,200 (100%) | 1,335,552 | 100% | 90% | 409 |
 
 - Default `top_k = 6` scores 32% of the pairs, does 32% of the DP work and runs 3.1× faster than no filter, with recall 100% and match accuracy 90% (no filter: 90%).
 
@@ -133,13 +133,13 @@ adjacent fragment pairs that survive the filter; *match acc.* = share of true ne
 | top_k | pairs scored | DP cells | recall | match acc. | matching ms |
 |---|---|---|---|---|---|
 | 1 | 41 / 1,920 (2%) | 47,616 | 96% | 90% | 29 |
-| 2 | 90 / 1,920 (5%) | 103,296 | 97% | 92% | 44 |
-| 3 | 135 / 1,920 (7%) | 155,520 | 99% | 92% | 76 |
-| 4 | 180 / 1,920 (9%) | 206,976 | 99% | 92% | 80 |
-| 6 | 269 / 1,920 (14%) | 309,504 | 100% | 92% | 110 |
-| 8 | 353 / 1,920 (18%) | 406,656 | 100% | 92% | 139 |
-| 12 | 516 / 1,920 (27%) | 594,048 | 100% | 92% | 195 |
-| all (no filter) | 1,920 / 1,920 (100%) | 2,211,840 | 100% | 92% | 687 |
+| 2 | 90 / 1,920 (5%) | 103,296 | 97% | 92% | 47 |
+| 3 | 135 / 1,920 (7%) | 155,520 | 99% | 92% | 60 |
+| 4 | 180 / 1,920 (9%) | 206,976 | 99% | 92% | 75 |
+| 6 | 269 / 1,920 (14%) | 309,504 | 100% | 92% | 106 |
+| 8 | 353 / 1,920 (18%) | 406,656 | 100% | 92% | 133 |
+| 12 | 516 / 1,920 (27%) | 594,048 | 100% | 92% | 188 |
+| all (no filter) | 1,920 / 1,920 (100%) | 2,211,840 | 100% | 92% | 667 |
 
 - Default `top_k = 6` scores 14% of the pairs, does 14% of the DP work and runs 6.3× faster than no filter, with recall 100% and match accuracy 92% (no filter: 92%).
 
@@ -218,12 +218,12 @@ scores are computed once per artifact (the pre-filter does not depend on the wei
 
 | levels | strip_len | match accuracy | ms per artifact |
 |---|---|---|---|
-| 3 | 16 | 91.9% | 71 |
-| 3 | 24 | 90.6% | 111 |
-| 3 | 32 | 92.9% | 166 |
-| 4 | 16 | 90.8% | 70 |
-| 4 | 24 (default) | 92.1% | 117 |
-| 4 | 32 | 91.6% | 173 |
+| 3 | 16 | 91.9% | 73 |
+| 3 | 24 | 90.6% | 112 |
+| 3 | 32 | 92.9% | 171 |
+| 4 | 16 | 90.8% | 78 |
+| 4 | 24 (default) | 92.1% | 123 |
+| 4 | 32 | 91.6% | 174 |
 
 - All six settings are within about 2 points; cost grows with L² as expected. `levels = 4, strip_len = 24` stays the default: middle cost, and 64 symbols keep the strings readable in the UI.
 

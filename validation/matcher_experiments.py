@@ -525,8 +525,8 @@ def summary_block() -> str:
         "| Question | Answer | Section |",
         "|---|---|---|",
         f"| Is KMP really linear? | Yes: {kmp:,} comparisons for n = {n:,} (bound 2n − 1 + table), naive {naive:,} | T10 |",
-        f"| KMP or Rabin-Karp for the motif search? | Same motif always; Rabin-Karp needs {S['t10_motif'][24]:.0f}× fewer ops at L = 24,"
-        f" {S['t10_motif'][96]:.0f}× at L = 96 | T10 |",
+        f"| KMP or Rabin-Karp for the motif search? | Same motif always; Rabin-Karp needs {S['t10_motif'][24]:.1f}× fewer ops at L = 24,"
+        f" {S['t10_motif'][96]:.1f}× at L = 96 | T10 |",
         f"| Do LCS / edit distance tell true neighbours from wrong pairs? | AUC {t11[0.0][0]:.3f} / {t11[0.0][1]:.3f} on clean edges,"
         f" {t11[0.6][0]:.3f} / {t11[0.6][1]:.3f} at 60 % erosion (motif: {t11[0.6][2]:.3f}) | T11 |",
     ]
