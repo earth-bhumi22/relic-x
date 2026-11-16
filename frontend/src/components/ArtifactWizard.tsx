@@ -88,7 +88,7 @@ interface Props {
 export default function ArtifactWizard({ onClose, onCreated }: Props) {
   const [step, setStep] = useState<Step>(1);
   const [source, setSource] = useState<SourceKind>("sample");
-  const [sample, setSample] = useState("");
+  const [picked, setSample] = useState(""); // the user's explicit choice; "" = keep the default (first sample)
   const [image, setImage] = useState<File | null>(null);
   const [fragmentFiles, setFragmentFiles] = useState<File[]>([]);
   const [draft, setDraft] = useState<ParamDraft>(draftFromParams());
@@ -100,9 +100,10 @@ export default function ArtifactWizard({ onClose, onCreated }: Props) {
   const inFlight = useRef(false);
 
   const samples = useAsync(listSamples, []);
-  useEffect(() => {
-    if (samples.status === "success" && !sample && samples.data.length) setSample(samples.data[0].name);
-  }, [samples.status, samples.data, sample]);
+  // The first sample is selected by default. It is derived while rendering, not set from an effect: an effect leaves
+  // a commit in which the radios are shown but nothing is selected yet, and a click on Next in that window was
+  // rejected with "Choose a sample." (T29: the flaky network-failure test).
+  const sample = picked || (samples.status === "success" ? (samples.data[0]?.name ?? "") : "");
 
   const setField = <K extends keyof ParamDraft>(key: K, value: ParamDraft[K]) => {
     setDraft((d) => ({ ...d, [key]: value }));
