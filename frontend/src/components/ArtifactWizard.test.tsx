@@ -350,23 +350,63 @@ describe("ArtifactWizard — submitting and failures", () => {
     await waitFor(() => expect(onCreated).toHaveBeenCalledWith(created));
     expect(mockApi.calls("POST", "/artifacts/sample")).toHaveLength(2);
   });
+});
 
-  it("handles a network failure (fetch rejects) in real mode", async () => {
-    vi.stubEnv("VITE_USE_MOCKS", "false");
-    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
-      if (url.endsWith("/samples"))
-        return new Response(JSON.stringify([{ name: "s", description: "d", image_url: "x" }]));
-      throw new TypeError("Failed to fetch");
+// Real mode: test-setup.ts already stubs VITE_USE_MOCKS=false before every test, so this describe deliberately does
+// NOT call useMockApi() (mock mode is not switched on and then fought with a second stubEnv) and answers `fetch` itself.
+describe("ArtifactWizard — real API (fetch)", () => {
+  const samplesBody = JSON.stringify([{ name: "s", description: "d", image_url: "x" }]);
+  const postCalls = (f: ReturnType<typeof vi.fn>) => f.mock.calls.filter(([, init]) => init?.method === "POST");
+
+  it("handles a network failure (fetch rejects): stays open, keeps the input, no automatic retry, Retry can succeed", async () => {
+    let online = false;
+    const fetchMock = vi.fn(async (url: string) => {
+      if (url.endsWith("/samples")) return new Response(samplesBody);
+      if (!online) throw new TypeError("Failed to fetch");
+      return new Response(JSON.stringify(created), { status: 201, headers: { "Content-Type": "application/json" } });
     });
     vi.stubGlobal("fetch", fetchMock);
-    setup();
-    await screen.findByRole("radio", { name: /^s d/ });
+    const { onClose, onCreated } = setup();
+
+    // The first sample is already selected the moment the radios exist (no later effect selects it).
+    expect(await screen.findByRole("radio", { name: /^s d/ })).toBeChecked();
     next();
     next();
     type("Name", "Offline");
     create();
-    expect(await screen.findByRole("alert")).toHaveTextContent("Failed to fetch");
+
+    // Only the ErrorState alert: its text, the kept input and the re-enabled button are all checked inside the retry.
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("Failed to fetch");
+    await waitFor(() => expect(screen.getByRole("button", { name: "Create" })).toBeEnabled());
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(onClose).not.toHaveBeenCalled();
     expect(screen.getByLabelText("Name")).toHaveValue("Offline");
+    expect(postCalls(fetchMock)).toHaveLength(1); // exactly one attempt, no automatic retry
+
+    // The network comes back: Retry sends the request once more and succeeds.
+    online = true;
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+    await waitFor(() => expect(onCreated).toHaveBeenCalledWith(created));
+    expect(postCalls(fetchMock)).toHaveLength(2);
+  });
+});
+
+describe("ArtifactWizard — default sample selection", () => {
+  useMockApi();
+
+  // Regression for T29. React's scheduler yields once a slice passes ~5 ms, which a loaded CI runner does. A default
+  // selected from an effect then left a commit with the radios shown and none selected, and a Next click was rejected
+  // with "Choose a sample.". Making the clock look slow reproduces that every time.
+  it("has the first sample selected as soon as the radios exist, even when the scheduler yields after the commit", async () => {
+    const real = performance.now.bind(performance);
+    let skew = 0;
+    vi.spyOn(performance, "now").mockImplementation(() => real() + (skew += 6));
+    setup();
+    expect(await screen.findByRole("radio", { name: /mosaic-tile/ })).toBeChecked();
+    next();
+    expect(screen.getByRole("heading", { name: "Parameters" })).toBeInTheDocument();
+    expect(screen.queryByText("Choose a sample.")).not.toBeInTheDocument();
   });
 });
 
