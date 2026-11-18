@@ -19,6 +19,9 @@ export type TraceStepOut = Schemas["TraceStepOut"];
 export type SampleInfo = Schemas["SampleInfo"];
 export type SampleArtifactCreate = Schemas["SampleArtifactCreate"];
 export type MatchParams = Schemas["MatchParams"];
+export type JobCreated = Schemas["JobCreated"];
+export type JobOut = Schemas["JobOut"];
+export type JobStatus = JobOut["status"];
 
 export type Algorithm = RunCreate["algorithm"];
 export const ALGORITHMS: readonly Algorithm[] = ["greedy", "best_first", "dijkstra", "backtracking"];
