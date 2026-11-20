@@ -973,6 +973,41 @@ html.intro-snap {
   color: #1a150c;
 }
 
+.credits {
+  margin-top: clamp(1.2rem, 5vh, 2.6rem);
+  padding-top: 1rem;
+  border-top: 1px dashed var(--nav-muted);
+}
+.credits-line {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--nav-muted);
+}
+.credits-line strong {
+  color: var(--nav-text);
+  font-weight: 600;
+}
+.credits-links {
+  margin: 0.6rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+.credits-links a {
+  color: var(--nav-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+.credits-links a:hover,
+.credits-links a:focus-visible {
+  color: var(--nav-text);
+}
+
 /* phones: trim copy so each section still fits one screen */
 @media (max-width: 40rem) {
   .hero-title {

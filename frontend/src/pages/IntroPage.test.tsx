@@ -50,6 +50,21 @@ describe("IntroPage", () => {
     expect(window.sessionStorage.getItem(INTRO_KEY)).toBe("1");
   });
 
+  it("credits the authors with their GitHub profiles and website", () => {
+    renderIntro();
+    expect(screen.getByText("Arvind Kaushik")).toBeInTheDocument();
+    expect(screen.getByText("Bhumi Kansal")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Arvind on GitHub" })).toHaveAttribute(
+      "href",
+      "https://github.com/arvnd108",
+    );
+    expect(screen.getByRole("link", { name: "Bhumi on GitHub" })).toHaveAttribute(
+      "href",
+      "https://github.com/earth-bhumi22",
+    );
+    expect(screen.getByRole("link", { name: "arvindkaushik.in" })).toHaveAttribute("href", "https://arvindkaushik.in");
+  });
+
   it("still works when storage is blocked", () => {
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw new Error("blocked");

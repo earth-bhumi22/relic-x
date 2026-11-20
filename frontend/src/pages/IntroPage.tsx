@@ -547,6 +547,22 @@ export default function IntroPage() {
               Go to the benchmark lab
             </Link>
           </div>
+          <footer className="credits">
+            <p className="credits-line">
+              Made by <strong>Arvind Kaushik</strong> and <strong>Bhumi Kansal</strong>
+            </p>
+            <p className="credits-links">
+              <a href="https://github.com/arvnd108" target="_blank" rel="noreferrer">
+                Arvind on GitHub
+              </a>
+              <a href="https://github.com/earth-bhumi22" target="_blank" rel="noreferrer">
+                Bhumi on GitHub
+              </a>
+              <a href="https://arvindkaushik.in" target="_blank" rel="noreferrer">
+                arvindkaushik.in
+              </a>
+            </p>
+          </footer>
         </Reveal>
       </section>
     </div>
