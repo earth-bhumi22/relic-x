@@ -277,6 +277,34 @@ function StepVisual({ n }: { n: (typeof STEPS)[number]["n"] }) {
   );
 }
 
+const BAR_PX = 64;
+
+/** Smoothly bring a section to the top of the viewport (below the sticky bar). */
+function glideTo(el: Element | null | undefined) {
+  el?.scrollIntoView?.({ behavior: "smooth", block: "start" });
+}
+
+/** Small "scroll down" cue, bottom centre. Jumps to the next section; hides itself on the last one. */
+function ScrollCue() {
+  const [atEnd, setAtEnd] = useState(false);
+  useEffect(() => {
+    const update = () => setAtEnd(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8);
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+  const next = () => {
+    const sections = Array.from(document.querySelectorAll(".intro > section"));
+    glideTo(sections.find((el) => el.getBoundingClientRect().top > BAR_PX + 24));
+  };
+  return (
+    <button type="button" className={`scroll-cue ${atEnd ? "is-hidden" : ""}`} onClick={next} aria-label="Scroll down">
+      <span className="scroll-cue-label">Scroll</span>
+      <span className="scroll-cue-arrow" aria-hidden="true" />
+    </button>
+  );
+}
+
 export default function IntroPage() {
   const navigate = useNavigate();
   const [assembled, setAssembled] = useState(false);
@@ -324,6 +352,7 @@ export default function IntroPage() {
   return (
     <div className="intro" ref={rootRef}>
       <div className="intro-progress" aria-hidden="true" />
+      <ScrollCue />
       <header className="intro-bar">
         <span className="intro-brand">RELIC-X</span>
         <div className="intro-bar-end">
@@ -348,7 +377,14 @@ export default function IntroPage() {
             <button type="button" className="btn btn-primary btn-big" onClick={enter}>
               Enter the lab
             </button>
-            <a className="btn btn-big" href="#how">
+            <a
+              className="btn btn-big"
+              href="#problem"
+              onClick={(e) => {
+                e.preventDefault();
+                glideTo(document.getElementById("problem"));
+              }}
+            >
               See how it works ↓
             </a>
           </div>
@@ -356,7 +392,7 @@ export default function IntroPage() {
         <TilePanel assembled={assembled} onToggle={() => setAssembled((a) => !a)} />
       </section>
 
-      <section className="block problem" aria-labelledby="problem-title">
+      <section className="block problem" id="problem" aria-labelledby="problem-title">
         <Reveal>
           <p className="kicker">The problem</p>
           <h2 id="problem-title" className="block-title">

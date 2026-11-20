@@ -83,4 +83,15 @@ describe("IntroPage", () => {
     expect(container.querySelector(".viz-cut .scissors")).not.toBeNull();
     expect(container.querySelectorAll(".viz-cut .cpiece")).toHaveLength(16);
   });
+
+  it("has a scroll-down cue, and 'See how it works' targets the problem section first", () => {
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+    renderIntro();
+    expect(screen.getByRole("button", { name: "Scroll down" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("link", { name: /see how it works/i }));
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollIntoView.mock.contexts[0]).toHaveProperty("id", "problem");
+    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
+  });
 });

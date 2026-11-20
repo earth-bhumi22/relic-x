@@ -1,6 +1,7 @@
 /* Owner: A (Arvind) — intro page. Uses the tokens from styles.css; nothing here is theme-specific.
    Layout rule: every section is exactly one screen tall (100svh minus the 4rem bar) and scroll-snaps. */
 html.intro-snap {
+  scroll-behavior: smooth;
   scroll-snap-type: y proximity;
   scroll-padding-top: 4rem;
 }
@@ -756,7 +757,7 @@ html.intro-snap {
   min-height: 26rem;
   justify-content: flex-start;
   gap: clamp(0.6rem, 2vh, 1.4rem);
-  padding-bottom: 1.25rem;
+  padding-bottom: 3.4rem; /* room for the scroll cue */
 }
 .tech-head .kicker {
   margin-bottom: 0.3rem;
@@ -1044,5 +1045,72 @@ html.intro-snap {
   .typed {
     width: 17ch;
     animation: none !important;
+  }
+}
+
+/* ---------- scroll cue ---------- */
+.scroll-cue {
+  position: fixed;
+  left: 50%;
+  bottom: 0.9rem;
+  z-index: 25;
+  translate: -50% 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.15rem;
+  padding: 0.3rem 0.9rem 0.2rem;
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text);
+  background: var(--surface);
+  border: 1.5px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  cursor: pointer;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+.scroll-cue:hover {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+.scroll-cue:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.scroll-cue.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+}
+.scroll-cue-arrow {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  rotate: 45deg;
+  margin-top: -0.2rem;
+  animation: cue-bob 1.4s ease-in-out infinite;
+}
+@keyframes cue-bob {
+  0%,
+  100% {
+    translate: 0 -2px;
+    opacity: 0.5;
+  }
+  50% {
+    translate: 0 4px;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.intro-snap {
+    scroll-behavior: auto;
+  }
+  .scroll-cue-arrow {
+    animation: none;
   }
 }
