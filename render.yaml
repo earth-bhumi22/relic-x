@@ -1,0 +1,22 @@
+# Render Blueprint: hosts the RELIC-X FastAPI backend (free tier).
+# SQLite + storage live on the instance's ephemeral disk and are re-seeded with the
+# three demo artifacts on every boot, so the instance is stateless.
+services:
+  - type: web
+    name: relic-x-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: RELICX_ENV
+        value: production
+      - key: RELICX_DATABASE_URL
+        value: sqlite:////data/storage/relicx.db
+      - key: RELICX_STORAGE_DIR
+        value: /data/storage
+      - key: RELICX_CORS_ORIGINS
+        value: https://relic-x.vercel.app
+      - key: RELICX_JOB_WORKERS
+        value: "2"
