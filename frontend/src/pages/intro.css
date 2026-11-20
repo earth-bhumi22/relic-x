@@ -13,14 +13,33 @@ html.intro-snap {
   overflow-x: clip;
   min-height: 100vh;
 }
-.intro-progress {
+/* vertical scroll rail on the right edge: filled = read, empty = still to come */
+.intro-rail {
   position: fixed;
-  inset: 0 0 auto 0;
-  height: 4px;
+  top: var(--bar);
+  right: 0;
+  bottom: 0;
+  width: 14px;
   z-index: 30;
-  background: linear-gradient(90deg, var(--accent), var(--nav-accent));
-  transform: scaleX(var(--progress));
-  transform-origin: left;
+  background: var(--surface-2);
+  border-left: 1.5px solid var(--ink);
+}
+.intro-rail-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(var(--nav-accent), var(--accent));
+  transform: scaleY(var(--progress));
+  transform-origin: top;
+}
+.intro-rail-dot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--progress) * (100% - 14px));
+  height: 14px;
+  background: var(--accent);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
 }
 .intro-bar {
   position: sticky;
@@ -1084,7 +1103,7 @@ html.intro-snap {
 .scroll-cue.is-hidden {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(10px);
+  transform: translateY(14px);
 }
 .scroll-cue-arrow {
   width: 0.6rem;

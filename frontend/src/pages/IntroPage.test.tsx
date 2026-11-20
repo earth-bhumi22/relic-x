@@ -94,4 +94,17 @@ describe("IntroPage", () => {
     expect(scrollIntoView.mock.contexts[0]).toHaveProperty("id", "problem");
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
   });
+
+  it("keeps the scroll cue on the first screen only, and shows a vertical scroll rail", () => {
+    const { container } = renderIntro();
+    const cue = screen.getByRole("button", { name: "Scroll down" });
+    expect(cue).not.toHaveClass("is-hidden");
+    expect(container.querySelector(".intro-rail .intro-rail-fill")).not.toBeNull();
+    Object.defineProperty(window, "scrollY", { value: 900, configurable: true });
+    fireEvent.scroll(window);
+    expect(screen.getByRole("button", { name: "Scroll down", hidden: true })).toHaveClass("is-hidden");
+    Object.defineProperty(window, "scrollY", { value: 0, configurable: true });
+    fireEvent.scroll(window);
+    expect(screen.getByRole("button", { name: "Scroll down" })).not.toHaveClass("is-hidden");
+  });
 });
