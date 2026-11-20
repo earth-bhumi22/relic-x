@@ -317,6 +317,11 @@ export default function IntroPage() {
   const [assembled, setAssembled] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
+  // Arriving from another page (e.g. the navbar logo) always starts at the top of the intro.
+  useEffect(() => {
+    window.scrollTo?.(0, 0);
+  }, []);
+
   // Let the page load scattered, then snap the panel together.
   useEffect(() => {
     const t = window.setTimeout(() => setAssembled(true), 900);
@@ -364,10 +369,17 @@ export default function IntroPage() {
       </div>
       <ScrollCue />
       <header className="intro-bar">
-        <span className="intro-brand">
+        <a
+          href="/welcome"
+          className="intro-brand"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo?.({ top: 0, behavior: "smooth" });
+          }}
+        >
           <Logo />
           RELIC-X
-        </span>
+        </a>
         <div className="intro-bar-end">
           <ThemeToggle />
         </div>

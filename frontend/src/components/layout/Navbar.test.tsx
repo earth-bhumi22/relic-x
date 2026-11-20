@@ -36,4 +36,9 @@ describe("Navbar", () => {
     expect(sub).toHaveTextContent("Reconstruct");
     expect(screen.getByRole("link", { name: "Graph" })).toHaveAttribute("href", "/artifacts/abc123/graph");
   });
+
+  it("sends the logo to the start of the intro page", () => {
+    renderAt("/lab");
+    expect(screen.getByRole("link", { name: "RELIC-X" })).toHaveAttribute("href", "/welcome");
+  });
 });

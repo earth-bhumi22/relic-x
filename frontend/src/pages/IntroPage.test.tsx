@@ -66,6 +66,14 @@ describe("IntroPage", () => {
     expect(screen.getByRole("link", { name: "arvindkaushik.in" })).toHaveAttribute("href", "https://arvindkaushik.in");
   });
 
+  it("the header logo scrolls back to the top of the intro", () => {
+    const scrollTo = vi.fn();
+    vi.stubGlobal("scrollTo", scrollTo);
+    renderIntro();
+    fireEvent.click(screen.getByRole("link", { name: "RELIC-X" }));
+    expect(scrollTo).toHaveBeenLastCalledWith({ top: 0, behavior: "smooth" });
+  });
+
   it("still works when storage is blocked", () => {
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw new Error("blocked");

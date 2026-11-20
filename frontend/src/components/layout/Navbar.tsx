@@ -12,7 +12,7 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar-row">
-        <Link to="/" className="brand">
+        <Link to="/welcome" className="brand">
           <Logo />
           RELIC-X
         </Link>

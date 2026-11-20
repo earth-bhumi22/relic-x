@@ -8,6 +8,7 @@ import { mockApi } from "./test/mockApi";
 // mock mode with mockApi.enable() / useMockApi(). (CI sets VITE_USE_MOCKS=true; this keeps that harmless.)
 beforeEach(() => {
   vi.stubEnv("VITE_USE_MOCKS", "false");
+  vi.stubGlobal("scrollTo", vi.fn()); // jsdom does not implement it
 });
 
 afterEach(() => {

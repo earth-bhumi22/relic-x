@@ -61,6 +61,7 @@ html.intro-snap {
   font-size: 1.5rem;
   letter-spacing: 0.04em;
   color: var(--nav-text);
+  text-decoration: none;
 }
 .intro-bar-end {
   display: flex;
