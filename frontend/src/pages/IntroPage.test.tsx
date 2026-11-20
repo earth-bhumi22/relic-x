@@ -47,7 +47,7 @@ describe("IntroPage", () => {
     renderIntro();
     fireEvent.click(screen.getAllByRole("button", { name: "Enter the lab" })[0]!);
     expect(screen.getByText("home")).toBeInTheDocument();
-    expect(window.localStorage.getItem(INTRO_KEY)).toBe("1");
+    expect(window.sessionStorage.getItem(INTRO_KEY)).toBe("1");
   });
 
   it("still works when storage is blocked", () => {

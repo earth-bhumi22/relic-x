@@ -5,7 +5,7 @@ import { INTRO_KEY } from "./lib/intro";
 
 beforeEach(() => {
   window.history.pushState({}, "", "/");
-  window.localStorage.setItem(INTRO_KEY, "1"); // returning visitor: no intro redirect
+  window.sessionStorage.setItem(INTRO_KEY, "1"); // returning visitor: no intro redirect
 });
 
 describe("App", () => {
@@ -34,18 +34,18 @@ describe("App", () => {
   });
 
   it("sends a first-time visitor from / to the intro, once", async () => {
-    window.localStorage.clear();
+    window.sessionStorage.clear();
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("network down")));
     render(<App />);
     expect(await screen.findByRole("heading", { level: 1, name: "RELIC-X" })).toBeInTheDocument();
     expect(window.location.pathname).toBe("/welcome");
     fireEvent.click(screen.getAllByRole("button", { name: "Enter the lab" })[0]!);
     expect(await screen.findByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
-    expect(window.localStorage.getItem(INTRO_KEY)).toBe("1");
+    expect(window.sessionStorage.getItem(INTRO_KEY)).toBe("1");
   });
 
   it("does not redirect deep links on a first visit", async () => {
-    window.localStorage.clear();
+    window.sessionStorage.clear();
     window.history.pushState({}, "", "/lab");
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("network down")));
     render(<App />);

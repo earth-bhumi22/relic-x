@@ -12,7 +12,7 @@ describe("smoke: whole app in mock mode", () => {
   it("walks Projects → Gallery → Graph → Reconstruct → Lab without errors", async () => {
     const consoleError = vi.spyOn(console, "error");
     const consoleWarn = vi.spyOn(console, "warn");
-    window.localStorage.setItem(INTRO_KEY, "1"); // returning visitor
+    window.sessionStorage.setItem(INTRO_KEY, "1"); // returning visitor
     window.history.pushState({}, "", "/");
 
     render(<App />);
