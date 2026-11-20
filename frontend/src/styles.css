@@ -2460,3 +2460,25 @@ input[type="radio"] {
     transform: none;
   }
 }
+
+/* ---- export menu ---- */
+.export-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.8rem 0 0;
+}
+.export-list li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+}
+.export-list .btn {
+  min-width: 11rem;
+}
+.export-status {
+  margin: 0.8rem 0 0;
+  min-height: 1.4em;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}

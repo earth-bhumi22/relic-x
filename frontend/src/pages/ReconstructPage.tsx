@@ -13,6 +13,7 @@ import { MatchRequired } from "../components/MatchPanel";
 import ReconstructionCanvas from "../components/ReconstructionCanvas";
 import PlacementTable from "../components/run/PlacementTable";
 import RunControls from "../components/run/RunControls";
+import ExportMenu from "../components/run/ExportMenu";
 import RunHistory from "../components/run/RunHistory";
 import RunSummary from "../components/run/RunSummary";
 import TruthPanel from "../components/run/TruthPanel";
@@ -21,7 +22,7 @@ import WhyBoundary from "../components/why/WhyBoundary";
 import { useAsync } from "../hooks/useAsync";
 import { isPreconditionFailed } from "../hooks/useMatchStatus";
 import { confidences } from "../lib/confidence";
-import { buildReplay, replayBounds } from "../lib/replay";
+import { buildReplay, placementTiles, replayBounds } from "../lib/replay";
 import { runSolver } from "../lib/runSolver";
 import { DEFAULT_DRAFT, fieldErrorsFromApi } from "../lib/solvers";
 import type { RunDraft, RunField, RunRequest } from "../lib/solvers";
@@ -212,6 +213,16 @@ function ReconstructInner({ id }: { id: string }) {
           ) : detail && replay && bounds ? (
             <>
               <RunSummary run={detail} />
+              {replay.mode !== "empty" && detail.placements.length > 0 && (
+                <ExportMenu
+                  input={{
+                    run: detail,
+                    artifactName: artifact.status === "success" ? artifact.data.name : "artifact",
+                    tiles: placementTiles(detail),
+                    fragments: fragments.data ?? [],
+                  }}
+                />
+              )}
               {replay.message && (
                 <p className="state state-warning" role="status" data-testid="replay-notice">
                   {replay.message}
