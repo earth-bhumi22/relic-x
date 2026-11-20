@@ -245,20 +245,34 @@ code {
   text-decoration: none;
   color: var(--nav-text);
 }
-.brand::before {
-  /* a tile that has slipped out of its 2x2 grid */
-  content: "";
-  width: 1.5rem;
-  height: 1.5rem;
-  background:
-    linear-gradient(var(--nav-accent), var(--nav-accent)) 0 0 / 0.68rem 0.68rem no-repeat,
-    linear-gradient(var(--nav-text), var(--nav-text)) 100% 0 / 0.68rem 0.68rem no-repeat,
-    linear-gradient(var(--nav-text), var(--nav-text)) 0 100% / 0.68rem 0.68rem no-repeat,
-    linear-gradient(var(--accent), var(--accent)) 100% 100% / 0.68rem 0.68rem no-repeat;
-  transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+/* The RELIC-X mark (components/layout/Logo.tsx): cream shards, one ochre shard that snaps home on hover. */
+.logo {
+  flex: none;
+  overflow: visible;
 }
-.brand:hover::before {
-  transform: rotate(90deg) translate(1px, 1px);
+.logo .shard {
+  fill: var(--nav-text);
+  transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.logo .shard-s {
+  transform: translate(0, 1.4px);
+}
+.logo .shard-e {
+  transform: translate(1.4px, 0);
+}
+.logo .shard-w {
+  transform: translate(-1.4px, 0);
+}
+.logo .shard-n {
+  fill: var(--nav-accent);
+  transform-box: view-box;
+  transform-origin: 16px 9px;
+  transform: translate(2px, -3.6px) rotate(7deg);
+}
+.brand:hover .logo .shard-n,
+.brand:focus-visible .logo .shard-n,
+.intro-brand:hover .logo .shard-n {
+  transform: translate(0, -1.4px) rotate(0deg);
 }
 .nav {
   display: flex;
@@ -542,7 +556,7 @@ a:focus-visible {
     animation: none !important;
   }
   .btn,
-  .brand::before {
+  .logo .shard {
     transition: none;
   }
 }

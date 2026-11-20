@@ -62,16 +62,6 @@ html.intro-snap {
   letter-spacing: 0.04em;
   color: var(--nav-text);
 }
-.intro-brand::before {
-  content: "";
-  width: 1.5rem;
-  height: 1.5rem;
-  background:
-    linear-gradient(var(--nav-accent), var(--nav-accent)) 0 0 / 0.68rem 0.68rem no-repeat,
-    linear-gradient(var(--nav-text), var(--nav-text)) 100% 0 / 0.68rem 0.68rem no-repeat,
-    linear-gradient(var(--nav-text), var(--nav-text)) 0 100% / 0.68rem 0.68rem no-repeat,
-    linear-gradient(var(--accent), var(--accent)) 100% 100% / 0.68rem 0.68rem no-repeat;
-}
 .intro-bar-end {
   display: flex;
   gap: 0.7rem;
