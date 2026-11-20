@@ -188,6 +188,70 @@ npm run dev                                            # http://localhost:5173 (
 npm run dev:mock                                       # same UI on built-in mock data, no backend needed
 ```
 
+### Step-by-step: run it on your machine (no Docker)
+
+You need **Python 3.11+**, **Node 20+** and **git**. Check them first:
+
+```bash
+python3 --version      # 3.11 or newer
+node --version         # v20 or newer
+git --version
+```
+
+**1. Get the code**
+
+```bash
+git clone https://github.com/earth-bhumi22/relic-x.git
+cd relic-x
+```
+
+**2. Start the backend** (terminal 1). It uses SQLite and local file storage, so there is nothing to configure and tables
+are created on first start:
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate                  # Windows: .venv\Scripts\activate
+pip install -e ".[api,dev]"
+uvicorn relicx.main:app --reload
+```
+
+Leave it running. Open http://localhost:8000/docs; you should see the API documentation. Stop with `Ctrl+C`.
+
+**3. Add demo data** (terminal 2, same virtual environment). This creates three ready-to-demo artifacts, each already matched
+and solved by all four algorithms, so every screen has something to show:
+
+```bash
+cd backend
+source .venv/bin/activate
+relicx seed                                # safe to repeat; add --reset to recreate the demo artifacts
+```
+
+**4. Start the frontend** (terminal 2 or 3):
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+**5. Open the app** at http://localhost:5173. A fresh visit opens the intro; press **Enter the lab** to reach the Projects page.
+Open an artifact, then try **Gallery → Graph → Reconstruct**, and run each of the four algorithms on the Reconstruct screen.
+The **Lab** page compares them side by side.
+
+**No backend? No problem.** Skip steps 2–3 and run `npm run dev:mock` instead. The whole UI works on built-in sample data.
+
+**If something goes wrong**
+
+| Problem | Fix |
+|---|---|
+| `python3: command not found` or version below 3.11 | Install Python 3.11+ from python.org, then redo step 2 |
+| `pip install` fails inside the venv | Make sure the venv is active (your prompt shows `(.venv)`), then upgrade pip: `pip install -U pip` |
+| Port 8000 or 5173 already in use | Stop the other program, or start with another port: `uvicorn relicx.main:app --port 8001` and `VITE_API_PROXY=http://localhost:8001 npm run dev` |
+| The app loads but data is empty or requests fail | The backend is not running or not on port 8000: check http://localhost:8000/api/v1/health |
+| Reconstruct says "Run matching first" | Press **Run matching** once for that artifact (seeded artifacts are already matched) |
+| `npm install` errors | Check `node --version` is 20+, delete `frontend/node_modules`, and run `npm install` again |
+
 ### Verify an installation
 
 With the stack running (Docker or local), run the end-to-end smoke test. It calls every
