@@ -5,7 +5,7 @@ import { AppRoutes, ROUTER_FUTURE } from "./routes";
 import { ThemeProvider } from "./theme";
 import { hasSeenIntro } from "./lib/intro";
 
-/** First visit to the home page: send the visitor to the intro once. Deep links are never redirected. */
+/** Opening the site at the home page: send the visitor to the intro first (once per browser session). Deep links are never redirected. */
 function FirstVisitGate() {
   const { pathname } = useLocation();
   const navigate = useNavigate();

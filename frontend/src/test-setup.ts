@@ -13,4 +13,5 @@ beforeEach(() => {
 afterEach(() => {
   mockApi.reset();
   window.localStorage.clear();
+  window.sessionStorage.clear();
 });
