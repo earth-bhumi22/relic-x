@@ -6,6 +6,8 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 **Interactive System for Reconstruction of Fragmented Cultural Artifacts.**
+
+**Live demo:** https://relic-x.vercel.app (runs on built-in mock data, no backend needed)
 An ADA (Analysis and Design of Algorithms) project, Faculty of Technology, University of Delhi. CSE-B, Semester III.
 
 Archaeological artifacts come back from the ground broken, shuffled and damaged.
