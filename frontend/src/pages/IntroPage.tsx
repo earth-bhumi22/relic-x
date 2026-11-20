@@ -8,6 +8,7 @@ import type { CSSProperties, PointerEvent as ReactPointerEvent, ReactNode } from
 import { Link, useNavigate } from "react-router-dom";
 import { markIntroSeen } from "../lib/intro";
 import { panelDataUri, SCATTER, TECHNIQUES } from "../lib/introArt";
+import Logo from "../components/layout/Logo";
 import ThemeToggle from "../components/layout/ThemeToggle";
 import "./intro.css";
 
@@ -363,7 +364,10 @@ export default function IntroPage() {
       </div>
       <ScrollCue />
       <header className="intro-bar">
-        <span className="intro-brand">RELIC-X</span>
+        <span className="intro-brand">
+          <Logo />
+          RELIC-X
+        </span>
         <div className="intro-bar-end">
           <ThemeToggle />
           <button type="button" className="btn intro-skip" onClick={enter}>

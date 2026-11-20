@@ -1,5 +1,6 @@
 // Owner: A (Arvind)
 import { Link, NavLink, useMatch } from "react-router-dom";
+import Logo from "./Logo";
 import ApiStatus from "./ApiStatus";
 import ThemeToggle from "./ThemeToggle";
 
@@ -13,6 +14,7 @@ export default function Navbar() {
     <header className="navbar">
       <div className="navbar-row">
         <Link to="/" className="brand">
+          <Logo />
           RELIC-X
         </Link>
         <nav aria-label="Main" className="nav">
