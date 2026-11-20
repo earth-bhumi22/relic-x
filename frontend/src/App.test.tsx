@@ -37,7 +37,7 @@ describe("App", () => {
     window.localStorage.clear();
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("network down")));
     render(<App />);
-    expect(await screen.findByRole("heading", { level: 1, name: /put back/i })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "RELIC-X" })).toBeInTheDocument();
     expect(window.location.pathname).toBe("/welcome");
     fireEvent.click(screen.getAllByRole("button", { name: "Enter the lab" })[0]!);
     expect(await screen.findByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
