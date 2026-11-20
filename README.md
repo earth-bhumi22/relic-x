@@ -124,7 +124,7 @@ relic-x/
 │   ├── migrations/           # Alembic
 │   └── tests/                # engine/ (unit) · api/ (HTTP) · migrations
 ├── frontend/                 # React + TypeScript + Vite
-│   └── src/                  # pages/ · components/ · api/ · hooks/ · types/
+│   └── src/                  # pages/ · components/ · api/ · hooks/ · lib/
 ├── validation/               # reproducible benchmark + accuracy experiments
 ├── datasets/                 # sample artifacts and how they are generated
 ├── docs/                     # ALGORITHMS.md · API.md · VIVA_NOTES.md
@@ -135,7 +135,7 @@ relic-x/
 
 | Folder | Owner | Notes |
 |---|---|---|
-| `frontend/` | **A** | All UI (scaffold now; pages built in issues T23 – T28) |
+| `frontend/` | **A** | All UI: intro, projects, gallery, graph, reconstruction, lab |
 | `backend/src/relicx/engine/{graph,layout,metrics}.py`, `solvers/` | **A** | Graph & Search slice: BFS/DFS, greedy, best-first, Dijkstra, backtracking |
 | `backend/src/relicx/{api,services,repositories,db,schemas,core}` | **B** | API, persistence |
 | `backend/src/relicx/engine/strings/`, `features.py`, `matcher.py` | **B** | Strings & Matching slice: KMP, Rabin-Karp, LCS, edit distance, hashing |
@@ -184,7 +184,8 @@ relicx seed                                            # optional demo data (ide
 ```bash
 cd frontend
 npm install
-npm run dev                                            # http://localhost:5173
+npm run dev                                            # http://localhost:5173 (needs the backend running)
+npm run dev:mock                                       # same UI on built-in mock data, no backend needed
 ```
 
 ### Verify an installation
@@ -212,18 +213,23 @@ cd ../frontend && npm test && npm run build
 
 ## 🖥️ What you can do in the app
 
-> **Status:** the engine and API are complete and tested (v0.1). The frontend is a scaffold;
-> its screens are being built by A in issues T23 – T28. Until then, every feature can be used
-> through the interactive API docs at `/docs`.
+A first visit opens on an animated **intro** that explains the problem and the algorithms; after that the
+**Projects** page is home. Every screen works against the live API, or against built-in mock data with
+`npm run dev:mock`. The interface has a light and a dark theme and works down to phone width.
 
-| Screen | What it shows | Issue |
+| Screen | What it shows | Route |
 |---|---|---|
-| **Projects** | Artifact cards, create-artifact wizard (sample / upload / real fragments) | T23 |
-| **Fragment gallery** | Scrambled pieces; click one to see its 4 edge strings as colour beads | T24 |
-| **Similarity graph** | Fragments as nodes, joins as weighted edges; threshold / top-k pruning live; BFS vs DFS | T25 |
-| **Why matched?** | LCS alignment, edit operations, shared motif, hash overlap, weighted score breakdown | T26 |
-| **Reconstruction** | Animated assembly, step-by-step trace playback, ground-truth overlay | T27 |
-| **Lab / Benchmark** | All solvers side by side: time, operation counts, accuracy; scaling chart; CSV export | T28 |
+| **Intro** | Animated tour: the problem, the five steps from fragments to a finished picture, the nine techniques, honest limits | `/welcome` |
+| **Projects** | Artifact cards, create-artifact wizard (sample / upload / real fragments) | `/` |
+| **Fragment gallery** | Scrambled pieces; click one to see its 4 edge strings as colour beads | `/artifacts/:id/gallery` |
+| **Similarity graph** | Fragments as nodes, joins as weighted edges; threshold / top-k pruning live; BFS vs DFS | `/artifacts/:id/graph` |
+| **Why matched?** | LCS alignment, edit operations, shared motif, hash overlap, weighted score breakdown (a drawer opened from a join) | graph screen |
+| **Reconstruction** | Run any solver, replay its trace step by step, confidence rings, ground-truth overlay, run history, **export** | `/artifacts/:id/reconstruct` |
+| **Lab / Benchmark** | All solvers side by side: time, operation counts, accuracy; scaling chart; CSV export | `/lab` |
+
+**Exporting a reconstruction.** The final layout of any run (greedy, best-first, Dijkstra or backtracking) can be saved as a
+**PNG** picture, an **SVG** vector drawing, a **PDF** report (picture, scores and placement table), **JSON** (scores, counters,
+placements) or a **CSV** table of placements. Files are built in the browser from the run on screen.
 
 ---
 
@@ -236,15 +242,22 @@ Base path `/api/v1`. Full reference with real example responses: [`docs/API.md`]
 | `GET` | `/health` | Liveness + DB check |
 | `GET` | `/samples` | Built-in demo artifacts |
 | `POST` | `/artifacts/sample` · `/artifacts/upload` · `/artifacts/fragments-upload` | Create an artifact |
+| `GET` · `DELETE` | `/artifacts` · `/artifacts/{id}` | List, read or delete artifacts |
 | `POST` | `/artifacts/{id}/fragment` | Re-cut with new grid / damage settings |
 | `GET` | `/artifacts/{id}/fragments` | Fragment gallery |
 | `POST` | `/artifacts/{id}/match` | Compute pairwise compatibility |
+| `GET` | `/artifacts/{id}/matches` | Scored edge pairs (paginated) |
 | `GET` | `/artifacts/{id}/graph` | Pruned graph + BFS/DFS components |
 | `GET` | `/artifacts/{id}/explain` | "Why matched?" for one join |
-| `POST` | `/artifacts/{id}/runs` | Run one solver |
+| `POST` · `GET` | `/artifacts/{id}/runs` | Run one solver; list an artifact's runs |
 | `POST` | `/artifacts/{id}/benchmark` | Run all solvers |
-| `GET` | `/runs/{id}` | Placements + full trace |
+| `POST` · `GET` | `/artifacts/{id}/jobs` · `/jobs/{id}` | Run a solver in the background with live progress |
+| `GET` · `DELETE` | `/runs/{id}` | Placements + full trace; delete a run |
 | `POST` | `/benchmark/scaling` | Time / accuracy vs. fragment count |
+| `GET` | `/runs/{id}/export.csv` · `/runs/{id}/trace.csv` · `/artifacts/{id}/benchmark.csv` | CSV exports |
+
+List endpoints report their size in an `X-Total-Count` header. Setting `RELICX_API_KEY` protects every write endpoint, and the
+scaling experiment is rate-limited.
 
 Errors always have one shape: `{"error": {"code", "message", "details"}}`.
 
@@ -300,7 +313,7 @@ Mean ± sd over 12 runs per cell (3 samples × several seeds); bold = the only s
 | **A** | Arvind Kaushik (25293916019) | [@arvnd108](https://github.com/arvnd108) | Frontend | Graph & Search |
 | **B** | Bhumi Kansal (25293916026) | [@earth-bhumi22](https://github.com/earth-bhumi22) | Backend + DevOps | Strings & Matching |
 
-Work is split equally (15 issues each, plus 3 shared). Every PR is reviewed by the other member.
+Work is split equally between the two disciplines, and every PR is reviewed by the other member.
 Full split: [`planning/TEAM_ROLES.md`](planning/TEAM_ROLES.md) · task order: [`planning/WORKFLOW.md`](planning/WORKFLOW.md).
 
 Submitted to **Dr. Juhi Jain**, Analysis and Design of Algorithms.
