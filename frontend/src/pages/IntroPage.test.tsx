@@ -43,9 +43,9 @@ describe("IntroPage", () => {
     expect(toggle).toHaveTextContent(wasAssembled ? /put it back/i : /shatter/i);
   });
 
-  it.each(["Enter the lab", "Skip intro"])("%s remembers the visit and goes home", (name) => {
+  it("Enter the lab remembers the visit and goes home", () => {
     renderIntro();
-    fireEvent.click(screen.getAllByRole("button", { name })[0]!);
+    fireEvent.click(screen.getAllByRole("button", { name: "Enter the lab" })[0]!);
     expect(screen.getByText("home")).toBeInTheDocument();
     expect(window.localStorage.getItem(INTRO_KEY)).toBe("1");
   });

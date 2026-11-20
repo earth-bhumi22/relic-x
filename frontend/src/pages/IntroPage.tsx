@@ -370,9 +370,6 @@ export default function IntroPage() {
         </span>
         <div className="intro-bar-end">
           <ThemeToggle />
-          <button type="button" className="btn intro-skip" onClick={enter}>
-            Skip intro
-          </button>
         </div>
       </header>
 
