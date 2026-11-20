@@ -974,42 +974,79 @@ html.intro-snap {
 }
 
 .credits {
-  margin-top: clamp(1.2rem, 5vh, 2.6rem);
-  padding-top: 1rem;
-  border-top: 1px dashed var(--nav-muted);
+  margin-top: clamp(1rem, 4vh, 2.2rem);
 }
-.credits-line {
-  margin: 0;
+.credits-uni {
+  margin: 0 0 0.8rem;
   font-family: var(--font-mono);
-  font-size: 0.85rem;
-  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--nav-muted);
 }
-.credits-line strong {
-  color: var(--nav-text);
-  font-weight: 600;
-}
-.credits-links {
-  margin: 0.6rem 0 0;
+.credit-cards {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 0.4rem 1.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
+  gap: 1rem;
 }
-.credits-links a {
+.credit-card {
+  min-width: 14rem;
+  padding: 0.8rem 1.2rem 0.9rem;
+  border: 1.5px solid var(--nav-muted);
+  box-shadow: 3px 3px 0 var(--nav-accent);
+  text-align: left;
+}
+.credit-role {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nav-muted);
+}
+.credit-name {
+  margin: 0.15rem 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--nav-text);
+}
+.credit-links {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+.credit-links a {
   color: var(--nav-accent);
   text-decoration: underline;
   text-underline-offset: 0.25em;
 }
-.credits-links a:hover,
-.credits-links a:focus-visible {
+.credit-links a:hover,
+.credit-links a:focus-visible {
   color: var(--nav-text);
 }
 
 /* phones: trim copy so each section still fits one screen */
 @media (max-width: 40rem) {
+  .credit-cards {
+    gap: 0.6rem;
+  }
+  .credit-card {
+    min-width: 0;
+    flex: 1;
+    padding: 0.6rem 0.7rem 0.7rem;
+  }
+  .credit-name {
+    font-size: 1.05rem;
+  }
+  .credit-links {
+    font-size: 0.7rem;
+  }
+  .credits-uni {
+    font-size: 0.68rem;
+  }
   .hero-title {
     font-size: clamp(2.8rem, min(17vw, 9vh), 4.2rem);
   }
