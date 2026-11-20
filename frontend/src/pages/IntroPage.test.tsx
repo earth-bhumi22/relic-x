@@ -25,8 +25,9 @@ const renderIntro = () =>
 
 describe("IntroPage", () => {
   it("explains the project: title, the five stages, the toolbox and the limits", () => {
-    renderIntro();
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/broken things,\s*put back\s*together/i);
+    const { container } = renderIntro();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("RELIC-X");
+    expect(container.querySelector(".hero-tagline")).toHaveTextContent(/broken things,\s*put back\s*together/i);
     for (const stage of ["Cut", "Read the edges", "Match", "Build the graph", "Solve"]) {
       expect(screen.getByRole("heading", { level: 2, name: stage })).toBeInTheDocument();
     }

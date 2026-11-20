@@ -375,8 +375,11 @@ export default function IntroPage() {
       <section className="hero" aria-labelledby="intro-title">
         <div className="hero-copy">
           <h1 id="intro-title" className="hero-title">
-            <span>Broken things,</span> <span>put back</span> <span>together.</span>
+            RELIC-X
           </h1>
+          <p className="hero-tagline">
+            <span>Broken things,</span> <span>put back</span> <span>together.</span>
+          </p>
           <p className="hero-lede">
             RELIC-X reassembles shattered artifacts with classical algorithms, and shows you <em>why</em> every piece
             went where it did.

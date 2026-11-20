@@ -165,31 +165,40 @@ html.intro-snap {
     grid-template-columns: 1.1fr 0.9fr;
   }
 }
+/* RELIC-X is the heading; the tagline under it is deliberately smaller. */
 .hero-title {
-  font-size: clamp(2.3rem, min(11vw, 12vh), 6rem);
-  line-height: 0.98;
-  letter-spacing: -0.025em;
+  font-size: clamp(3rem, min(17vw, 17vh), 6.5rem);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
   margin: 0;
+  animation: rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 @media (min-width: 62rem) {
   .hero-title {
-    font-size: clamp(2.6rem, min(7vw, 12.5vh), 6.2rem);
+    font-size: clamp(3.4rem, min(10vw, 20vh), 9rem);
   }
 }
 .hero-title::after {
   display: none;
 }
-.hero-title span {
-  display: inline-block;
-  animation: rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+.hero-tagline {
+  margin: clamp(0.5rem, 1.6vh, 1rem) 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, min(2.8vw, 4.8vh), 2.4rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
-.hero-title span:nth-child(2) {
-  animation-delay: 0.12s;
+.hero-tagline span {
+  display: inline-block;
+  animation: rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s both;
+}
+.hero-tagline span:nth-child(2) {
+  animation-delay: 0.32s;
   color: var(--accent);
   font-style: italic;
 }
-.hero-title span:nth-child(3) {
-  animation-delay: 0.24s;
+.hero-tagline span:nth-child(3) {
+  animation-delay: 0.44s;
 }
 @keyframes rise {
   from {
@@ -977,7 +986,10 @@ html.intro-snap {
 /* phones: trim copy so each section still fits one screen */
 @media (max-width: 40rem) {
   .hero-title {
-    font-size: clamp(2.1rem, min(10vw, 7.2vh), 3.2rem);
+    font-size: clamp(2.8rem, min(17vw, 9vh), 4.2rem);
+  }
+  .hero-tagline {
+    font-size: 1.3rem;
   }
   .hero-lede {
     font-size: 0.95rem;
@@ -1025,7 +1037,8 @@ html.intro-snap {
   html.intro-snap {
     scroll-snap-type: none;
   }
-  .hero-title span,
+  .hero-title,
+  .hero-tagline span,
   .hero-copy .kicker,
   .hero-lede,
   .hero-cta,
