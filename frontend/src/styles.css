@@ -10,7 +10,7 @@
 :root {
   color-scheme: light;
   --bg: #e8e0cc;
-  --bg-grid: rgb(60 44 24 / 7%);
+  --bg-motif: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='132'%20height='132'%3E%3Cpath%20transform='translate(38%2038)'%20d='M6%2050V6h44v34H18V18h20v14'%20fill='none'%20stroke='%233c2c18'%20stroke-opacity='.07'%20stroke-width='2'%20stroke-linecap='square'/%3E%3C/svg%3E");
   --surface: #f4eedd;
   --surface-2: #ddd3ba;
   --border: #bfb293;
@@ -45,7 +45,7 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #15130f;
-  --bg-grid: rgb(236 214 160 / 5%);
+  --bg-motif: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='132'%20height='132'%3E%3Cpath%20transform='translate(38%2038)'%20d='M6%2050V6h44v34H18V18h20v14'%20fill='none'%20stroke='%23ecd6a0'%20stroke-opacity='.055'%20stroke-width='2'%20stroke-linecap='square'/%3E%3C/svg%3E");
   --surface: #1f1c16;
   --surface-2: #2b261d;
   --border: #4a4233;
@@ -74,7 +74,7 @@
   :root:not([data-theme]) {
     color-scheme: dark;
     --bg: #15130f;
-    --bg-grid: rgb(236 214 160 / 5%);
+    --bg-motif: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='132'%20height='132'%3E%3Cpath%20transform='translate(38%2038)'%20d='M6%2050V6h44v34H18V18h20v14'%20fill='none'%20stroke='%23ecd6a0'%20stroke-opacity='.055'%20stroke-width='2'%20stroke-linecap='square'/%3E%3C/svg%3E");
     --surface: #1f1c16;
     --surface-2: #2b261d;
     --border: #4a4233;
@@ -112,13 +112,12 @@ html {
 }
 body {
   background-color: var(--bg);
-  /* survey grid + paper grain, both purely decorative */
+  /* a faint Greek-key (meander) motif, as on potsherds, over paper grain; both purely decorative */
   background-image:
-    linear-gradient(var(--bg-grid) 1px, transparent 1px), linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px),
+    var(--bg-motif),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25 0 0 0 0 .18 0 0 0 0 .1 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:
-    32px 32px,
-    32px 32px,
+    132px 132px,
     160px 160px;
   color: var(--text);
   font-family: var(--font-body);
@@ -2287,8 +2286,6 @@ input[type="radio"] {
 /* graph */
 .graph-canvas {
   background-color: var(--surface);
-  background-image: radial-gradient(var(--border) 1px, transparent 1.2px);
-  background-size: 22px 22px;
   border: 1.5px solid var(--ink);
   box-shadow: var(--shadow);
 }
