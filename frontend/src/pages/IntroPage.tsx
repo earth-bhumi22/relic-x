@@ -1,25 +1,31 @@
 // Owner: A (Arvind)
 // Intro page: shown once to first-time visitors (App.tsx) and always reachable from the navbar.
-// Pure presentation: scroll-triggered reveals, an assembling tile panel, and small diagrams of each pipeline stage.
+// Every section is exactly one screen tall (scroll-snapped), so nothing important sits below the fold.
+// Pure presentation: scroll-triggered reveals, a draggable tile panel, and a small animation per pipeline stage.
 // No API calls and no images to load; the artwork is drawn in lib/introArt.ts.
-import { useEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties, PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { markIntroSeen } from "../lib/intro";
 import { panelDataUri, SCATTER, TECHNIQUES } from "../lib/introArt";
 import ThemeToggle from "../components/layout/ThemeToggle";
 import "./intro.css";
 
+const ART = panelDataUri();
+const idx16 = Array.from({ length: 16 }, (_, i) => i);
+
 /** Adds `is-in` the first time the element scrolls into view. Without IntersectionObserver it is simply visible. */
 function Reveal({
   children,
   className = "",
   delay = 0,
+  id,
   as: Tag = "div",
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
+  id?: string;
   as?: "div" | "section" | "li";
 }) {
   const ref = useRef<HTMLElement | null>(null);
@@ -34,7 +40,7 @@ function Reveal({
           io.disconnect();
         }
       },
-      { threshold: 0.2 },
+      { threshold: 0.35 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -42,6 +48,7 @@ function Reveal({
   return (
     <Tag
       ref={ref as never}
+      id={id}
       className={`reveal ${seen ? "is-in" : ""} ${className}`}
       style={{ "--d": `${delay}ms` } as CSSProperties}
     >
@@ -50,19 +57,54 @@ function Reveal({
   );
 }
 
+/** Sixteen slices of one picture. Drag any piece anywhere; on release it springs back to its place. */
 function TilePanel({ assembled, onToggle }: { assembled: boolean; onToggle: () => void }) {
-  const art = useMemo(panelDataUri, []);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+
+  const down = (e: ReactPointerEvent<HTMLSpanElement>) => {
+    const el = e.currentTarget;
+    el.setPointerCapture?.(e.pointerId);
+    drag.current = { id: e.pointerId, x: e.clientX, y: e.clientY };
+    el.classList.add("is-dragging");
+    el.style.setProperty("--td", "0ms");
+  };
+  const move = (e: ReactPointerEvent<HTMLSpanElement>) => {
+    const d = drag.current;
+    if (!d || d.id !== e.pointerId) return;
+    e.currentTarget.style.setProperty("--dx", `${e.clientX - d.x}px`);
+    e.currentTarget.style.setProperty("--dy", `${e.clientY - d.y}px`);
+  };
+  const end = (e: ReactPointerEvent<HTMLSpanElement>) => {
+    if (!drag.current || drag.current.id !== e.pointerId) return;
+    drag.current = null;
+    const el = e.currentTarget;
+    el.classList.remove("is-dragging");
+    el.style.setProperty("--dx", "0px");
+    el.style.setProperty("--dy", "0px");
+  };
+
+  const toggle = () => {
+    // Back to the staggered delays for the shatter / assemble animation.
+    panelRef.current?.querySelectorAll<HTMLElement>(".ptile").forEach((t) => t.style.removeProperty("--td"));
+    onToggle();
+  };
+
   return (
     <div className="panel-wrap">
       <div
+        ref={panelRef}
         className={`panel ${assembled ? "is-assembled" : ""}`}
-        style={{ "--art": art } as CSSProperties}
-        aria-hidden="true"
+        style={{ "--art": ART } as CSSProperties}
       >
         {SCATTER.map((s, i) => (
           <span
             key={i}
             className="ptile"
+            onPointerDown={down}
+            onPointerMove={move}
+            onPointerUp={end}
+            onPointerCancel={end}
             style={
               {
                 "--c": i % 4,
@@ -76,26 +118,15 @@ function TilePanel({ assembled, onToggle }: { assembled: boolean; onToggle: () =
           />
         ))}
       </div>
-      <button type="button" className="btn panel-toggle" onClick={onToggle}>
-        {assembled ? "Shatter it" : "Put it back together"}
-      </button>
+      <div className="panel-foot">
+        <button type="button" className="btn panel-toggle" onClick={toggle}>
+          {assembled ? "Shatter it" : "Put it back together"}
+        </button>
+        <span className="panel-hint">Drag any piece. Let go and it finds its way home.</span>
+      </div>
     </div>
   );
 }
-
-const TICKER = [
-  "Hashing",
-  "KMP",
-  "Rabin–Karp",
-  "LCS",
-  "Edit distance",
-  "BFS · DFS",
-  "Greedy",
-  "Prim",
-  "Dijkstra",
-  "Backtracking",
-  "Branch & bound",
-];
 
 const STEPS = [
   {
@@ -125,23 +156,62 @@ const STEPS = [
   },
 ] as const;
 
+function Scissors() {
+  return (
+    <svg className="scissors" viewBox="0 0 48 48" aria-hidden="true">
+      <g className="blade blade-a">
+        <path d="M24 24 L47 14 L47 18 L27 28 Z" />
+        <path d="M24 24 L12 30" />
+        <circle cx="9" cy="32" r="6" />
+      </g>
+      <g className="blade blade-b">
+        <path d="M24 24 L47 34 L47 30 L27 20 Z" />
+        <path d="M24 24 L12 18" />
+        <circle cx="9" cy="16" r="6" />
+      </g>
+      <circle cx="24" cy="24" r="2.4" className="pin" />
+    </svg>
+  );
+}
+
 function StepVisual({ n }: { n: (typeof STEPS)[number]["n"] }) {
   if (n === "01")
     return (
-      <div className="viz viz-cut" aria-hidden="true">
-        <div className="viz-cut-art" style={{ "--art": panelDataUri() } as CSSProperties} />
-        <i className="cut-h cut-h1" />
-        <i className="cut-h cut-h2" />
-        <i className="cut-h cut-h3" />
-        <i className="cut-v cut-v1" />
-        <i className="cut-v cut-v2" />
-        <i className="cut-v cut-v3" />
+      <div className="viz viz-cut" aria-hidden="true" style={{ "--art": ART } as CSSProperties}>
+        <div className="cut-board">
+          {idx16.map((i) => {
+            const c = i % 4;
+            const r = Math.floor(i / 4);
+            return (
+              <span
+                key={i}
+                className="cpiece"
+                style={
+                  {
+                    "--c": c,
+                    "--r": r,
+                    "--sx": `${(c - 1.5) * 13}%`,
+                    "--sy": `${(r - 1.5) * 13}%`,
+                    "--sr": `${((i * 37) % 11) - 5}deg`,
+                  } as CSSProperties
+                }
+              />
+            );
+          })}
+          <i className="cut-h cut-h1" />
+          <i className="cut-h cut-h2" />
+          <i className="cut-h cut-h3" />
+          <i className="cut-v cut-v1" />
+          <i className="cut-v cut-v2" />
+          <i className="cut-v cut-v3" />
+        </div>
+        <Scissors />
       </div>
     );
   if (n === "02")
     return (
       <div className="viz viz-edge" aria-hidden="true">
-        <div className="edge-tile" style={{ "--art": panelDataUri() } as CSSProperties} />
+        <div className="edge-tile" style={{ "--art": ART } as CSSProperties} />
         <div className="edge-code">
           <span className="typed">AAQQRbbccDDeeFFgg</span>
           <span className="edge-caret" />
@@ -218,6 +288,12 @@ export default function IntroPage() {
     return () => window.clearTimeout(t);
   }, []);
 
+  // One screen per section: gentle vertical scroll-snapping, only while this page is mounted.
+  useEffect(() => {
+    document.documentElement.classList.add("intro-snap");
+    return () => document.documentElement.classList.remove("intro-snap");
+  }, []);
+
   // Scroll progress bar + slight parallax on the hero, written to CSS variables (no re-render).
   useEffect(() => {
     const el = rootRef.current;
@@ -280,17 +356,6 @@ export default function IntroPage() {
         <TilePanel assembled={assembled} onToggle={() => setAssembled((a) => !a)} />
       </section>
 
-      <div className="ticker" aria-hidden="true">
-        <div className="ticker-track">
-          {[...TICKER, ...TICKER, ...TICKER].map((t, i) => (
-            <span key={i}>
-              {t}
-              <i>✦</i>
-            </span>
-          ))}
-        </div>
-      </div>
-
       <section className="block problem" aria-labelledby="problem-title">
         <Reveal>
           <p className="kicker">The problem</p>
@@ -321,40 +386,32 @@ export default function IntroPage() {
         </div>
       </section>
 
-      <section className="block how" id="how" aria-labelledby="how-title">
-        <Reveal>
-          <p className="kicker">How it works</p>
-          <h2 id="how-title" className="block-title">
-            Five stages, from rubble to picture.
-          </h2>
+      {STEPS.map((s, i) => (
+        <Reveal
+          as="section"
+          key={s.n}
+          id={i === 0 ? "how" : undefined}
+          className={`block step ${i % 2 ? "step-flip" : ""}`}
+        >
+          <div className="step-text">
+            <p className="kicker">How it works · {s.n} / 05</p>
+            <h2 className="intro-step-title">{s.title}</h2>
+            <p>{s.text}</p>
+          </div>
+          <StepVisual n={s.n} />
         </Reveal>
-        <ol className="steps-list">
-          {STEPS.map((s, i) => (
-            <Reveal as="li" key={s.n} className={`step ${i % 2 ? "step-flip" : ""}`}>
-              <div className="step-text">
-                <span className="step-n">{s.n}</span>
-                <h3>{s.title}</h3>
-                <p>{s.text}</p>
-              </div>
-              <StepVisual n={s.n} />
-            </Reveal>
-          ))}
-        </ol>
-      </section>
+      ))}
 
       <section className="block techniques" aria-labelledby="tech-title">
-        <Reveal>
+        <div className="tech-head">
           <p className="kicker">The toolbox</p>
           <h2 id="tech-title" className="block-title">
             A syllabus, put to work.
           </h2>
-          <p className="block-sub">
-            Every technique has a real job in the pipeline. Complexities are the ones derived in the docs.
-          </p>
-        </Reveal>
+        </div>
         <ul className="tech-grid">
           {TECHNIQUES.map((t, i) => (
-            <Reveal as="li" key={t.name} delay={(i % 3) * 90} className="tech">
+            <Reveal as="li" key={t.name} delay={i * 35} className="tech">
               <span className="tech-topic">{t.topic}</span>
               <h3>{t.name}</h3>
               <p>{t.job}</p>

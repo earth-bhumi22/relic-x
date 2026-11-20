@@ -1,9 +1,18 @@
 // Owner: A (Arvind)
+// The panel tiles, scissors and technique cards are decorative (no roles), so a few checks query the DOM directly.
+/* eslint-disable testing-library/no-container, testing-library/no-node-access */
 import { fireEvent, screen } from "@testing-library/react";
 import { Route, Routes } from "react-router-dom";
 import { INTRO_KEY } from "../lib/intro";
 import { renderWithProviders } from "../test/renderWithProviders";
 import IntroPage from "./IntroPage";
+
+/** jsdom's PointerEvent has no coordinates, so build pointer events from MouseEvent. */
+const pointer = (el: Element, type: string, x = 0, y = 0) => {
+  const e = new MouseEvent(type, { bubbles: true, clientX: x, clientY: y });
+  Object.defineProperty(e, "pointerId", { value: 1 });
+  fireEvent(el, e);
+};
 
 const renderIntro = () =>
   renderWithProviders(
@@ -19,7 +28,7 @@ describe("IntroPage", () => {
     renderIntro();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/broken things,\s*put back\s*together/i);
     for (const stage of ["Cut", "Read the edges", "Match", "Build the graph", "Solve"]) {
-      expect(screen.getByRole("heading", { level: 3, name: stage })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { level: 2, name: stage })).toBeInTheDocument();
     }
     expect(screen.getByRole("heading", { level: 3, name: "Dijkstra" })).toBeInTheDocument();
     expect(screen.getByText("Backtracking is exponential")).toBeInTheDocument();
@@ -47,5 +56,31 @@ describe("IntroPage", () => {
     renderIntro();
     fireEvent.click(screen.getAllByRole("button", { name: "Enter the lab" })[0]!);
     expect(screen.getByText("home")).toBeInTheDocument();
+  });
+
+  it("has no scrolling banner of algorithm names", () => {
+    const { container } = renderIntro();
+    expect(container.querySelector(".ticker")).toBeNull();
+  });
+
+  it("lets you drag a fragment anywhere and springs it back on release", () => {
+    const { container } = renderIntro();
+    const tile = container.querySelector<HTMLElement>(".ptile")!;
+    pointer(tile, "pointerdown", 10, 10);
+    expect(tile).toHaveClass("is-dragging");
+    pointer(tile, "pointermove", 70, 45);
+    expect(tile.style.getPropertyValue("--dx")).toBe("60px");
+    expect(tile.style.getPropertyValue("--dy")).toBe("35px");
+    pointer(tile, "pointerup");
+    expect(tile).not.toHaveClass("is-dragging");
+    expect(tile.style.getPropertyValue("--dx")).toBe("0px");
+    expect(tile.style.getPropertyValue("--dy")).toBe("0px");
+  });
+
+  it("shows all nine techniques in one grid and a scissors in the cut step", () => {
+    const { container } = renderIntro();
+    expect(container.querySelectorAll(".tech-grid > li")).toHaveLength(9);
+    expect(container.querySelector(".viz-cut .scissors")).not.toBeNull();
+    expect(container.querySelectorAll(".viz-cut .cpiece")).toHaveLength(16);
   });
 });
