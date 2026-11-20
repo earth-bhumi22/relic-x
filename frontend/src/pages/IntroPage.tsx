@@ -374,7 +374,6 @@ export default function IntroPage() {
 
       <section className="hero" aria-labelledby="intro-title">
         <div className="hero-copy">
-          <p className="kicker">An ADA project · University of Delhi</p>
           <h1 id="intro-title" className="hero-title">
             <span>Broken things,</span> <span>put back</span> <span>together.</span>
           </h1>
