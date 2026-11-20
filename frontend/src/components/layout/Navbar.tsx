@@ -1,7 +1,6 @@
 // Owner: A (Arvind)
 import { Link, NavLink, useMatch } from "react-router-dom";
 import Logo from "./Logo";
-import ApiStatus from "./ApiStatus";
 import ThemeToggle from "./ThemeToggle";
 
 const link = ({ isActive }: { isActive: boolean }) => (isActive ? "nav-link active" : "nav-link");
@@ -29,7 +28,6 @@ export default function Navbar() {
           </NavLink>
         </nav>
         <div className="navbar-end">
-          <ApiStatus />
           <ThemeToggle />
         </div>
       </div>

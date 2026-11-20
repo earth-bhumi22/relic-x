@@ -9,7 +9,7 @@ beforeEach(() => {
 });
 
 describe("App", () => {
-  it("mounts the layout and shows the API status once health responds", async () => {
+  it("mounts the layout and the Projects page", async () => {
     vi.stubGlobal(
       "fetch",
       vi
@@ -23,14 +23,7 @@ describe("App", () => {
     );
     render(<App />);
     expect(screen.getByRole("link", { name: "RELIC-X" })).toBeInTheDocument();
-    expect(await screen.findByText("API ok · v0.1.0")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
-  });
-
-  it("reports the API as offline when health fails", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("network down")));
-    render(<App />);
-    expect(await screen.findByText("API offline")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
   });
 
   it("sends a first-time visitor from / to the intro, once", async () => {

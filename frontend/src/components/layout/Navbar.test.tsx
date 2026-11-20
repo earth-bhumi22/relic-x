@@ -36,9 +36,4 @@ describe("Navbar", () => {
     expect(sub).toHaveTextContent("Reconstruct");
     expect(screen.getByRole("link", { name: "Graph" })).toHaveAttribute("href", "/artifacts/abc123/graph");
   });
-
-  it("shows a mock indicator in mock mode", () => {
-    renderAt("/");
-    expect(screen.getByTestId("api-status")).toHaveTextContent("API mock");
-  });
 });

@@ -339,39 +339,6 @@ code {
   transform: none;
 }
 
-.api-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  color: var(--nav-muted);
-  white-space: nowrap;
-}
-.api-status .dot {
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  background: var(--nav-accent);
-  box-shadow: 0 0 0 3px rgb(224 162 60 / 22%);
-  animation: beacon 2.4s ease-in-out infinite;
-}
-.api-status-ok .dot {
-  background: #6fcf97;
-  box-shadow: 0 0 0 3px rgb(111 207 151 / 22%);
-}
-.api-status-down .dot {
-  background: #ff8a7a;
-  box-shadow: 0 0 0 3px rgb(255 138 122 / 22%);
-  animation: none;
-}
-@keyframes beacon {
-  50% {
-    box-shadow: 0 0 0 6px rgb(224 162 60 / 0%);
-  }
-}
-
 /* ---- controls ---- */
 .btn {
   font: inherit;
@@ -550,8 +517,7 @@ a:focus-visible {
   }
   .main,
   .artifact-card,
-  .fragment-grid li,
-  .api-status .dot {
+  .fragment-grid li {
     animation: none !important;
   }
   .btn,
@@ -570,9 +536,6 @@ a:focus-visible {
   }
   .nav-sub {
     padding: 0.3rem 0.9rem 0.5rem;
-  }
-  .api-status {
-    font-size: 0.66rem;
   }
 }
 
