@@ -52,6 +52,7 @@ describe("IntroPage", () => {
 
   it("credits the authors with their GitHub profiles and website", () => {
     renderIntro();
+    expect(screen.getByText(/Faculty of Technology · University of Delhi/)).toBeInTheDocument();
     expect(screen.getByText("Arvind Kaushik")).toBeInTheDocument();
     expect(screen.getByText("Bhumi Kansal")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Arvind on GitHub" })).toHaveAttribute(

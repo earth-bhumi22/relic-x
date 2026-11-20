@@ -548,20 +548,30 @@ export default function IntroPage() {
             </Link>
           </div>
           <footer className="credits">
-            <p className="credits-line">
-              Made by <strong>Arvind Kaushik</strong> and <strong>Bhumi Kansal</strong>
-            </p>
-            <p className="credits-links">
-              <a href="https://github.com/arvnd108" target="_blank" rel="noreferrer">
-                Arvind on GitHub
-              </a>
-              <a href="https://github.com/earth-bhumi22" target="_blank" rel="noreferrer">
-                Bhumi on GitHub
-              </a>
-              <a href="https://arvindkaushik.in" target="_blank" rel="noreferrer">
-                arvindkaushik.in
-              </a>
-            </p>
+            <p className="credits-uni">Faculty of Technology · University of Delhi</p>
+            <div className="credit-cards">
+              <div className="credit-card">
+                <p className="credit-role">Made by</p>
+                <p className="credit-name">Arvind Kaushik</p>
+                <p className="credit-links">
+                  <a href="https://github.com/arvnd108" target="_blank" rel="noreferrer">
+                    Arvind on GitHub
+                  </a>
+                  <a href="https://arvindkaushik.in" target="_blank" rel="noreferrer">
+                    arvindkaushik.in
+                  </a>
+                </p>
+              </div>
+              <div className="credit-card">
+                <p className="credit-role">Made by</p>
+                <p className="credit-name">Bhumi Kansal</p>
+                <p className="credit-links">
+                  <a href="https://github.com/earth-bhumi22" target="_blank" rel="noreferrer">
+                    Bhumi on GitHub
+                  </a>
+                </p>
+              </div>
+            </div>
           </footer>
         </Reveal>
       </section>
