@@ -3,6 +3,7 @@
 // Any console.error (React warnings, act() problems, router errors, failed renders) fails the test.
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import App from "./App";
+import { INTRO_KEY } from "./lib/intro";
 import { useMockApi } from "./test/mockApi";
 
 describe("smoke: whole app in mock mode", () => {
@@ -11,6 +12,7 @@ describe("smoke: whole app in mock mode", () => {
   it("walks Projects → Gallery → Graph → Reconstruct → Lab without errors", async () => {
     const consoleError = vi.spyOn(console, "error");
     const consoleWarn = vi.spyOn(console, "warn");
+    window.localStorage.setItem(INTRO_KEY, "1"); // returning visitor
     window.history.pushState({}, "", "/");
 
     render(<App />);

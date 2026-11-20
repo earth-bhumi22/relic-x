@@ -1,6 +1,12 @@
 // Owner: A (Arvind)
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import App from "./App";
+import { INTRO_KEY } from "./lib/intro";
+
+beforeEach(() => {
+  window.history.pushState({}, "", "/");
+  window.localStorage.setItem(INTRO_KEY, "1"); // returning visitor: no intro redirect
+});
 
 describe("App", () => {
   it("mounts the layout and shows the API status once health responds", async () => {
@@ -25,5 +31,25 @@ describe("App", () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("network down")));
     render(<App />);
     expect(await screen.findByText("API offline")).toBeInTheDocument();
+  });
+
+  it("sends a first-time visitor from / to the intro, once", async () => {
+    window.localStorage.clear();
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("network down")));
+    render(<App />);
+    expect(await screen.findByRole("heading", { level: 1, name: /put back/i })).toBeInTheDocument();
+    expect(window.location.pathname).toBe("/welcome");
+    fireEvent.click(screen.getAllByRole("button", { name: "Enter the lab" })[0]!);
+    expect(await screen.findByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
+    expect(window.localStorage.getItem(INTRO_KEY)).toBe("1");
+  });
+
+  it("does not redirect deep links on a first visit", async () => {
+    window.localStorage.clear();
+    window.history.pushState({}, "", "/lab");
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("network down")));
+    render(<App />);
+    expect(await screen.findByRole("heading", { level: 1, name: /lab/i })).toBeInTheDocument();
+    expect(window.location.pathname).toBe("/lab");
   });
 });

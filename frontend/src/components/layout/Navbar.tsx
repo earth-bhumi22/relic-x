@@ -22,6 +22,9 @@ export default function Navbar() {
           <NavLink to="/lab" className={link}>
             Lab
           </NavLink>
+          <NavLink to="/welcome" className={link}>
+            Intro
+          </NavLink>
         </nav>
         <div className="navbar-end">
           <ApiStatus />

@@ -5,6 +5,7 @@ import { Suspense, lazy } from "react";
 import { useRoutes } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
 import AppLayout from "./components/layout/AppLayout";
+import IntroPage from "./pages/IntroPage";
 import GalleryPage from "./pages/GalleryPage";
 import Loading from "./components/Loading";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -17,6 +18,8 @@ const GraphPage = lazy(() => import("./pages/GraphPage"));
 const LabPage = lazy(() => import("./pages/LabPage"));
 
 export const routes: RouteObject[] = [
+  // The intro is full-bleed: it has its own header and sits outside AppLayout.
+  { path: "/welcome", element: <IntroPage /> },
   {
     element: <AppLayout />,
     children: [
