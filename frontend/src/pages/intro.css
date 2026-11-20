@@ -944,8 +944,8 @@ html.intro-snap {
   background: var(--nav-bg);
   color: var(--nav-text);
   border-top: 4px double var(--nav-muted);
-  background-image: radial-gradient(rgb(224 162 60 / 14%) 1px, transparent 1.4px);
-  background-size: 26px 26px;
+  background-image: var(--bg-motif);
+  background-size: 132px 132px;
 }
 .finale-title {
   font-size: clamp(2.6rem, min(1.4rem + 5vw, 14vh), 5.6rem);
