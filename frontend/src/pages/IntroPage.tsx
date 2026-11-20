@@ -284,11 +284,11 @@ function glideTo(el: Element | null | undefined) {
   el?.scrollIntoView?.({ behavior: "smooth", block: "start" });
 }
 
-/** Small "scroll down" cue, bottom centre. Jumps to the next section; hides itself on the last one. */
+/** Small "scroll down" cue, bottom centre. Lives on the first screen only and fades away once you scroll. */
 function ScrollCue() {
-  const [atEnd, setAtEnd] = useState(false);
+  const [gone, setGone] = useState(false);
   useEffect(() => {
-    const update = () => setAtEnd(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8);
+    const update = () => setGone(window.scrollY > window.innerHeight * 0.25);
     window.addEventListener("scroll", update, { passive: true });
     update();
     return () => window.removeEventListener("scroll", update);
@@ -298,7 +298,13 @@ function ScrollCue() {
     glideTo(sections.find((el) => el.getBoundingClientRect().top > BAR_PX + 24));
   };
   return (
-    <button type="button" className={`scroll-cue ${atEnd ? "is-hidden" : ""}`} onClick={next} aria-label="Scroll down">
+    <button
+      type="button"
+      className={`scroll-cue ${gone ? "is-hidden" : ""}`}
+      onClick={next}
+      aria-label="Scroll down"
+      tabIndex={gone ? -1 : 0}
+    >
       <span className="scroll-cue-label">Scroll</span>
       <span className="scroll-cue-arrow" aria-hidden="true" />
     </button>
@@ -351,7 +357,10 @@ export default function IntroPage() {
 
   return (
     <div className="intro" ref={rootRef}>
-      <div className="intro-progress" aria-hidden="true" />
+      <div className="intro-rail" aria-hidden="true">
+        <i className="intro-rail-fill" />
+        <b className="intro-rail-dot" />
+      </div>
       <ScrollCue />
       <header className="intro-bar">
         <span className="intro-brand">RELIC-X</span>
